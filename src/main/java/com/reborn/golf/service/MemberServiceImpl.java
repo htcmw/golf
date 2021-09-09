@@ -11,18 +11,19 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 @Log4j2
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public boolean register(MemberDto memberDto){
-        Optional<Member> result= memberRepository.findByEmail(memberDto.getEmail(),false);
-        if (result.isEmpty()){
+    public boolean register(MemberDto memberDto) {
+        Optional<Member> result = memberRepository.findById(memberDto.getEmail());
+        if (result.isEmpty()) {
             memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
-            Member newMember =  dtoToEntity(memberDto);
+            Member newMember = dtoToEntity(memberDto);
+            log.info(newMember);
             memberRepository.save(newMember);
             return true;
         }
@@ -31,26 +32,27 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDto read(String email) {
-        Optional<Member> result = memberRepository.findByEmail(email,false);
-        return entityToDto(result.get());
+        Optional<Member> result = memberRepository.findById(email);
+        return result.map(this::entityToDto).orElse(null);
     }
 
-    //소셜로그인정보를 제외하고 모두 수정한다.
+    //이메일, 소셜 로그인 정보를 제외하고 모두 수정할 수 있다.
     @Override
     public void modify(MemberDto memberDto) {
-        Optional<Member> result = memberRepository.findByEmail(memberDto.getEmail(),false);
-        if(result.isPresent()){
+        Optional<Member> result = memberRepository.findById(memberDto.getEmail());
+        if (result.isPresent()) {
             Member member = result.get();
-            member.changePassword(memberDto.getPassword());
+            member.changePassword(passwordEncoder.encode(memberDto.getPassword()));
             member.changeName(memberDto.getName());
             member.changeAddress(memberDto.getAddress());
             member.changePhone(memberDto.getPhone());
+            log.info(member);
             memberRepository.save(member);
         }
     }
 
     @Override
     public void remove(String email) {
-        memberRepository.deleteByEmail(email);
+        memberRepository.deleteById(email);
     }
 }

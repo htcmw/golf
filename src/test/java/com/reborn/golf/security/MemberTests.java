@@ -25,7 +25,6 @@ public class MemberTests {
                 .name("일관리자")
                 .phone("01012344321")
                 .address("경기도")
-                .grade("첫단계")
                 .fromSocial(false)
                 .build();
         member.addMemberAuthority(MemberRole.ADMIN);
@@ -39,7 +38,6 @@ public class MemberTests {
                 .name("일유저")
                 .phone("01009870987")
                 .address("서울")
-                .grade("첫단계")
                 .fromSocial(false)
                 .build();
         member.addMemberAuthority(MemberRole.USER);

@@ -14,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 public class Member extends BaseEntity{
+    //PK를 따로 만들어줘야 될 수 있음
     @Id
     private String email;
     @NotBlank
@@ -22,6 +23,7 @@ public class Member extends BaseEntity{
     private String name;
     @NotBlank
     private String phone;
+
     private String address;
 
     private boolean fromSocial;
@@ -29,6 +31,7 @@ public class Member extends BaseEntity{
     public void changeName(String name){
         this.name = name;
     }
+
     public void changeAddress(String address){
         this.address = address;
     }

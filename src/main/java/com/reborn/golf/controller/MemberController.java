@@ -1,14 +1,18 @@
 package com.reborn.golf.controller;
 
 import com.reborn.golf.dto.MemberDto;
-import com.reborn.golf.entity.Member;
 import com.reborn.golf.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
@@ -20,20 +24,22 @@ public class MemberController {
         memberService.register(memberDto);
     }
 
-    // 회원 정보 조회
-    @GetMapping("/read")
-    public ResponseEntity<MemberDto> read(String email) {
-        MemberDto memberDto = memberService.read(email);
-        return new ResponseEntity<MemberDto>(memberDto, HttpStatus.OK);
+    @PostMapping(value = "/api/read")
+    public ResponseEntity<MemberDto> read(@RequestBody Map<String,String> param) {
+        MemberDto memberDto = memberService.read(param.get("email"));
+        return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/api/update")
     public void modify(@RequestBody MemberDto memberDto){
+        log.info(memberDto);
         memberService.modify(memberDto);
     }
 
-    @DeleteMapping("/delete")
-    public void remove(String email){
-        memberService.remove(email);
+    @DeleteMapping("/api/delete")
+    public void remove(@RequestBody Map<String,String> param){
+        memberService.remove(param.get("email"));
     }
+
+
 }

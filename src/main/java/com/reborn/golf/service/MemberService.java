@@ -9,8 +9,11 @@ public interface MemberService {
     boolean register(MemberDto memberDto);
 
     MemberDto read(String email);
+
     void modify(MemberDto memberDto);
+
     void remove(String email);
+
     default Member dtoToEntity(MemberDto memberDto){
         System.out.println(memberDto);
         Member member = Member.builder()
@@ -24,6 +27,7 @@ public interface MemberService {
         member.addMemberAuthority(MemberRole.USER);
         return member;
     }
+
     default MemberDto entityToDto(Member member){
         MemberDto memberDto = MemberDto.builder()
                 .email(member.getEmail())
@@ -35,5 +39,4 @@ public interface MemberService {
                 .build();
         return memberDto;
     }
-
 }
