@@ -38,8 +38,8 @@ public class JwtUtil {
             DefaultClaims claims = (DefaultClaims) defaultJws.getBody();
 
             contentValue = claims.getSubject();
+
         }catch (Exception e){
-            e.printStackTrace();
             log.error(e.getMessage());
             contentValue = null;
         }
