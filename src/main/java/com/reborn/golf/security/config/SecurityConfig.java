@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public ApiLoginFilter apiLoginFilter() throws Exception{
-        ApiLoginFilter apiLoginFilter =  new ApiLoginFilter("/login",jwtUtil());
+        ApiLoginFilter apiLoginFilter =  new ApiLoginFilter("/member/login",jwtUtil());
         apiLoginFilter.setAuthenticationManager(authenticationManager());
         apiLoginFilter.setAuthenticationFailureHandler(new ApiLoginFailHandler());
         return apiLoginFilter;

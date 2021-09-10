@@ -1,6 +1,7 @@
 package com.reborn.golf.entity;
 
 import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
@@ -19,7 +20,7 @@ public class Notice extends BaseEntity {
 
     @Column(nullable = false)
     private String content;
-
+    //조회수
     @Column(nullable = false)
     private Integer views;
 
@@ -38,6 +39,7 @@ public class Notice extends BaseEntity {
         this.content = content;
     }
 
+    //view가 null일 경우 0으로 대체
     @PrePersist
     public void prePersist() {
         this.views = (this.views == null ? 0 : this.views);
