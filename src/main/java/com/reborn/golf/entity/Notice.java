@@ -1,8 +1,6 @@
 package com.reborn.golf.entity;
 
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-
 import javax.persistence.*;
 
 @Entity
