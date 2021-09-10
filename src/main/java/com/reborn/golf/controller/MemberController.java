@@ -19,24 +19,23 @@ public class MemberController {
     private final MemberService memberService;
 
     // 회원가입
-    @PostMapping("/create")
-    public void create(@RequestBody MemberDto memberDto) {
+    @PostMapping("/register")
+    public void register(@RequestBody MemberDto memberDto) {
         memberService.register(memberDto);
     }
 
-    @PostMapping(value = "/api/read")
+    @PostMapping(value = "/read.role")
     public ResponseEntity<MemberDto> read(@RequestBody Map<String,String> param) {
         MemberDto memberDto = memberService.read(param.get("email"));
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
-    @PutMapping("/api/update")
+    @PutMapping("/modify.role")
     public void modify(@RequestBody MemberDto memberDto){
-        log.info(memberDto);
         memberService.modify(memberDto);
     }
 
-    @DeleteMapping("/api/delete")
+    @DeleteMapping("/remove.role")
     public void remove(@RequestBody Map<String,String> param){
         memberService.remove(param.get("email"));
     }

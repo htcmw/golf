@@ -18,13 +18,13 @@ public class MemberServiceTests {
     MemberService memberService;
 
     @Test
-    public void registerTest(){
-        IntStream.rangeClosed(1,10).forEach( i -> {
+    public void registerTestUser() {
+        IntStream.rangeClosed(1, 10).forEach(i -> {
             MemberDto member = MemberDto.builder()
-                    .email("user" + i +"@naver.com")
+                    .email("user" + i + "@naver.com")
                     .password("1111")
-                    .name("유저"+ i)
-                    .phone("010" + (int)(Math.random() * (int)Math.pow(10,8)))
+                    .name("유저" + i)
+                    .phone("010" + (int) (Math.random() * (int) Math.pow(10, 8)))
                     .address("서울" + i)
                     .build();
             System.out.println(member);
@@ -33,24 +33,43 @@ public class MemberServiceTests {
 
     }
 
+
     @Test
-    public void readTest(){
+    public void registerTestAdmin() {
+        IntStream.rangeClosed(1, 10).forEach(i -> {
+            MemberDto member = MemberDto.builder()
+                    .email("admin" + i + "@naver.com")
+                    .password("1111")
+                    .name("관리자" + i)
+                    .phone("010" + (int) (Math.random() * (int) Math.pow(10, 8)))
+                    .address("서울" + i)
+                    .build();
+            System.out.println(member);
+            memberService.register(member);
+        });
+
+    }
+
+
+    @Test
+    public void readTest() {
         System.out.println(memberService.read("user1@naver.com"));
     }
 
     @Test
-    public void modifyTest(){
+    public void modifyTest() {
         MemberDto memberDto = MemberDto.builder()
                 .email("user9@naver.com")
                 .password("1111")
                 .name("유저9")
-                .phone("010" + (int)(Math.random() * (int)Math.pow(10,8)))
+                .phone("010" + (int) (Math.random() * (int) Math.pow(10, 8)))
                 .address("서울" + 9)
                 .build();
         memberService.modify(memberDto);
     }
+
     @Test
-    public void removeTest(){
+    public void removeTest() {
         memberService.remove("user10@naver.com");
     }
 }

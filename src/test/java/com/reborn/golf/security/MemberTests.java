@@ -21,13 +21,8 @@ public class MemberTests {
     public void insertMemberExample1(){
         Member member = Member.builder()
                 .email("admin@naver.com")
-                .password(passwordEncoder.encode("1111"))
-                .name("일관리자")
-                .phone("01012344321")
-                .address("경기도")
-                .fromSocial(false)
+
                 .build();
-        member.addMemberAuthority(MemberRole.ADMIN);
         memberRepository.save(member);
     }
     @Test
@@ -40,7 +35,6 @@ public class MemberTests {
                 .address("서울")
                 .fromSocial(false)
                 .build();
-        member.addMemberAuthority(MemberRole.USER);
         memberRepository.save(member);
     }
     @Test
