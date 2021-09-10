@@ -7,11 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 
+
 public interface NoticeRepository extends JpaRepository<Notice,Long> {
 
     @Query(value = "select n, m " +
-            "from Notice n left join Member m on n.writer= m " +
+            "from Notice n left join Member m on n.writer = m " +
             "where n.writer.email = :email",
             countQuery = "select count(n) from Notice n")
-    Page<Notice> findbyEmail(String email, Pageable pageable);
+    Page<Object[]> findByEmail(String email, Pageable pageable);
+
+
 }

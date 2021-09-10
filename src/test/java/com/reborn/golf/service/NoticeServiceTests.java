@@ -2,6 +2,7 @@ package com.reborn.golf.service;
 
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
+import com.reborn.golf.dto.PageResultDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +22,7 @@ public class NoticeServiceTests {
             NoticeDto noticeDto = NoticeDto.builder()
                     .title("title" + i)
                     .content("content" + i)
-                    .writer("user" + i +"@naver.com")
+                    .email("user" + i +"@naver.com")
                     .views(0)
                     .build();
             System.out.println(noticeDto);
@@ -41,9 +42,19 @@ public class NoticeServiceTests {
 
     @Test
     public void getListByEmailTest(){
-        var v = noticeService.getListByEmail(PageRequestDto.builder().page(1).size(10).build(),"user1@naver.com");
-        for (var a : v.getDtoList()){
-            System.out.println(a);
+        PageResultDto<Object[],NoticeDto> result = noticeService.getListByEmail(PageRequestDto.builder().page(1).size(100).build(),"user1@naver.com");
+        for(NoticeDto noticeDto : result.getDtoList()){
+            System.out.println(noticeDto);
         }
+    }
+
+    @Test
+    public void readTest(){
+        System.out.println(noticeService.read(1L));
+    }
+    @Test
+    public void removeTest(){
+        noticeService.remove(1L);
+
     }
 }

@@ -4,9 +4,6 @@ import lombok.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.print.attribute.IntegerSyntax;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,11 +32,13 @@ public class PageResultDto<Entity,Dto> {
         totalPages = entityPage.getTotalPages();
         calculate(entityPage.getPageable());
     }
+
     private void calculate(Pageable pageable){
-        page = pageable.getPageNumber();
+        page = pageable.getPageNumber() + 1;
         size = pageable.getPageSize();
 
         int tempEnd = (int)(Math.ceil(page / 5.0)) * 5;
+        System.out.println(tempEnd);
         start = tempEnd - 4;
         end = Math.min(tempEnd, totalPages);
         prev = start > 1;
@@ -47,8 +46,4 @@ public class PageResultDto<Entity,Dto> {
 
         pageNumberList = IntStream.rangeClosed(start,end).boxed().collect(Collectors.toList());
     }
-
-
-
-
 }

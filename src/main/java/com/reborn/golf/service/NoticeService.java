@@ -7,19 +7,18 @@ import com.reborn.golf.dto.PageResultDto;
 import com.reborn.golf.entity.Member;
 import com.reborn.golf.entity.Notice;
 
-import java.util.List;
 
 public interface NoticeService {
 
     PageResultDto<Notice,NoticeDto> getList(PageRequestDto pageRequestDto);
 
-    PageResultDto<Notice, NoticeDto> getListByEmail(PageRequestDto pageRequestDto, String email);
+    PageResultDto<Object[], NoticeDto> getListByEmail(PageRequestDto pageRequestDto, String email);
 
     Long register(NoticeDto noticeDto);
 
     NoticeDto read(Long num);
 
-    void modify(NoticeDto noticeDto);
+    void modify(NoticeDto noticeDto) throws Exception;
 
     void remove(Long num);
 
@@ -31,7 +30,21 @@ public interface NoticeService {
                 .modDate(notice.getModDate())
                 .regDate(notice.getRegDate())
                 .views(notice.getViews())
-                .writer(notice.getWriter().getEmail())
+                .email(notice.getWriter().getEmail())
+                .name(notice.getWriter().getEmail())
+                .build();
+    }
+
+    default NoticeDto entityToDto(Notice notice, Member member){
+        return NoticeDto.builder()
+                .num(notice.getNum())
+                .title(notice.getTitle())
+                .content(notice.getContent())
+                .modDate(notice.getModDate())
+                .regDate(notice.getRegDate())
+                .views(notice.getViews())
+                .email(member.getEmail())
+                .name(member.getName())
                 .build();
     }
 
@@ -40,7 +53,7 @@ public interface NoticeService {
                 .num(noticeDto.getNum())
                 .title(noticeDto.getTitle())
                 .content(noticeDto.getContent())
-                .writer(Member.builder().email(noticeDto.getWriter()).build())
+                .writer(Member.builder().email(noticeDto.getEmail()).name(noticeDto.getName()).build())
                 .views(noticeDto.getViews())
                 .build();
     }

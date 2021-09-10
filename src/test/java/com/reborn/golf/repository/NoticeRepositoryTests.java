@@ -8,8 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.stream.Collectors;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 @SpringBootTest
@@ -32,9 +33,13 @@ public class NoticeRepositoryTests {
     }
 
     @Test
+    @Transactional
     public void getListByEmailTest() {
         PageRequestDto pageRequestDto = PageRequestDto.builder().page(1).size(10).build();
-        Page<Notice> page = noticeRepository.findbyEmail("user1@naver.com", pageRequestDto.getPageable(Sort.by("regDate").ascending()));
-        System.out.println(page.stream().collect(Collectors.toList()));
+        Page<Object[]> result = noticeRepository.findByEmail("user1@naver.com", pageRequestDto.getPageable(Sort.by("regDate").ascending()));
+
+        result.get().forEach(page -> {
+            System.out.println(Arrays.toString((Object[]) page));
+        });
     }
 }
