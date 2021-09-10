@@ -1,6 +1,7 @@
 package com.reborn.golf.security.filter;
 
 import com.nimbusds.jose.util.IOUtils;
+import com.reborn.golf.entity.MemberRole;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.security.util.JwtUtil;
 import lombok.extern.log4j.Log4j2;
@@ -10,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
 import javax.servlet.FilterChain;
@@ -18,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collection;
+import java.util.Set;
 
 @Log4j2
 
@@ -68,13 +72,13 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("================successfulAuthentication====================");
         log.info("successfulAuthentication : " + authResult);
-        log.info(authResult.getPrincipal());
 
         String email = ((AuthMemeberDto)authResult.getPrincipal()).getUsername();
-
+        Collection<GrantedAuthority> roleSet = ((AuthMemeberDto)authResult.getPrincipal()).getAuthorities();
+        log.info(roleSet);
         String token = null;
         try{
-            token = jwtUtil.generateToken(email);
+            token = jwtUtil.generateToken(email,roleSet);
             response.setContentType("application/json");
             response.getOutputStream().write(token.getBytes());
 
