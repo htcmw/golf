@@ -1,12 +1,6 @@
 package com.reborn.golf.dto;
 
-import com.reborn.golf.entity.MemberRole;
 import lombok.*;
-
-import javax.persistence.Id;
-import javax.validation.constraints.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -25,7 +19,7 @@ public class MemberDto {
     private String name;
 
     private String address;
-
+    //소셜 로그인 표시
     private boolean fromSocial;
 
 }

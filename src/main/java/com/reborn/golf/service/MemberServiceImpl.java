@@ -14,12 +14,15 @@ import java.util.Optional;
 @Log4j2
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
+
     private final MemberRepository memberRepository;
+    //회원가입시 비밀번호 암호화
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public boolean register(MemberDto memberDto) {
         Optional<Member> result = memberRepository.findById(memberDto.getEmail());
+
         if (result.isEmpty()) {
             memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
             Member newMember = dtoToEntity(memberDto);
