@@ -1,11 +1,7 @@
 package com.reborn.golf.dto;
 
-import com.reborn.golf.entity.Member;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder
@@ -24,7 +20,9 @@ public class NoticeDto {
 
     private Integer views;
 
-    private String writer;
+    private String email;
+
+    private String name;
 
     private LocalDateTime regDate;
 

@@ -1,6 +1,7 @@
 package com.reborn.golf.entity;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -21,10 +22,15 @@ public class Notice extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private Integer views;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member writer;
+
+    public void addViews() {
+        this.views++;
+    }
 
     public void changeTitle(String title) {
         this.title = title;
@@ -32,5 +38,10 @@ public class Notice extends BaseEntity {
 
     public void changeContent(String content) {
         this.content = content;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.views = (this.views == null ? 0 : this.views);
     }
 }

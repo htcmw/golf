@@ -18,23 +18,24 @@ import java.util.Map;
 public class MemberController {
     private final MemberService memberService;
 
-    // 회원가입
+    // 회원가입할 때 사용
     @PostMapping("/register")
     public void register(@RequestBody MemberDto memberDto) {
         memberService.register(memberDto);
     }
 
+    //회원 정보 조회할 때 사용
     @PostMapping(value = "/read.role")
     public ResponseEntity<MemberDto> read(@RequestBody Map<String,String> param) {
         MemberDto memberDto = memberService.read(param.get("email"));
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
-
+    //회원 정보 수정할 때 사용
     @PutMapping("/modify.role")
     public void modify(@RequestBody MemberDto memberDto){
         memberService.modify(memberDto);
     }
-
+    //회원 탈퇴할 때 사용
     @DeleteMapping("/remove.role")
     public void remove(@RequestBody Map<String,String> param){
         memberService.remove(param.get("email"));

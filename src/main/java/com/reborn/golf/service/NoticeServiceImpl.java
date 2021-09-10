@@ -4,6 +4,7 @@ package com.reborn.golf.service;
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
+import com.reborn.golf.entity.Member;
 import com.reborn.golf.entity.Notice;
 import com.reborn.golf.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +14,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class NoticeServiceImpl implements NoticeService{
+public class NoticeServiceImpl implements NoticeService {
 
     private final NoticeRepository noticeRepository;
 
@@ -35,27 +37,39 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public PageResultDto<Notice, NoticeDto> getListByEmail(PageRequestDto pageRequestDto, String email) {
-//        Page<Notice> result = noticeRepository.findbyEmail(email, pageRequestDto.getPageable(Sort.by("regDate").ascending()));
-//        return new PageResultDto<>(result,this::entityToDto);
-        return null;
+    public PageResultDto<Object[], NoticeDto> getListByEmail(PageRequestDto pageRequestDto, String email) {
+        Page<Object[]> result = noticeRepository.findByEmail(email, pageRequestDto.getPageable(Sort.by("regDate").ascending()));
+        Function<Object[], NoticeDto> fn = (en -> entityToDto((Notice) en[0], (Member) en[1]));
+        return new PageResultDto<>(result, fn);
     }
 
 
     @Override
     public NoticeDto read(Long num) {
         Optional<Notice> result = noticeRepository.findById(num);
-        return result.map(this::entityToDto).orElse(null);
+        if (result.isPresent()) {
+            Notice notice = result.get();
+            notice.addViews();
+            noticeRepository.save(notice);
+            return entityToDto(notice);
+        }
+        return null;
     }
 
     @Override
-    public void modify(NoticeDto noticeDto) {
+    public void modify(NoticeDto noticeDto) throws Exception {
         Optional<Notice> result = noticeRepository.findById(noticeDto.getNum());
-        if(result.isPresent()){
+        if (result.isPresent()) {
             Notice notice = result.get();
-            notice.changeTitle(notice.getTitle());
-            notice.changeContent(notice.getContent());
-            noticeRepository.save(notice);
+            if (notice.getWriter().getEmail().equals(noticeDto.getEmail())) {
+                notice.changeTitle(notice.getTitle());
+                notice.changeContent(notice.getContent());
+                log.info(notice);
+                noticeRepository.save(notice);
+            }
+            else{
+                throw new Exception();
+            }
         }
     }
 

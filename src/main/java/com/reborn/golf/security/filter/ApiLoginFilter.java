@@ -67,7 +67,7 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("================successfulAuthentication====================");
-        log.info("ssuccessfulAuthentication : " + authResult);
+        log.info("successfulAuthentication : " + authResult);
         log.info(authResult.getPrincipal());
 
         String email = ((AuthMemeberDto)authResult.getPrincipal()).getUsername();
@@ -75,7 +75,7 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
         String token = null;
         try{
             token = jwtUtil.generateToken(email);
-            response.setContentType("text/plain");
+            response.setContentType("application/json");
             response.getOutputStream().write(token.getBytes());
 
             log.info("token : " + token);
