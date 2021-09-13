@@ -1,5 +1,6 @@
 package com.reborn.golf.security.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
@@ -32,15 +33,9 @@ public class JwtUtil {
     public String validateAndExtract(String tokenStr) throws Exception{
         String contentValue = null;
         try{
-            DefaultJws defaultJws = (DefaultJws) Jwts.parser().setSigningKey(secretKey.getBytes("UTF-8")).parseClaimsJws(tokenStr);
+            Claims claims = Jwts.parser().setSigningKey(secretKey.getBytes("UTF-8")).parseClaimsJws(tokenStr).getBody();
+            contentValue = claims.get("email",String.class);
 
-            log.info(defaultJws);
-
-            log.info(defaultJws.getBody().getClass());
-
-            DefaultClaims claims = (DefaultClaims) defaultJws.getBody();
-
-            contentValue = claims.getSubject();
             log.info(contentValue);
 
         }catch (Exception e){

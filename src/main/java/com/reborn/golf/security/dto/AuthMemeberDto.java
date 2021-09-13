@@ -18,13 +18,13 @@ import java.util.Set;
 @ToString
 public class AuthMemeberDto extends User {
 
-    private String email;
+    private String username;
+    private String name;
     private boolean fromSocial;
-    private Set<MemberRole> roleSet = new HashSet<>();
 
     public AuthMemeberDto(String username, String password, boolean fromSocial, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
-        this.email = username;
+        this.username = username;
         this.fromSocial = fromSocial;
     }
 

@@ -36,13 +36,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         log.info("----------------loadUserByUsername----------------------");
         log.info("member : " + member);
 
-        return new AuthMemeberDto(
-                member.getEmail(),
-                member.getPassword(),
-                member.isFromSocial(),
-                member.getRoleSet()
-                        .stream()
-                        .map(memberRole -> new SimpleGrantedAuthority("ROLE_" + memberRole.name()))
-                        .collect(Collectors.toSet()));
+        AuthMemeberDto authMemeberDto = new AuthMemeberDto(member.getEmail(), member.getPassword(), member.isFromSocial(), member.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority("ROLE_" + memberRole.name())).collect(Collectors.toSet()));
+        authMemeberDto.setName(member.getName());
+        return authMemeberDto;
     }
 }

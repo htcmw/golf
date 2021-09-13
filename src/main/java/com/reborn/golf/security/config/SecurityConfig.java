@@ -1,5 +1,6 @@
 package com.reborn.golf.security.config;
 
+import com.reborn.golf.repository.MemberRepository;
 import com.reborn.golf.security.filter.ApiCheckFilter;
 import com.reborn.golf.security.filter.ApiLoginFilter;
 import com.reborn.golf.security.handler.ApiLoginFailHandler;
@@ -10,21 +11,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-@Configuration
 @Log4j2
+@Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true,  securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Bean
     PasswordEncoder passwordEncoder(){
@@ -38,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public ApiCheckFilter apiCheckFilter(){
-        return new ApiCheckFilter("/**.role",jwtUtil());
+        return new ApiCheckFilter(jwtUtil(), memberRepository);
     }
 
     @Bean
@@ -56,11 +64,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin().disable();
-        http.csrf().disable();
-        http.logout();
-        http.rememberMe().tokenValiditySeconds(60*60*24*7).userDetailsService(customUserDetailsService);
-        http.addFilterBefore(apiCheckFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.formLogin().disable()
+                .csrf().disable()
+                .logout().disable();
+
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(apiCheckFilter(), BasicAuthenticationFilter.class);
         http.addFilterBefore(apiLoginFilter(), UsernamePasswordAuthenticationFilter.class);
+
     }
 }

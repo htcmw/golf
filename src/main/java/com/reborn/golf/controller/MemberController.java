@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -24,8 +25,10 @@ public class MemberController {
     }
 
     //회원 정보 조회할 때 사용
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/read.role")
     public ResponseEntity<MemberDto> read(@RequestBody Map<String, String> param) {
+        log.info("1111111111111111111");
         MemberDto memberDto = memberService.read(param.get("email"));
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
