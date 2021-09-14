@@ -15,13 +15,10 @@ public class Notice extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long num;
 
-    @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
     private String content;
     //조회수
-    @Column(nullable = false)
     private Integer views;
 
     @ManyToOne(fetch = FetchType.LAZY)

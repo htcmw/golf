@@ -44,6 +44,4 @@ public class MemberController {
     public void remove(@RequestBody Map<String, String> param) {
         memberService.remove(param.get("email"));
     }
-
-
 }

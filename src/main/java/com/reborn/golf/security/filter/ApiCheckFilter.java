@@ -47,7 +47,6 @@ public class ApiCheckFilter extends OncePerRequestFilter {
 
         if (authentication != null) {
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            return;
         }
 
         filterChain.doFilter(request, response);
@@ -75,9 +74,9 @@ public class ApiCheckFilter extends OncePerRequestFilter {
                 log.info("----------------loadUserByUsername----------------------");
                 log.info("member : " + member);
 
-                User authMemeberDto = new User(member.getEmail(), "",  member.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority("ROLE_" + memberRole.name())).collect(Collectors.toSet()));
-
-                return new UsernamePasswordAuthenticationToken(authMemeberDto.getUsername(), null, authMemeberDto.getAuthorities());
+                AuthMemeberDto authMemeberDto = new AuthMemeberDto(member.getEmail(), "", false,  member.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority("ROLE_" + memberRole.name())).collect(Collectors.toSet()));
+                authMemeberDto.setName(member.getName());
+                return new UsernamePasswordAuthenticationToken(authMemeberDto, null, authMemeberDto.getAuthorities());
 
             } catch (Exception e) {
                 e.printStackTrace();

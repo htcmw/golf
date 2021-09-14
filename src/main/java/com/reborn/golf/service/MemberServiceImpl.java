@@ -37,6 +37,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberDto read(String email) {
         Optional<Member> result = memberRepository.findById(email);
         return result.map(this::entityToDto).orElse(null);
+
     }
 
     //이메일, 소셜 로그인 정보를 제외하고 모두 수정할 수 있다.

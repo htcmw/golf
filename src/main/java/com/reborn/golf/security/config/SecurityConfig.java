@@ -29,9 +29,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-
-    @Autowired
     private MemberRepository memberRepository;
 
     @Bean
@@ -67,9 +64,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin().disable()
                 .csrf().disable()
                 .logout().disable();
+        http.headers().httpStrictTransportSecurity()
+                .maxAgeInSeconds(0)
+                .includeSubDomains(true);
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(apiCheckFilter(), BasicAuthenticationFilter.class);
+        http.addFilterBefore(apiCheckFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(apiLoginFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }

@@ -15,14 +15,13 @@ public class NoticeServiceTests {
     @Autowired
     NoticeService noticeService;
 
-
     @Test
     public void registerTest() {
-        IntStream.rangeClosed(1, 10).forEach(i -> {
+        IntStream.rangeClosed(1, 100).forEach(i -> {
             NoticeDto noticeDto = NoticeDto.builder()
-                    .title("title" + i)
-                    .content("content" + i)
-                    .email("user" + i +"@naver.com")
+                    .title("title.........." + i)
+                    .content("content.........." + i)
+                    .email("user" + ((i % 10) + 1) +"@naver.com")
                     .views(0)
                     .build();
             System.out.println(noticeDto);
