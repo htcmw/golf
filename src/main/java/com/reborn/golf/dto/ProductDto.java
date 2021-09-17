@@ -3,8 +3,6 @@ package com.reborn.golf.dto;
 import com.reborn.golf.entity.Product;
 import lombok.*;
 
-import javax.persistence.*;
-
 @Getter
 @Setter
 @ToString

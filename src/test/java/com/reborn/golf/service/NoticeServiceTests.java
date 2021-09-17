@@ -25,7 +25,6 @@ public class NoticeServiceTests {
                     .views(0)
                     .build();
             System.out.println(noticeDto);
-            noticeService.register(noticeDto);
         });
 
     }
@@ -40,17 +39,10 @@ public class NoticeServiceTests {
     }
 
     @Test
-    public void getListByEmailTest(){
-        PageResultDto<Object[],NoticeDto> result = noticeService.getListByEmail(PageRequestDto.builder().page(1).size(100).build(),"user1@naver.com");
-        for(NoticeDto noticeDto : result.getDtoList()){
-            System.out.println(noticeDto);
-        }
-    }
-
-    @Test
     public void readTest(){
         System.out.println(noticeService.read(1L));
     }
+
     @Test
     public void removeTest(){
         noticeService.remove(1L);

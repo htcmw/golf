@@ -32,14 +32,4 @@ public class NoticeRepositoryTests {
         });
     }
 
-    @Test
-    @Transactional
-    public void getListByEmailTest() {
-        PageRequestDto pageRequestDto = PageRequestDto.builder().page(1).size(10).build();
-        Page<Object[]> result = noticeRepository.findByEmail("user1@naver.com", pageRequestDto.getPageable(Sort.by("regDate").ascending()));
-
-        result.get().forEach(page -> {
-            System.out.println(Arrays.toString((Object[]) page));
-        });
-    }
 }

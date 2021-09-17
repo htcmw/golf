@@ -28,6 +28,10 @@ public class Notice extends BaseEntity {
         this.views++;
     }
 
+    public void chageWriter(String email){
+        this.writer =  new Member(email);
+    }
+
     public void changeTitle(String title) {
         this.title = title;
     }

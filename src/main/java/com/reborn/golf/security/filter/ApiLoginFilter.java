@@ -1,7 +1,5 @@
 package com.reborn.golf.security.filter;
 
-import com.nimbusds.jose.util.IOUtils;
-import com.reborn.golf.entity.MemberRole;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.security.util.JwtUtil;
 import lombok.extern.log4j.Log4j2;

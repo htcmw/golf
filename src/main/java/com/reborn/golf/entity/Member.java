@@ -22,6 +22,10 @@ public class Member extends BaseEntity{
     private String address;
     private boolean fromSocial;
 
+    public Member(String email){
+        this.email = email;
+    }
+
     public void changeName(String name){
         this.name = name;
     }

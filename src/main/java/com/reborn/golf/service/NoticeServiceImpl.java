@@ -4,7 +4,6 @@ package com.reborn.golf.service;
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
-import com.reborn.golf.entity.Member;
 import com.reborn.golf.entity.Notice;
 import com.reborn.golf.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 @Service
 @Log4j2
@@ -24,8 +22,8 @@ public class NoticeServiceImpl implements NoticeService {
     private final NoticeRepository noticeRepository;
 
     @Override
-    public Long register(NoticeDto noticeDto) {
-        Notice notice = dtoToEntity(noticeDto);
+    public Long register(String email, NoticeDto noticeDto) {
+        Notice notice = dtoToEntity(noticeDto, email);
         noticeRepository.save(notice);
         return notice.getNum();
     }
@@ -35,14 +33,6 @@ public class NoticeServiceImpl implements NoticeService {
         Page<Notice> result = noticeRepository.findAll(pageRequestDto.getPageable(Sort.by("regDate").ascending()));
         return new PageResultDto<>(result, this::entityToDto);
     }
-
-    @Override
-    public PageResultDto<Object[], NoticeDto> getListByEmail(PageRequestDto pageRequestDto, String email) {
-        Page<Object[]> result = noticeRepository.findByEmail(email, pageRequestDto.getPageable(Sort.by("regDate").ascending()));
-        Function<Object[], NoticeDto> fn = (en -> entityToDto((Notice) en[0], (Member) en[1]));
-        return new PageResultDto<>(result, fn);
-    }
-
 
     @Override
     public NoticeDto read(Long num) {
@@ -57,19 +47,15 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public void modify(NoticeDto noticeDto) throws Exception {
+    public void modify(String email, NoticeDto noticeDto) {
         Optional<Notice> result = noticeRepository.findById(noticeDto.getNum());
         if (result.isPresent()) {
             Notice notice = result.get();
-            if (notice.getWriter().getEmail().equals(noticeDto.getEmail())) {
-                notice.changeTitle(notice.getTitle());
-                notice.changeContent(notice.getContent());
-                log.info(notice);
-                noticeRepository.save(notice);
-            }
-            else{
-                throw new Exception();
-            }
+            notice.chageWriter(email);
+            notice.changeTitle(notice.getTitle());
+            notice.changeContent(notice.getContent());
+            log.info(notice);
+            noticeRepository.save(notice);
         }
     }
 
@@ -77,4 +63,6 @@ public class NoticeServiceImpl implements NoticeService {
     public void remove(Long num) {
         noticeRepository.deleteById(num);
     }
+
+
 }

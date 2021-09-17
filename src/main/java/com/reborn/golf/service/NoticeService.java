@@ -12,13 +12,11 @@ public interface NoticeService {
 
     PageResultDto<Notice,NoticeDto> getList(PageRequestDto pageRequestDto);
 
-    PageResultDto<Object[], NoticeDto> getListByEmail(PageRequestDto pageRequestDto, String email);
-
-    Long register(NoticeDto noticeDto);
-
     NoticeDto read(Long num);
 
-    void modify(NoticeDto noticeDto) throws Exception;
+    Long register(String email, NoticeDto noticeDto);
+
+    void modify(String email, NoticeDto noticeDto);
 
     void remove(Long num);
 
@@ -31,7 +29,7 @@ public interface NoticeService {
                 .regDate(notice.getRegDate())
                 .views(notice.getViews())
                 .email(notice.getWriter().getEmail())
-                .name(notice.getWriter().getEmail())
+                .name(notice.getWriter().getName())
                 .build();
     }
 
@@ -48,12 +46,12 @@ public interface NoticeService {
                 .build();
     }
 
-    default Notice dtoToEntity(NoticeDto noticeDto){
+    default Notice dtoToEntity(NoticeDto noticeDto, String email){
         return Notice.builder()
                 .num(noticeDto.getNum())
                 .title(noticeDto.getTitle())
                 .content(noticeDto.getContent())
-                .writer(Member.builder().email(noticeDto.getEmail()).name(noticeDto.getName()).build())
+                .writer(new Member(email))
                 .views(noticeDto.getViews())
                 .build();
     }

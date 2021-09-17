@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService {
 
     //이메일, 소셜 로그인 정보를 제외하고 모두 수정할 수 있다.
     @Override
-    public void modify(MemberDto memberDto) {
+    public void modify(MemberDto memberDto){
         Optional<Member> result = memberRepository.findById(memberDto.getEmail());
         if (result.isPresent()) {
             Member member = result.get();

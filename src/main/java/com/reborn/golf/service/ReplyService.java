@@ -8,17 +8,16 @@ import com.reborn.golf.entity.Notice;
 import com.reborn.golf.entity.Reply;
 
 public interface ReplyService {
-
-    Long register(ReplyDto replyDto);
-
     PageResultDto<Reply, ReplyDto> getList(Long noticeNum, PageRequestDto pageRequestDto);
 
-    Long modify(ReplyDto replyDto);
+    Long register(String email, ReplyDto replyDto);
 
-    Long remove(ReplyDto replyDto);
+    Long modify(String email, ReplyDto replyDto);
+
+    void remove(String email, Long num);
 
     default ReplyDto entityToDto(Reply reply){
-        ReplyDto replyDto = ReplyDto.builder()
+        return ReplyDto.builder()
                 .num(reply.getNum())
                 .text(reply.getText())
                 .noticeNum(reply.getNotice().getNum())
@@ -27,16 +26,14 @@ public interface ReplyService {
                 .regDate(reply.getRegDate())
                 .modDate(reply.getModDate())
                 .build();
-        return replyDto;
     }
 
-    default Reply dtoToEntity(ReplyDto replyDto){
-        Reply reply = Reply.builder()
+    default Reply dtoToEntity(String email, ReplyDto replyDto){
+        return Reply.builder()
                 .num(replyDto.getNum())
                 .text(replyDto.getText())
                 .notice(Notice.builder().num(replyDto.getNoticeNum()).build())
-                .member(Member.builder().email(replyDto.getEmail()).build())
+                .member(Member.builder().email(email).build())
                 .build();
-        return reply;
     }
 }
