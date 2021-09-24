@@ -14,6 +14,9 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @ToString
 public class MemberDto {
+
+    private Integer idx;
+
     @Email(message = "이메일을 입력해주세요.")
     private String email;
 
@@ -28,6 +31,7 @@ public class MemberDto {
 
     @NotBlank
     private String address;
+
     //소셜 로그인 표시
     private boolean fromSocial;
 }

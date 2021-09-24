@@ -6,23 +6,24 @@ import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
 import com.reborn.golf.entity.Member;
 import com.reborn.golf.entity.Notice;
+import com.reborn.golf.entity.NoticeFractionation;
 
 
 public interface NoticeService {
 
-    PageResultDto<Notice,NoticeDto> getList(PageRequestDto pageRequestDto);
+    PageResultDto<Notice,NoticeDto> getList(PageRequestDto pageRequestDto, NoticeFractionation fractionation);
 
-    NoticeDto read(Long num);
+    NoticeDto read(Long noticeIdx, NoticeFractionation fractionation);
 
-    Long register(String email, NoticeDto noticeDto);
+    Long register(Integer memberIdx, Long qnaIdx,NoticeDto noticeDto, NoticeFractionation fractionation);
 
-    void modify(String email, NoticeDto noticeDto);
+    void modify(Integer memberIdx, NoticeDto noticeDto, NoticeFractionation fractionation);
 
-    void remove(Long num);
+    void remove(Long noticeIdx, NoticeFractionation fractionation);
 
     default NoticeDto entityToDto(Notice notice){
         return NoticeDto.builder()
-                .num(notice.getNum())
+                .idx(notice.getIdx())
                 .title(notice.getTitle())
                 .content(notice.getContent())
                 .modDate(notice.getModDate())
@@ -35,7 +36,7 @@ public interface NoticeService {
 
     default NoticeDto entityToDto(Notice notice, Member member){
         return NoticeDto.builder()
-                .num(notice.getNum())
+                .idx(notice.getIdx())
                 .title(notice.getTitle())
                 .content(notice.getContent())
                 .modDate(notice.getModDate())
@@ -46,12 +47,13 @@ public interface NoticeService {
                 .build();
     }
 
-    default Notice dtoToEntity(NoticeDto noticeDto, String email){
+    default Notice dtoToEntity(NoticeDto noticeDto, Integer writerIdx){
         return Notice.builder()
-                .num(noticeDto.getNum())
+                .idx(noticeDto.getIdx())
                 .title(noticeDto.getTitle())
                 .content(noticeDto.getContent())
-                .writer(new Member(email))
+                .writer(Member.builder().idx(writerIdx).build())
+                .writer(Member.builder().idx(writerIdx).build())
                 .views(noticeDto.getViews())
                 .build();
     }

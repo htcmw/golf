@@ -1,14 +1,16 @@
 package com.reborn.golf.security.util;
 
+import com.reborn.golf.security.dto.AuthMemeberDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.time.ZonedDateTime;
-import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class JwtUtil {
@@ -17,28 +19,27 @@ public class JwtUtil {
     //토큰 유효시간 1 month
     private final long expire = 60 * 24 * 30;
 
-    public String generateToken(String email, Collection<GrantedAuthority> roleSet) throws Exception{
+    public String generateToken(Authentication authentication) throws Exception {
+
+        Integer idx = ((AuthMemeberDto) authentication.getPrincipal()).getIdx();
+        String email = authentication.getName();
+        String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+        Boolean fromSocial = ((AuthMemeberDto) authentication.getPrincipal()).isFromSocial();
+
+        log.info(idx + email + authorities);
+
         return Jwts.builder()
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(expire).toInstant()))
-                .claim("email",email)
-                .claim("role",roleSet)
+                .claim("id", idx)
+                .claim("role", authorities)
+                .claim("social", fromSocial)
                 .signWith(SignatureAlgorithm.HS256, secretKey.getBytes("UTF-8"))
                 .compact();
     }
 
-    public String validateAndExtract(String tokenStr) throws Exception{
-        String contentValue = null;
-        try{
-            Claims claims = Jwts.parser().setSigningKey(secretKey.getBytes("UTF-8")).parseClaimsJws(tokenStr).getBody();
-            contentValue = claims.get("email",String.class);
-
-            log.info(contentValue);
-
-        }catch (Exception e){
-            log.error(e.getMessage());
-            contentValue = null;
-        }
-        return contentValue;
+    public Claims validateAndExtract(String tokenStr) throws Exception {
+        return Jwts.parser().setSigningKey(secretKey.getBytes("UTF-8")).parseClaimsJws(tokenStr).getBody();
     }
 }

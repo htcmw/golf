@@ -26,10 +26,10 @@ public class ReplyServiceTests {
                     .text("text.........." + i)
                     .email("user" + ((i % 10) + 1) + "@naver.com")
                     .name("user" + ((i % 10) + 1))
-                    .noticeNum((long) (i % 100) + 1)
+                    .noticeIdx((long) (i % 100) + 1)
                     .build();
             System.out.println(replyDto);
-            replyService.register(replyDto);
+            replyService.register(((i % 10) + 1),replyDto);
 
         });
 
@@ -44,15 +44,15 @@ public class ReplyServiceTests {
     @Test
     public void modifyTest(){
         ReplyDto replyDto = ReplyDto.builder()
-                .num(1L)
+                .idx(1L)
                 .text("changed Text ............................")
                 .build();
 
-        replyService.modify(replyDto);
+//        replyService.modify(replyDto);
     }
     @Test
     public void remove(){
-        replyService.remove(500L);
+//        replyService.remove(500L);
     }
 
 

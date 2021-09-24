@@ -15,13 +15,13 @@ import java.time.LocalDateTime;
 @ToString
 public class ReplyDto {
 
-    private Long num;
+    private Long idx;
 
     @NotBlank
     private String text;
 
     @Min(1)
-    private Long noticeNum;
+    private Long noticeIdx;
 
     @Email
     private String email;

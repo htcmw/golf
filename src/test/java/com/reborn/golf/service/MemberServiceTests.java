@@ -22,54 +22,39 @@ public class MemberServiceTests {
         IntStream.rangeClosed(1, 10).forEach(i -> {
             MemberDto member = MemberDto.builder()
                     .email("user" + i + "@naver.com")
-                    .password("1111")
+                    .password("1234")
+                    .phone("010" + (int) (Math.random() * (int) Math.pow(10, 8)))
                     .name("유저" + i)
-                    .phone("010" + (int) (Math.random() * (int) Math.pow(10, 8)))
                     .address("서울" + i)
+                    .fromSocial(false)
                     .build();
             System.out.println(member);
             memberService.register(member);
         });
 
     }
-
-
-    @Test
-    public void registerTestAdmin() {
-        IntStream.rangeClosed(1, 10).forEach(i -> {
-            MemberDto member = MemberDto.builder()
-                    .email("admin" + i + "@naver.com")
-                    .password("1111")
-                    .name("관리자" + i)
-                    .phone("010" + (int) (Math.random() * (int) Math.pow(10, 8)))
-                    .address("서울" + i)
-                    .build();
-            System.out.println(member);
-            memberService.register(member);
-        });
-
-    }
-
 
     @Test
     public void readTest() {
-        System.out.println(memberService.read("user1@naver.com"));
+        System.out.println(memberService.read(10));
     }
 
     @Test
     public void modifyTest() {
+        Integer idx = 10;
         MemberDto memberDto = MemberDto.builder()
-                .email("user9@naver.com")
+                .idx(idx)
+                .email("user101@naver.com")
                 .password("1111")
-                .name("유저9")
+                .name("유저101")
                 .phone("010" + (int) (Math.random() * (int) Math.pow(10, 8)))
-                .address("서울" + 9)
+                .address("서울" + 101)
                 .build();
-        memberService.modify(memberDto);
+        memberService.modify(idx, memberDto);
     }
 
     @Test
     public void removeTest() {
-        memberService.remove("user10@naver.com");
+        memberService.remove(10);
     }
 }

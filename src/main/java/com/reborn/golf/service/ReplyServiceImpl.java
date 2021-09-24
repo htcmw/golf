@@ -24,34 +24,39 @@ public class ReplyServiceImpl implements ReplyService {
     private final ReplyRepository replyRepository;
 
     @Override
-    public Long register(String email, ReplyDto replyDto) {
-        Reply reply = dtoToEntity(email, replyDto);
-        replyRepository.save(reply);
-        return reply.getNum();
-    }
-
-    @Override
     @Transactional
-    public PageResultDto<Reply, ReplyDto> getList(Long noticeNum, PageRequestDto pageRequestDto) {
-        Page<Reply> result = replyRepository.getRepliesByNoticeOrderByRegDateAsc(Notice.builder().num(noticeNum).build(), pageRequestDto.getPageable(Sort.by("regDate").ascending()));
+    public PageResultDto<Reply, ReplyDto> getList(Long noticeIdx, PageRequestDto pageRequestDto) {
+        Page<Reply> result = replyRepository.getRepliesByNoticeAndRemovedFalse(Notice.builder().idx(noticeIdx).build(), pageRequestDto.getPageable(Sort.by("regDate").ascending()));
         return new PageResultDto<>(result, this::entityToDto);
     }
 
     @Override
-    public Long modify(String email, ReplyDto replyDto) {
-        Optional<Reply> result = replyRepository.getReplyByMemberAndNum(Member.builder().email(email).build(), replyDto.getNum());
+    public Long register(Integer writerIdx, ReplyDto replyDto) {
+        Reply reply = dtoToEntity(writerIdx, replyDto);
+        replyRepository.save(reply);
+        return reply.getIdx();
+    }
+
+    @Override
+    public Long modify(Integer writerIdx, ReplyDto replyDto) {
+        Optional<Reply> result = replyRepository.getReplyByMemberAndIdxAndRemovedFalse(Member.builder().idx(writerIdx).build(), replyDto.getIdx());
         if (result.isPresent()) {
             Reply reply = result.get();
             reply.changeText(replyDto.getText());
             replyRepository.save(reply);
-            return reply.getNum();
+            return reply.getIdx();
         }
         return null;
     }
 
     @Override
     @Transactional
-    public void remove(String email, Long num) {
-        replyRepository.deleteReplyByMemberAndNum(Member.builder().email(email).build(), num);
+    public void remove(Integer writerIdx, Long replyIdx) {
+        Optional<Reply> result = replyRepository.getReplyByMemberAndIdxAndRemovedFalse(Member.builder().idx(writerIdx).build(), replyIdx);
+        if(result.isPresent()){
+            Reply reply = result.get();
+            reply.changeRemoved(true);
+            replyRepository.save(reply);
+        }
     }
 }

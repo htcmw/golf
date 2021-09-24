@@ -3,6 +3,7 @@ package com.reborn.golf.service;
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
+import com.reborn.golf.entity.NoticeFractionation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,10 +22,11 @@ public class NoticeServiceTests {
             NoticeDto noticeDto = NoticeDto.builder()
                     .title("title.........." + i)
                     .content("content.........." + i)
-                    .email("user" + ((i % 10) + 1) +"@naver.com")
                     .views(0)
                     .build();
             System.out.println(noticeDto);
+            noticeService.register(((i % 10) + 1), noticeDto, NoticeFractionation.NOTICE);
+
         });
 
     }
@@ -32,7 +34,7 @@ public class NoticeServiceTests {
     @Test
     public void getListTest(){
         PageRequestDto pageRequestDto = PageRequestDto.builder().page(1).size(10).build();
-        var resultDto= noticeService.getList(pageRequestDto);
+        var resultDto= noticeService.getList(pageRequestDto, NoticeFractionation.NOTICE);
         for (var list: resultDto.getDtoList()) {
             System.out.println(list);
         }
@@ -40,12 +42,12 @@ public class NoticeServiceTests {
 
     @Test
     public void readTest(){
-        System.out.println(noticeService.read(1L));
+        System.out.println(noticeService.read(1L, NoticeFractionation.NOTICE));
     }
 
     @Test
     public void removeTest(){
-        noticeService.remove(1L);
+        noticeService.remove(1L, NoticeFractionation.NOTICE);
 
     }
 }

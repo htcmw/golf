@@ -12,16 +12,14 @@ import java.util.Collection;
 @Log4j2
 @Setter
 @Getter
-@ToString
 public class AuthMemeberDto extends User {
 
-    private String username;
-    private String name;
+    private Integer idx;
     private boolean fromSocial;
 
-    public AuthMemeberDto(String username, String password, boolean fromSocial, Collection<? extends GrantedAuthority> authorities) {
+    public AuthMemeberDto(Integer idx, String username, String password, boolean fromSocial, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
-        this.username = username;
+        this.idx = idx;
         this.fromSocial = fromSocial;
     }
 

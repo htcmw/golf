@@ -1,15 +1,13 @@
 package com.reborn.golf.security.filter;
 
-import com.reborn.golf.entity.Member;
-import com.reborn.golf.repository.MemberRepository;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.security.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,19 +16,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Log4j2
 public class ApiCheckFilter extends OncePerRequestFilter {
 
-    private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
 
 
-    public ApiCheckFilter(JwtUtil jwtUtil, MemberRepository memberRepository) {
+    public ApiCheckFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -56,22 +52,15 @@ public class ApiCheckFilter extends OncePerRequestFilter {
             log.info("Authorization exist : " + authHeader);
 
             try {
-                String email = jwtUtil.validateAndExtract(authHeader.substring(7));
+                Claims claims = jwtUtil.validateAndExtract(authHeader.substring(7));
 
-                log.info("validate result : " + email);
+                String email = claims.getSubject();
+                Integer idx = claims.get("id",Integer.class);
+                Boolean fromSocial = claims.get("social",Boolean.class);
+                String[] authorities = claims.get("role",String.class).split(",");
 
-                Optional<Member> result = memberRepository.findByEmail(email,false);
+                AuthMemeberDto authMemeberDto = new AuthMemeberDto(idx,email, "", fromSocial, Arrays.stream(authorities).map(SimpleGrantedAuthority::new).collect(Collectors.toSet()));
 
-                if (result.isEmpty())
-                    throw new UsernameNotFoundException("Please Check Email or Social");
-
-                Member member = result.get();
-
-                log.info("----------------loadUserByUsername----------------------");
-                log.info("member : " + member);
-
-                AuthMemeberDto authMemeberDto = new AuthMemeberDto(member.getEmail(), "", false,  member.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority("ROLE_" + memberRole.name())).collect(Collectors.toSet()));
-                authMemeberDto.setName(member.getName());
                 return new UsernamePasswordAuthenticationToken(authMemeberDto, null, authMemeberDto.getAuthorities());
 
             } catch (Exception e) {

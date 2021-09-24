@@ -15,11 +15,11 @@ public class ReplyRepositoryTests {
     private ReplyRepository replyRepository;
 
     @Test
-    public void getRepliesByNoticeOrderByRegDateAsc(){
-        Page<Reply> replies = replyRepository.getRepliesByNoticeOrderByRegDateAsc(Notice.builder().num(1L).build(), PageRequest.of(0,10));
+    public void getRepliesByNoticeAndRemovedFalse(){
+        Page<Reply> replies = replyRepository.getRepliesByNoticeAndRemovedFalse(Notice.builder().idx(1L).build(), PageRequest.of(0,10));
         replies.forEach( entity -> {
             System.out.println(entity);
-            System.out.println(entity.getNotice().getNum());
+            System.out.println(entity.getNotice().getIdx());
             System.out.println(entity.getMember().getEmail());
 
         });

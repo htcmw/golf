@@ -25,9 +25,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true,  securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private MemberRepository memberRepository;
-
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -40,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public ApiCheckFilter apiCheckFilter(){
-        return new ApiCheckFilter(jwtUtil(), memberRepository);
+        return new ApiCheckFilter(jwtUtil());
     }
 
     @Bean

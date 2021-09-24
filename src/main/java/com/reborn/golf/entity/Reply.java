@@ -9,13 +9,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = {"member","notice"})
-public class Reply extends BaseEntity{
+@ToString(exclude = {"member", "notice"})
+public class Reply extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long num;
+    private Long idx;
 
+    @Column(columnDefinition = "TEXT")
     private String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,7 +25,14 @@ public class Reply extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     private Notice notice;
 
-    public void changeText(String text){
+    @Column(nullable = false)
+    private boolean removed;
+
+    public void changeText(String text) {
         this.text = text;
+    }
+
+    public void changeRemoved(boolean removed) {
+        this.removed = removed;
     }
 }

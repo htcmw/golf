@@ -28,41 +28,38 @@ public class ReplyController {
     private final ReplyService replyService;
 
     //공지사항 댓글 목록
-    @GetMapping("/list")
-    public ResponseEntity<PageResultDto<Reply, ReplyDto>> getList(@RequestParam @Min(1) Long noticeNum, PageRequestDto pageRequestDto){
+    @GetMapping
+    public ResponseEntity<PageResultDto<Reply, ReplyDto>> getList(@RequestParam @Min(1) Long noticeNum, PageRequestDto pageRequestDto) {
         PageResultDto<Reply, ReplyDto> resultDto = replyService.getList(noticeNum, pageRequestDto);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
 
     //댓글 등록
     @PreAuthorize("hasRole('USER')")
-    @PostMapping("/register")
-    public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid ReplyDto replyDto){
-        String email = authMemeberDto.getUsername();
-        log.info(email);
-        log.info(replyDto);
-        Long num = replyService.register(email, replyDto);
-        return new ResponseEntity<>(num,HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid ReplyDto replyDto) {
+        Integer idx = authMemeberDto.getIdx();
+        Long num = replyService.register(idx, replyDto);
+        return new ResponseEntity<>(num, HttpStatus.OK);
     }
 
 
     //댓글 수정
     @PreAuthorize("hasRole('USER')")
-    @PutMapping("/modify")
-    public ResponseEntity<Long> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid ReplyDto replyDto){
-        String email = authMemeberDto.getUsername();
-        Long num = replyService.modify(email, replyDto);
-        return new ResponseEntity<>(num,HttpStatus.OK);
+    @PutMapping
+    public ResponseEntity<Long> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid ReplyDto replyDto) {
+        Integer idx = authMemeberDto.getIdx();
+        Long num = replyService.modify(idx, replyDto);
+        return new ResponseEntity<>(num, HttpStatus.OK);
     }
 
     //댓글 삭제
     @PreAuthorize("hasRole('USER')")
-    @DeleteMapping("/remove")
-    public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestParam @Min(1) Long num){
-        String email = authMemeberDto.getUsername();
-        log.info(num);
-        replyService.remove(email, num);
-        return new ResponseEntity<>("success",HttpStatus.OK);
+    @DeleteMapping
+    public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestParam @Min(1) Long num) {
+        Integer idx = authMemeberDto.getIdx();
+        replyService.remove(idx, num);
+        return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
 }

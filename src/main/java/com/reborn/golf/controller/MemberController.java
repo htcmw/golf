@@ -21,49 +21,41 @@ public class MemberController {
     private final MemberService memberService;
 
     // 회원가입할 때 사용
-    @PostMapping("/register")
+    @PostMapping()
     public ResponseEntity<String> register(@RequestBody @Valid MemberDto memberDto) {
         if (memberService.register(memberDto)) {
-            return new ResponseEntity<>("Sucess", HttpStatus.OK);
+            return new ResponseEntity<>("Success", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("The same email already exists.", HttpStatus.BAD_REQUEST);
         }
     }
 
     //회원 정보 조회할 때 사용
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping(value = "/read")
+    @GetMapping()
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MemberDto> read(@AuthenticationPrincipal AuthMemeberDto authMemeberDto) {
-        String email = authMemeberDto.getUsername();
-        log.info(email);
-        MemberDto memberDto = memberService.read(email);
+        Integer idx = authMemeberDto.getIdx();
+        log.info(idx);
+        MemberDto memberDto = memberService.read(idx);
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
     //회원 정보 수정할 때 사용
-    @PreAuthorize("hasRole('USER')")
-    @PutMapping("/modify")
+    @PutMapping()
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid MemberDto memberDto) throws Exception {
-
-        String email = authMemeberDto.getUsername();
-
-        if(email.equals(memberDto.getEmail())){
-            memberService.modify(memberDto);
-            return new ResponseEntity<>("Success", HttpStatus.OK);
-        }
-        else{
-            return new ResponseEntity<>("Fail", HttpStatus.BAD_REQUEST);
-        }
-
+        Integer idx = authMemeberDto.getIdx();
+        memberService.modify(idx, memberDto);
+        return new ResponseEntity<>("Success", HttpStatus.OK);
 
     }
 
     //회원 탈퇴할 때 사용
-    @PreAuthorize("hasRole('USER')")
-    @DeleteMapping("/remove")
+    @DeleteMapping()
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto) {
-        String email = authMemeberDto.getUsername();
-        memberService.remove(email);
+        Integer idx = authMemeberDto.getIdx();
+        memberService.remove(idx);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 }

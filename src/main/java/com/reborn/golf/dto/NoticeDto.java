@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 public class NoticeDto {
 
-    private Long num;
+    private Long idx;
 
     @NotBlank
     private String title;

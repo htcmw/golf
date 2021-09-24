@@ -10,9 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ReplyRepository extends JpaRepository<Reply,Long> {
-    Page<Reply> getRepliesByNoticeOrderByRegDateAsc(Notice notice, Pageable pageable);
+    Page<Reply> getRepliesByNoticeAndRemovedFalse(Notice notice, Pageable pageable);
+    Optional<Reply> getReplyByMemberAndIdxAndRemovedFalse(Member member, Long idx);
 
-    Optional<Reply> getReplyByMemberAndNum(Member member, Long num);
-
-    void deleteReplyByMemberAndNum(Member member, Long num);
 }

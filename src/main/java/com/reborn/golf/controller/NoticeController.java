@@ -4,6 +4,7 @@ import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
 import com.reborn.golf.entity.Notice;
+import com.reborn.golf.entity.NoticeFractionation;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.NoticeService;
 import lombok.RequiredArgsConstructor;
@@ -18,57 +19,66 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
+
+/*
+* 공지사항 컨트롤러
+* */
 @Log4j2
 @RestController
 @RequestMapping("/notice")
-@RequiredArgsConstructor
 @Validated
 public class NoticeController {
 
     private final NoticeService noticeService;
+    private final NoticeFractionation fractionation;
+
+    public NoticeController(NoticeService noticeService) {
+        this.noticeService = noticeService;
+        this.fractionation = NoticeFractionation.NOTICE;
+    }
 
     //모든 공지사항 목록을 출력
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<PageResultDto<Notice, NoticeDto>> getList(PageRequestDto pageRequestDto) {
-        PageResultDto<Notice, NoticeDto> noticeDtoList = noticeService.getList(pageRequestDto);
+        PageResultDto<Notice, NoticeDto> noticeDtoList = noticeService.getList(pageRequestDto, fractionation);
         return new ResponseEntity<>(noticeDtoList, HttpStatus.OK);
     }
 
     //공지사항 조회
-    @GetMapping("/read/{num}")
+    @GetMapping("/{num}")
     public ResponseEntity<NoticeDto> read(@PathVariable @Min(1) Long num) {
-        NoticeDto noticeDto = noticeService.read(num);
+        NoticeDto noticeDto = noticeService.read(num, fractionation);
         return new ResponseEntity<>(noticeDto, HttpStatus.OK);
     }
 
     //공지사항 등록
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/register")
+    @PostMapping
     public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
-        String email = authMemeberDto.getUsername();
+        Integer idx = authMemeberDto.getIdx();
 
-        Long num = noticeService.register(email, noticeDto);
+        Long num = noticeService.register(idx, noticeDto, fractionation);
 
         return new ResponseEntity<>(num, HttpStatus.OK);
     }
 
     //공지사항 수정
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/modify")
+    @PutMapping
     public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
-        String email = authMemeberDto.getUsername();
+        Integer idx = authMemeberDto.getIdx();
 
-        noticeService.modify(email, noticeDto);
+        noticeService.modify(idx, noticeDto, fractionation);
 
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
     //공지사항 삭제
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/remove/{num}")
+    @DeleteMapping("/{num}")
     public ResponseEntity<String> remove(@PathVariable @Min(1) Long num) {
 
-        noticeService.remove(num);
+        noticeService.remove(num, fractionation);
 
         return new ResponseEntity<>("success", HttpStatus.OK);
     }

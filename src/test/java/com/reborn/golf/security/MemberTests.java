@@ -38,7 +38,7 @@ public class MemberTests {
     }
     @Test
     public void testRead(){
-        Optional<Member> result = memberRepository.findByEmail("user@naver.com",false);
+        Optional<Member> result = memberRepository.findByEmail("user@naver.com",false, false);
 
         Member member = result.get();
 

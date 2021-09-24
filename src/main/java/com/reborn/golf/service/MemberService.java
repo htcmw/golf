@@ -8,15 +8,15 @@ import com.reborn.golf.entity.MemberRole;
 public interface MemberService {
     boolean register(MemberDto memberDto);
 
-    MemberDto read(String email);
+    MemberDto read(Integer email);
 
-    void modify(MemberDto memberDto);
+    void modify(Integer idx, MemberDto memberDto);
 
-    void remove(String email);
+    void remove(Integer idx);
 
     default Member dtoToEntity(MemberDto memberDto){
-        System.out.println(memberDto);
-        Member member = Member.builder()
+        return Member.builder()
+                .idx(memberDto.getIdx())
                 .email(memberDto.getEmail())
                 .password(memberDto.getPassword())
                 .phone(memberDto.getPhone())
@@ -24,12 +24,11 @@ public interface MemberService {
                 .address(memberDto.getAddress())
                 .fromSocial(memberDto.isFromSocial())
                 .build();
-        member.addMemberAuthority(MemberRole.USER);
-        return member;
     }
 
     default MemberDto entityToDto(Member member){
-        MemberDto memberDto = MemberDto.builder()
+        return MemberDto.builder()
+                .idx(member.getIdx())
                 .email(member.getEmail())
                 .password(member.getPassword())
                 .phone(member.getPhone())
@@ -37,6 +36,5 @@ public interface MemberService {
                 .address(member.getAddress())
                 .fromSocial(member.isFromSocial())
                 .build();
-        return memberDto;
     }
 }
