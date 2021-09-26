@@ -3,34 +3,40 @@ package com.reborn.golf.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "writer")
+@ToString(exclude = {"writer"})
 public class Notice extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @Column(nullable = false)
-    private Long pidx;
-
-    @Column(nullable = false)
+    @Column
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member writer;
-
     //조회수
     @Column
     private Integer views;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_idx")
+    private Notice parent;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "parent",  orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Notice> children = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private NoticeFractionation fractionation;
@@ -38,7 +44,14 @@ public class Notice extends BaseEntity {
     @Column
     private boolean removed;
 
-    public void setFractionation(NoticeFractionation fractionation){this.fractionation = fractionation;}
+    public void setFractionation(NoticeFractionation fractionation) {
+        this.fractionation = fractionation;
+    }
+
+    public void setParent(Long pIdx){
+        if (pIdx != null)
+            this.parent = Notice.builder().idx(pIdx).build();
+    }
 
     public void addViews() {
         this.views++;

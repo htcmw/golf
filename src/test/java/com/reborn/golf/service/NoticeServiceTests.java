@@ -18,23 +18,47 @@ public class NoticeServiceTests {
 
     @Test
     public void registerTest() {
-        IntStream.rangeClosed(1, 100).forEach(i -> {
+        IntStream.rangeClosed(0, 100).forEach(i -> {
             NoticeDto noticeDto = NoticeDto.builder()
                     .title("title.........." + i)
                     .content("content.........." + i)
                     .views(0)
                     .build();
-            System.out.println(noticeDto);
-            noticeService.register(((i % 10) + 1), noticeDto, NoticeFractionation.NOTICE);
 
+            noticeService.register(((i % 10) + 1), null, noticeDto, NoticeFractionation.NOTICE);
+            noticeDto = NoticeDto.builder()
+                    .title("Qna.........." + i)
+                    .content("Qna.........." + i)
+                    .views(0)
+                    .build();
+            noticeService.register((i % 10) + 1, null, noticeDto, NoticeFractionation.QNA);
         });
+        IntStream.rangeClosed(0, 100).forEach(i -> {
+            NoticeDto noticeDto = NoticeDto.builder()
+                    .title("Qna..........plus" + i)
+                    .content("content..........plus" + i)
+                    .views(0)
+                    .build();
 
+            noticeService.register((i % 10) + 1, (i % 10) + 1L, noticeDto, NoticeFractionation.QNA);
+        });
     }
 
+
     @Test
-    public void getListTest(){
+    public void getListNoticeTest(){
         PageRequestDto pageRequestDto = PageRequestDto.builder().page(1).size(10).build();
         var resultDto= noticeService.getList(pageRequestDto, NoticeFractionation.NOTICE);
+        for (var list: resultDto.getDtoList()) {
+            System.out.println(list);
+        }
+    }
+
+
+    @Test
+    public void getListQnaTest(){
+        PageRequestDto pageRequestDto = PageRequestDto.builder().page(1).size(10).build();
+        var resultDto= noticeService.getList(pageRequestDto, NoticeFractionation.QNA);
         for (var list: resultDto.getDtoList()) {
             System.out.println(list);
         }

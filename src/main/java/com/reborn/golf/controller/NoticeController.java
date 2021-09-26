@@ -57,7 +57,7 @@ public class NoticeController {
     public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
         Integer idx = authMemeberDto.getIdx();
 
-        Long num = noticeService.register(idx, noticeDto, fractionation);
+        Long num = noticeService.register(idx, null,noticeDto, fractionation);
 
         return new ResponseEntity<>(num, HttpStatus.OK);
     }

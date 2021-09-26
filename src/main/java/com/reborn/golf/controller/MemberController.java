@@ -21,7 +21,7 @@ public class MemberController {
     private final MemberService memberService;
 
     // 회원가입할 때 사용
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<String> register(@RequestBody @Valid MemberDto memberDto) {
         if (memberService.register(memberDto)) {
             return new ResponseEntity<>("Success", HttpStatus.OK);
@@ -31,7 +31,7 @@ public class MemberController {
     }
 
     //회원 정보 조회할 때 사용
-    @GetMapping()
+    @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MemberDto> read(@AuthenticationPrincipal AuthMemeberDto authMemeberDto) {
         Integer idx = authMemeberDto.getIdx();
@@ -41,7 +41,7 @@ public class MemberController {
     }
 
     //회원 정보 수정할 때 사용
-    @PutMapping()
+    @PutMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid MemberDto memberDto) throws Exception {
         Integer idx = authMemeberDto.getIdx();
@@ -51,7 +51,7 @@ public class MemberController {
     }
 
     //회원 탈퇴할 때 사용
-    @DeleteMapping()
+    @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto) {
         Integer idx = authMemeberDto.getIdx();

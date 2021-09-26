@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,25 +25,15 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public Long register(Integer writerIdx, Long qnaIdx, NoticeDto noticeDto, NoticeFractionation fractionation) {
-
         Notice notice = dtoToEntity(noticeDto, writerIdx);
         notice.setFractionation(fractionation);
-
-        if(qnaIdx == 0){
-
-
-        }
-        else{
-
-
-        }
-
+        notice.setParent(qnaIdx);
         noticeRepository.save(notice);
-
         return notice.getIdx();
     }
 
     @Override
+    @Transactional
     public PageResultDto<Notice, NoticeDto> getList(PageRequestDto pageRequestDto, NoticeFractionation fractionation) {
 
         Page<Notice> result = noticeRepository.getNoticesByFractionationAndRemovedFalse(fractionation, pageRequestDto.getPageable(Sort.by("regDate").ascending()));
@@ -71,7 +62,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public void modify(Integer writerIdx, NoticeDto noticeDto, NoticeFractionation fractionation) {
 
-        Optional<Notice> result = noticeRepository.getNoticeByIdxAndFractionationAndRemovedFalse(noticeDto.getIdx(),fractionation);
+        Optional<Notice> result = noticeRepository.getNoticeByIdxAndFractionationAndRemovedFalse(noticeDto.getIdx(), fractionation);
 
         if (result.isPresent()) {
 

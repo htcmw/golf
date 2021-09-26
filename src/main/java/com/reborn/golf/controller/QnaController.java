@@ -53,7 +53,7 @@ public class QnaController {
     //등록
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<Long> registerQuestion(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestParam @Min(0) Long qnaIdx, @RequestBody @Valid NoticeDto noticeDto) {
+    public ResponseEntity<Long> registerQuestion(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestParam Long qnaIdx, @RequestBody @Valid NoticeDto noticeDto) {
         Integer idx = authMemeberDto.getIdx();
         Long num = noticeService.register(idx, qnaIdx, noticeDto, QNAFractionation);
         return new ResponseEntity<>(num, HttpStatus.OK);
@@ -76,29 +76,4 @@ public class QnaController {
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
-//    //답변 등록
-//    @PreAuthorize("hasRole('ROLE_USER')")
-//    @PostMapping("/question/{num}/answer")
-//    public ResponseEntity<Long> registerAnswer(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
-//        Integer idx = authMemeberDto.getIdx();
-//        Long num = noticeService.register(idx, noticeDto, QNAFractionation);
-//        return new ResponseEntity<>(num, HttpStatus.OK);
-//    }
-//
-//    //답변 수정
-//    @PreAuthorize("hasRole('ROLE_USER')")
-//    @PutMapping("/answer/{num}")
-//    public ResponseEntity<String> modifyAnswer(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable @Min(1) Long num, @RequestBody @Valid NoticeDto noticeDto) {
-//        Integer idx = authMemeberDto.getIdx();
-//        noticeService.modify(idx, noticeDto, QNAFractionation);
-//        return new ResponseEntity<>("success", HttpStatus.OK);
-//    }
-//
-//    //답변 삭제
-//    @PreAuthorize("hasRole('ROLE_USER')")
-//    @DeleteMapping("/answer/{num}")
-//    public ResponseEntity<String> removeAnswer(@PathVariable @Min(1) Long num) {
-//        noticeService.remove(num, QNAFractionation);
-//        return new ResponseEntity<>("success", HttpStatus.OK);
-//    }
 }
