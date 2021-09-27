@@ -3,6 +3,7 @@ package com.reborn.golf.repository;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.entity.Member;
 import com.reborn.golf.entity.Notice;
+import com.reborn.golf.entity.NoticeFractionation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +26,7 @@ public class NoticeRepositoryTests {
                     .title("title" + i)
                     .content("content" + i)
                     .writer(Member.builder().email("user" + i + "@naver.com").build())
+                    .fractionation(NoticeFractionation.NOTICE)
                     .views(0)
                     .build();
             System.out.println(notice);
@@ -32,14 +34,4 @@ public class NoticeRepositoryTests {
         });
     }
 
-    @Test
-    @Transactional
-    public void getListByEmailTest() {
-        PageRequestDto pageRequestDto = PageRequestDto.builder().page(1).size(10).build();
-        Page<Object[]> result = noticeRepository.findByEmail("user1@naver.com", pageRequestDto.getPageable(Sort.by("regDate").ascending()));
-
-        result.get().forEach(page -> {
-            System.out.println(Arrays.toString((Object[]) page));
-        });
-    }
 }

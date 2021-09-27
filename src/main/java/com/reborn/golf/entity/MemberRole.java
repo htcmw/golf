@@ -1,5 +1,5 @@
 package com.reborn.golf.entity;
 
 public enum MemberRole {
-    USER, ADMIN
+    ROLE_USER, ROLE_VIP, ROLE_MANAGER, ROLE_ADMIN
 }

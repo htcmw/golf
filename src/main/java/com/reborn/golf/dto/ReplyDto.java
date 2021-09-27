@@ -5,35 +5,33 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @ToString
-public class NoticeDto {
+public class ReplyDto {
 
     private Long idx;
 
     @NotBlank
-    private String title;
+    private String text;
 
-    @NotBlank
-    private String content;
+    @Min(1)
+    private Long noticeIdx;
 
-    private Integer views;
-
+    @Email
     private String email;
 
     private String name;
-
-    private List<NoticeDto> answer;
 
     private LocalDateTime regDate;
 
     private LocalDateTime modDate;
 
 }
+
+

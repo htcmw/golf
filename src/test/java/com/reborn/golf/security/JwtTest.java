@@ -17,8 +17,8 @@ public class JwtTest {
     public void testEncode() throws Exception{
         String email = "user@naver.com";
 
-        String str = jwtUtil.generateToken(email);
+//        String str = jwtUtil.generateToken(email);
 
-        System.out.println(str);
+//        System.out.println(str);
     }
 }

@@ -14,70 +14,66 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 
 /*
-* 공지사항 컨트롤러
+* 공지사항, Q&A 컨트롤러
 * */
 @Log4j2
 @RestController
-@RequestMapping("/notice")
+@RequestMapping("/qna")
 @Validated
-public class NoticeController {
+public class QnaController {
 
     private final NoticeService noticeService;
-    private final NoticeFractionation fractionation;
+    private final NoticeFractionation QNAFractionation;
 
-    public NoticeController(NoticeService noticeService) {
+    public QnaController(NoticeService noticeService) {
         this.noticeService = noticeService;
-        this.fractionation = NoticeFractionation.NOTICE;
+        this.QNAFractionation = NoticeFractionation.QNA;
     }
 
-    //모든 공지사항 목록을 출력
+    //모든 질문 목록을 출력
     @GetMapping
     public ResponseEntity<PageResultDto<Object[], NoticeDto>> getList(PageRequestDto pageRequestDto) {
-        PageResultDto<Object[], NoticeDto> noticeDtoList = noticeService.getList(pageRequestDto, fractionation);
-        log.info(noticeDtoList);
+        PageResultDto<Object[], NoticeDto> noticeDtoList = noticeService.getList(pageRequestDto, QNAFractionation);
         return new ResponseEntity<>(noticeDtoList, HttpStatus.OK);
     }
 
-    //공지사항 조회
+    //조회
     @GetMapping("/{num}")
     public ResponseEntity<NoticeDto> read(@PathVariable @Min(1) Long num) {
-        NoticeDto noticeDto = noticeService.read(num, fractionation);
+        NoticeDto noticeDto = noticeService.read(num, QNAFractionation);
         return new ResponseEntity<>(noticeDto, HttpStatus.OK);
     }
 
-    //공지사항 등록
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    //등록
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
+    public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestParam @Nullable  Long qnaIdx, @RequestBody @Valid NoticeDto noticeDto) {
         Integer idx = authMemeberDto.getIdx();
-        Long num = noticeService.register(idx, null,noticeDto, fractionation);
-
+        Long num = noticeService.register(idx, qnaIdx, noticeDto, QNAFractionation);
         return new ResponseEntity<>(num, HttpStatus.OK);
     }
 
-    //공지사항 수정
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    //수정
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping
     public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
         Integer idx = authMemeberDto.getIdx();
-
-        noticeService.modify(idx, noticeDto, fractionation);
-
+        noticeService.modify(idx, noticeDto, QNAFractionation);
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
-    //공지사항 삭제
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    //삭제
+    @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/{num}")
     public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable @Min(1) Long num) {
         Integer idx = authMemeberDto.getIdx();
-        noticeService.remove(num, idx, fractionation);
-
+        noticeService.remove(num, idx, QNAFractionation);
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 

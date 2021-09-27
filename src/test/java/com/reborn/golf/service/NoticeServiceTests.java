@@ -3,6 +3,7 @@ package com.reborn.golf.service;
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
+import com.reborn.golf.entity.NoticeFractionation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,44 +18,74 @@ public class NoticeServiceTests {
 
 
     @Test
-    public void registerTest() {
-        IntStream.rangeClosed(1, 10).forEach(i -> {
+    public void registerNoticeTest(){
+        IntStream.rangeClosed(0, 10).forEach(i -> {
             NoticeDto noticeDto = NoticeDto.builder()
-                    .title("title" + i)
-                    .content("content" + i)
-                    .email("user" + i +"@naver.com")
+                    .title("title.........." + i)
+                    .content("content.........." + i)
                     .views(0)
                     .build();
-            System.out.println(noticeDto);
-            noticeService.register(noticeDto);
+            noticeService.register(((i % 10) + 1), null, noticeDto, NoticeFractionation.NOTICE);
         });
-
     }
 
     @Test
-    public void getListTest(){
+    public void registerTest() {
+        IntStream.rangeClosed(0, 10).forEach(i -> {
+/*
+            NoticeDto noticeDto = NoticeDto.builder()
+                    .title("title.........." + i)
+                    .content("content.........." + i)
+                    .views(0)
+                    .build();
+
+            noticeService.register(((i % 10) + 1), null, noticeDto, NoticeFractionation.NOTICE);
+            noticeDto = NoticeDto.builder()
+*/
+            NoticeDto noticeDto = NoticeDto.builder()
+                    .title("Qna.........." + i)
+                    .content("Qna.........." + i)
+                    .build();
+            noticeService.register((i % 10) + 1, null, noticeDto, NoticeFractionation.QNA);
+        });
+        IntStream.rangeClosed(0, 100).forEach(i -> {
+            NoticeDto noticeDto = NoticeDto.builder()
+                    .title("Qna..........plus" + i)
+                    .content("content..........plus" + i)
+                    .build();
+
+            noticeService.register((i % 10) + 1, (i % 10) + 1L, noticeDto, NoticeFractionation.QNA);
+        });
+    }
+
+
+    @Test
+    public void getListNoticesTest(){
         PageRequestDto pageRequestDto = PageRequestDto.builder().page(1).size(10).build();
-        var resultDto= noticeService.getList(pageRequestDto);
+        var resultDto= noticeService.getList(pageRequestDto, NoticeFractionation.QNA);
+        for (var list: resultDto.getDtoList()) {
+            System.out.println(list);
+        }
+    }
+
+
+    @Test
+    public void getListQnaTest(){
+        PageRequestDto pageRequestDto = PageRequestDto.builder().page(1).size(10).build();
+        var resultDto= noticeService.getList(pageRequestDto, NoticeFractionation.QNA);
         for (var list: resultDto.getDtoList()) {
             System.out.println(list);
         }
     }
 
     @Test
-    public void getListByEmailTest(){
-        PageResultDto<Object[],NoticeDto> result = noticeService.getListByEmail(PageRequestDto.builder().page(1).size(100).build(),"user1@naver.com");
-        for(NoticeDto noticeDto : result.getDtoList()){
-            System.out.println(noticeDto);
-        }
+    public void readTest(){
+        System.out.println(noticeService.read(1L, NoticeFractionation.QNA));
     }
 
     @Test
-    public void readTest(){
-        System.out.println(noticeService.read(1L));
-    }
-    @Test
     public void removeTest(){
-        noticeService.remove(1L);
+//        noticeService.remove(1L, NoticeFractionation.NOTICE);
 
     }
 }
