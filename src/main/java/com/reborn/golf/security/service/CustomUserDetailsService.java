@@ -32,20 +32,22 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Optional<Member> takenMember = memberRepository.findByEmail(username, false, false);
 
-        if (takenMember.isPresent()){
+        if (takenMember.isPresent()) {
             Member member = takenMember.get();
             log.info(member);
-            return new AuthMemeberDto(member.getIdx(),member.getEmail(), member.getPassword(), member.isFromSocial(), member.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority(memberRole.name())).collect(Collectors.toSet()));
+            return new AuthMemeberDto(member.getIdx(), member.getEmail(), member.getPassword(), member.isFromSocial(),
+                    member.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority(memberRole.name())).collect(Collectors.toSet()));
         }
 
         log.info("----------------loadUserByUsername, Associates----------------------");
 
         Optional<Associates> takenAssociates = associatesRepository.findByEmail(username);
 
-        if (takenAssociates.isPresent()){
+        if (takenAssociates.isPresent()) {
             Associates associates = takenAssociates.get();
             log.info(associates);
-            return new AuthMemeberDto(associates.getIdx(),associates.getEmail(), associates.getPassword(), false, associates.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority(memberRole.name())).collect(Collectors.toSet()));
+            return new AuthMemeberDto(associates.getIdx(), associates.getEmail(), associates.getPassword(), false,
+                    associates.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority(memberRole.name())).collect(Collectors.toSet()));
         }
 
         throw new UsernameNotFoundException("Please Check Email or Social");

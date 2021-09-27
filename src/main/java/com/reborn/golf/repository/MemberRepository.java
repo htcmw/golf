@@ -1,7 +1,6 @@
 package com.reborn.golf.repository;
 
 import com.reborn.golf.entity.Member;
-import jnr.ffi.annotations.In;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

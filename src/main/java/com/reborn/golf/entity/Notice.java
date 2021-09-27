@@ -1,6 +1,7 @@
 package com.reborn.golf.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -38,11 +39,12 @@ public class Notice extends BaseEntity {
     @OneToMany(mappedBy = "parent",  orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Notice> children = new ArrayList<>();
 
+    @Column
+    private boolean removed;
+
     @Enumerated(EnumType.STRING)
     private NoticeFractionation fractionation;
 
-    @Column
-    private boolean removed;
 
     public void setFractionation(NoticeFractionation fractionation) {
         this.fractionation = fractionation;

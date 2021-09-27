@@ -11,7 +11,7 @@ import com.reborn.golf.entity.NoticeFractionation;
 
 public interface NoticeService {
 
-    PageResultDto<Notice,NoticeDto> getList(PageRequestDto pageRequestDto, NoticeFractionation fractionation);
+    PageResultDto<Object[],NoticeDto> getList(PageRequestDto pageRequestDto, NoticeFractionation fractionation);
 
     NoticeDto read(Long noticeIdx, NoticeFractionation fractionation);
 
@@ -19,7 +19,7 @@ public interface NoticeService {
 
     void modify(Integer memberIdx, NoticeDto noticeDto, NoticeFractionation fractionation);
 
-    void remove(Long noticeIdx, NoticeFractionation fractionation);
+    void remove(Long noticeIdx, Integer writerIdx, NoticeFractionation fractionation);
 
     default NoticeDto entityToDto(Notice notice){
         return NoticeDto.builder()

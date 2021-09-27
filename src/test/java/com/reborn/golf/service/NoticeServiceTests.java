@@ -16,9 +16,23 @@ public class NoticeServiceTests {
     @Autowired
     NoticeService noticeService;
 
+
+    @Test
+    public void registerNoticeTest(){
+        IntStream.rangeClosed(0, 10).forEach(i -> {
+            NoticeDto noticeDto = NoticeDto.builder()
+                    .title("title.........." + i)
+                    .content("content.........." + i)
+                    .views(0)
+                    .build();
+            noticeService.register(((i % 10) + 1), null, noticeDto, NoticeFractionation.NOTICE);
+        });
+    }
+
     @Test
     public void registerTest() {
-        IntStream.rangeClosed(0, 100).forEach(i -> {
+        IntStream.rangeClosed(0, 10).forEach(i -> {
+/*
             NoticeDto noticeDto = NoticeDto.builder()
                     .title("title.........." + i)
                     .content("content.........." + i)
@@ -27,9 +41,10 @@ public class NoticeServiceTests {
 
             noticeService.register(((i % 10) + 1), null, noticeDto, NoticeFractionation.NOTICE);
             noticeDto = NoticeDto.builder()
+*/
+            NoticeDto noticeDto = NoticeDto.builder()
                     .title("Qna.........." + i)
                     .content("Qna.........." + i)
-                    .views(0)
                     .build();
             noticeService.register((i % 10) + 1, null, noticeDto, NoticeFractionation.QNA);
         });
@@ -37,7 +52,6 @@ public class NoticeServiceTests {
             NoticeDto noticeDto = NoticeDto.builder()
                     .title("Qna..........plus" + i)
                     .content("content..........plus" + i)
-                    .views(0)
                     .build();
 
             noticeService.register((i % 10) + 1, (i % 10) + 1L, noticeDto, NoticeFractionation.QNA);
@@ -46,9 +60,9 @@ public class NoticeServiceTests {
 
 
     @Test
-    public void getListNoticeTest(){
+    public void getListNoticesTest(){
         PageRequestDto pageRequestDto = PageRequestDto.builder().page(1).size(10).build();
-        var resultDto= noticeService.getList(pageRequestDto, NoticeFractionation.NOTICE);
+        var resultDto= noticeService.getList(pageRequestDto, NoticeFractionation.QNA);
         for (var list: resultDto.getDtoList()) {
             System.out.println(list);
         }
@@ -66,12 +80,12 @@ public class NoticeServiceTests {
 
     @Test
     public void readTest(){
-        System.out.println(noticeService.read(1L, NoticeFractionation.NOTICE));
+        System.out.println(noticeService.read(1L, NoticeFractionation.QNA));
     }
 
     @Test
     public void removeTest(){
-        noticeService.remove(1L, NoticeFractionation.NOTICE);
+//        noticeService.remove(1L, NoticeFractionation.NOTICE);
 
     }
 }

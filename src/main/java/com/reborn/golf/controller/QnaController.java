@@ -3,7 +3,6 @@ package com.reborn.golf.controller;
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
-import com.reborn.golf.entity.Notice;
 import com.reborn.golf.entity.NoticeFractionation;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.NoticeService;
@@ -15,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
@@ -38,14 +38,14 @@ public class QnaController {
 
     //모든 질문 목록을 출력
     @GetMapping
-    public ResponseEntity<PageResultDto<Notice, NoticeDto>> getList(PageRequestDto pageRequestDto) {
-        PageResultDto<Notice, NoticeDto> noticeDtoList = noticeService.getList(pageRequestDto, QNAFractionation);
+    public ResponseEntity<PageResultDto<Object[], NoticeDto>> getList(PageRequestDto pageRequestDto) {
+        PageResultDto<Object[], NoticeDto> noticeDtoList = noticeService.getList(pageRequestDto, QNAFractionation);
         return new ResponseEntity<>(noticeDtoList, HttpStatus.OK);
     }
 
     //조회
     @GetMapping("/{num}")
-    public ResponseEntity<NoticeDto> readQuestion(@PathVariable @Min(1) Long num) {
+    public ResponseEntity<NoticeDto> read(@PathVariable @Min(1) Long num) {
         NoticeDto noticeDto = noticeService.read(num, QNAFractionation);
         return new ResponseEntity<>(noticeDto, HttpStatus.OK);
     }
@@ -53,7 +53,7 @@ public class QnaController {
     //등록
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<Long> registerQuestion(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestParam Long qnaIdx, @RequestBody @Valid NoticeDto noticeDto) {
+    public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestParam @Nullable  Long qnaIdx, @RequestBody @Valid NoticeDto noticeDto) {
         Integer idx = authMemeberDto.getIdx();
         Long num = noticeService.register(idx, qnaIdx, noticeDto, QNAFractionation);
         return new ResponseEntity<>(num, HttpStatus.OK);
@@ -62,7 +62,7 @@ public class QnaController {
     //수정
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping
-    public ResponseEntity<String> modifyQuestion(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
+    public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
         Integer idx = authMemeberDto.getIdx();
         noticeService.modify(idx, noticeDto, QNAFractionation);
         return new ResponseEntity<>("success", HttpStatus.OK);
@@ -71,8 +71,9 @@ public class QnaController {
     //삭제
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/{num}")
-    public ResponseEntity<String> removeQuestion(@PathVariable @Min(1) Long num) {
-        noticeService.remove(num, QNAFractionation);
+    public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable @Min(1) Long num) {
+        Integer idx = authMemeberDto.getIdx();
+        noticeService.remove(num, idx, QNAFractionation);
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 

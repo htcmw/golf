@@ -3,11 +3,9 @@ package com.reborn.golf.controller;
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
-import com.reborn.golf.entity.Notice;
 import com.reborn.golf.entity.NoticeFractionation;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.NoticeService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +37,9 @@ public class NoticeController {
 
     //모든 공지사항 목록을 출력
     @GetMapping
-    public ResponseEntity<PageResultDto<Notice, NoticeDto>> getList(PageRequestDto pageRequestDto) {
-        PageResultDto<Notice, NoticeDto> noticeDtoList = noticeService.getList(pageRequestDto, fractionation);
+    public ResponseEntity<PageResultDto<Object[], NoticeDto>> getList(PageRequestDto pageRequestDto) {
+        PageResultDto<Object[], NoticeDto> noticeDtoList = noticeService.getList(pageRequestDto, fractionation);
+        log.info(noticeDtoList);
         return new ResponseEntity<>(noticeDtoList, HttpStatus.OK);
     }
 
@@ -52,18 +51,17 @@ public class NoticeController {
     }
 
     //공지사항 등록
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping
     public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
         Integer idx = authMemeberDto.getIdx();
-
         Long num = noticeService.register(idx, null,noticeDto, fractionation);
 
         return new ResponseEntity<>(num, HttpStatus.OK);
     }
 
     //공지사항 수정
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping
     public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
         Integer idx = authMemeberDto.getIdx();
@@ -74,11 +72,11 @@ public class NoticeController {
     }
 
     //공지사항 삭제
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @DeleteMapping("/{num}")
-    public ResponseEntity<String> remove(@PathVariable @Min(1) Long num) {
-
-        noticeService.remove(num, fractionation);
+    public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable @Min(1) Long num) {
+        Integer idx = authMemeberDto.getIdx();
+        noticeService.remove(num, idx, fractionation);
 
         return new ResponseEntity<>("success", HttpStatus.OK);
     }

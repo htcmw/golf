@@ -4,6 +4,8 @@ package com.reborn.golf.service;
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
+import com.reborn.golf.entity.Member;
+import com.reborn.golf.entity.MemberRole;
 import com.reborn.golf.entity.Notice;
 import com.reborn.golf.entity.NoticeFractionation;
 import com.reborn.golf.repository.NoticeRepository;
@@ -14,8 +16,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+/*
+* NoticeController, QnaController 에서 사용
+* */
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -34,60 +42,69 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional
-    public PageResultDto<Notice, NoticeDto> getList(PageRequestDto pageRequestDto, NoticeFractionation fractionation) {
-
-        Page<Notice> result = noticeRepository.getNoticesByFractionationAndRemovedFalse(fractionation, pageRequestDto.getPageable(Sort.by("regDate").ascending()));
-
-        return new PageResultDto<>(result, this::entityToDto);
+    public PageResultDto<Object[], NoticeDto> getList(PageRequestDto pageRequestDto, NoticeFractionation fractionation) {
+        Page<Object[]> result = noticeRepository.getNoticesWithWriter(fractionation, pageRequestDto.getPageable(Sort.by("regDate").ascending()));
+        Function<Object[], NoticeDto> function = (arr -> entityToDto((Notice) arr[0], (Member) arr[1]));
+        return new PageResultDto<>(result, function);
     }
 
     @Override
+    @Transactional
     public NoticeDto read(Long noticeIdx, NoticeFractionation fractionation) {
 
-        Optional<Notice> result = noticeRepository.getNoticeByIdxAndFractionationAndRemovedFalse(noticeIdx, fractionation);
+        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeIdx, fractionation);
 
         if (result.isPresent()) {
 
             Notice notice = result.get();
-
             notice.addViews();
+            NoticeDto noticeDto = entityToDto(notice);
 
-            noticeRepository.save(notice);
+            if(fractionation == NoticeFractionation.QNA){
 
-            return entityToDto(notice);
+                List<Notice> children = noticeRepository.getAnswerByIdx(noticeIdx, fractionation);
+                List<NoticeDto> noticeDtoList = children.stream().map(this::entityToDto).collect(Collectors.toList());
+                noticeDto.setAnswer(noticeDtoList);
+            }
+
+            return noticeDto;
         }
         return null;
     }
 
     @Override
-    public void modify(Integer writerIdx, NoticeDto noticeDto, NoticeFractionation fractionation) {
+    public void modify(Integer writerIdx, NoticeDto noticeDto,NoticeFractionation fractionation) {
 
-        Optional<Notice> result = noticeRepository.getNoticeByIdxAndFractionationAndRemovedFalse(noticeDto.getIdx(), fractionation);
+        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeDto.getIdx(), fractionation);
 
         if (result.isPresent()) {
-
             Notice notice = result.get();
+            log.info(notice.getWriter().getIdx().equals(writerIdx));
+            if(((fractionation == NoticeFractionation.NOTICE) && notice.getWriter().getRoleSet().contains(MemberRole.ROLE_ADMIN))
+                    || notice.getWriter().getIdx().equals(writerIdx)) {
 
-            notice.chageWriter(writerIdx);
+                notice.chageWriter(writerIdx);
+                notice.changeTitle(noticeDto.getTitle());
+                notice.changeContent(noticeDto.getContent());
 
-            notice.changeTitle(notice.getTitle());
-
-            notice.changeContent(notice.getContent());
-
-            log.info(notice);
-
-            noticeRepository.save(notice);
-
+                log.info(notice);
+                noticeRepository.save(notice);
+            }
         }
     }
 
     @Override
-    public void remove(Long noticeIdx, NoticeFractionation fractionation) {
-        Optional<Notice> result = noticeRepository.getNoticeByIdxAndFractionationAndRemovedFalse(noticeIdx, fractionation);
+    public void remove(Long noticeIdx, Integer writerIdx, NoticeFractionation fractionation) {
+        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeIdx, fractionation);
         if (result.isPresent()) {
             Notice notice = result.get();
-            notice.changeRemoved(true);
-            noticeRepository.save(notice);
+
+            if(notice.getWriter().getIdx().equals(writerIdx)
+                    || notice.getWriter().getRoleSet().contains(MemberRole.ROLE_ADMIN)) {
+
+                notice.changeRemoved(true);
+                noticeRepository.save(notice);
+            }
         }
     }
 
