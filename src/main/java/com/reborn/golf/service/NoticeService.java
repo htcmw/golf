@@ -15,11 +15,11 @@ public interface NoticeService {
 
     NoticeDto read(Long noticeIdx, NoticeFractionation fractionation);
 
-    Long register(Integer memberIdx, Long qnaIdx,NoticeDto noticeDto, NoticeFractionation fractionation);
+    Long register(Integer writerIdx, Long qnaIdx,NoticeDto noticeDto, NoticeFractionation fractionation);
 
-    void modify(Integer memberIdx, NoticeDto noticeDto, NoticeFractionation fractionation);
+    Long modify(Integer writerIdx, NoticeDto noticeDto, NoticeFractionation fractionation);
 
-    void remove(Long noticeIdx, Integer writerIdx, NoticeFractionation fractionation);
+    Long remove(Integer memberIdx, Long noticeIdx, NoticeFractionation fractionation);
 
     default NoticeDto entityToDto(Notice notice){
         return NoticeDto.builder()
