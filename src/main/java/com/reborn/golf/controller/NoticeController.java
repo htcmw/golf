@@ -10,6 +10,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.RememberMeAuthenticationProvider;
+import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +42,6 @@ public class NoticeController {
     @GetMapping
     public ResponseEntity<PageResultDto<Object[], NoticeDto>> getList(PageRequestDto pageRequestDto) {
         PageResultDto<Object[], NoticeDto> noticeDtoList = noticeService.getList(pageRequestDto, fractionation);
-        log.info(noticeDtoList);
         return new ResponseEntity<>(noticeDtoList, HttpStatus.OK);
     }
 
@@ -54,9 +56,7 @@ public class NoticeController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping
     public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
-        Integer idx = authMemeberDto.getIdx();
-        Long num = noticeService.register(idx, null,noticeDto, fractionation);
-
+        Long num = noticeService.register(authMemeberDto.getIdx(), null,noticeDto, fractionation);
         return new ResponseEntity<>(num, HttpStatus.OK);
     }
 
@@ -64,10 +64,7 @@ public class NoticeController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping
     public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
-        Integer idx = authMemeberDto.getIdx();
-
-        noticeService.modify(idx, noticeDto, fractionation);
-
+        noticeService.modify(authMemeberDto.getIdx(), noticeDto, fractionation);
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
@@ -75,9 +72,7 @@ public class NoticeController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @DeleteMapping("/{num}")
     public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable @Min(1) Long num) {
-        Integer idx = authMemeberDto.getIdx();
-        noticeService.remove(num, idx, fractionation);
-
+        noticeService.remove(authMemeberDto.getIdx(), num, fractionation);
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 

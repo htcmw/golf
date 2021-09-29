@@ -51,30 +51,27 @@ public class QnaController {
     }
 
     //등록
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
     @PostMapping
     public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestParam @Nullable  Long qnaIdx, @RequestBody @Valid NoticeDto noticeDto) {
-        Integer idx = authMemeberDto.getIdx();
-        Long num = noticeService.register(idx, qnaIdx, noticeDto, QNAFractionation);
+        Long num = noticeService.register(authMemeberDto.getIdx(), qnaIdx, noticeDto, QNAFractionation);
         return new ResponseEntity<>(num, HttpStatus.OK);
     }
 
     //수정
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
     @PutMapping
     public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
-        Integer idx = authMemeberDto.getIdx();
-        noticeService.modify(idx, noticeDto, QNAFractionation);
-        return new ResponseEntity<>("success", HttpStatus.OK);
+        noticeService.modify(authMemeberDto.getIdx(), noticeDto, QNAFractionation);
+        return new ResponseEntity<>("Modification was successful", HttpStatus.OK);
     }
 
     //삭제
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
     @DeleteMapping("/{num}")
     public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable @Min(1) Long num) {
-        Integer idx = authMemeberDto.getIdx();
-        noticeService.remove(num, idx, QNAFractionation);
-        return new ResponseEntity<>("success", HttpStatus.OK);
+        noticeService.remove(authMemeberDto.getIdx(), num, QNAFractionation);
+        return new ResponseEntity<>("Deletion was successful", HttpStatus.OK);
     }
 
 }

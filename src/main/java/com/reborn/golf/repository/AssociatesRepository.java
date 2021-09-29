@@ -14,4 +14,9 @@ public interface AssociatesRepository extends JpaRepository<Associates,Integer> 
     @Query("select a from Associates a where a.email = :email")
     Optional<Associates> findByEmail(String email);
 
+    //삭제되지 않은 동료 정보
+    Optional<Associates> getAssociatesByEmailAndRemovedFalse(String email);
+
+    //삭제되지 않은 동료 정보
+    Optional<Associates> getAssociatesByIdxAndRemovedFalse(Integer idx);
 }

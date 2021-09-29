@@ -35,6 +35,8 @@ public class Member extends BaseEntity{
 
     private boolean fromSocial;
 
+    private boolean associates;
+
     @Column(name = "is_removed")
     private boolean removed;
 

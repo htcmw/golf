@@ -5,7 +5,6 @@ import com.reborn.golf.entity.NoticeFractionation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -15,7 +14,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     //getList 메서드에서 사용, Noticc의 리스트를 가져오는 쿼리
     @Query(value =
-            "SELECT n, w " +
+            "SELECT n.idx, n.title, n.views, n.regDate, n.modDate, w.idx, w.email, w.name " +
                     "FROM Notice n " +
                     "LEFT JOIN n.writer w " +
                     "WHERE n.fractionation = :fractionation AND n.removed = false ",
@@ -24,12 +23,8 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
                             "FROM Notice n")
     Page<Object[]> getNoticesWithWriter(NoticeFractionation fractionation, Pageable pageable);
 
-    //modify, remove 메서드에서 사용
-    Optional<Notice> getNoticeByIdxAndFractionationAndRemovedFalse(Long idx, NoticeFractionation fractionation);
-
-
     @Query(value =
-                    "SELECT n, w.email, w.name " +
+                    "SELECT n.idx, n.title, n.content, n.views, n.regDate, n.modDate, w.idx, w.email, w.name " +
                     "FROM Notice n " +
                             "LEFT JOIN n.writer w " +
                     "WHERE n.fractionation = :fractionation " +
@@ -39,7 +34,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     //read 메서드에서 사용, QnA의 답글을 가져오는 쿼리
     @Query(value =
-                    "SELECT nc, w.email, w.name " +
+                    "SELECT nc.idx, nc.title, nc.content, nc.regDate, nc.modDate, w.idx, w.email, w.name " +
                     "FROM Notice n " +
                             "JOIN Notice nc on n = nc.parent " +
                             "LEFT JOIN nc.writer w " +
@@ -49,10 +44,5 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
                     "ORDER BY nc.regDate ASC")
     List<Notice> getAnswerByIdx(Long idx, NoticeFractionation fractionation);
 
-    @Modifying
-    @Query("UPDATE Notice n SET n.views = :views")
-    void updateViews(Integer views);
 
-
-    //
 }

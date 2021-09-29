@@ -4,6 +4,7 @@ package com.reborn.golf.service;
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
+import com.reborn.golf.entity.Associates;
 import com.reborn.golf.entity.Member;
 import com.reborn.golf.entity.Notice;
 import com.reborn.golf.entity.NoticeFractionation;
@@ -17,9 +18,9 @@ public interface NoticeService {
 
     Long register(Integer memberIdx, Long qnaIdx,NoticeDto noticeDto, NoticeFractionation fractionation);
 
-    void modify(Integer memberIdx, NoticeDto noticeDto, NoticeFractionation fractionation);
+    Long modify(Integer memberIdx, NoticeDto noticeDto, NoticeFractionation fractionation);
 
-    void remove(Long noticeIdx, Integer writerIdx, NoticeFractionation fractionation);
+    Long remove(Integer writerIdx, Long noticeIdx, NoticeFractionation fractionation);
 
     default NoticeDto entityToDto(Notice notice){
         return NoticeDto.builder()
@@ -29,12 +30,12 @@ public interface NoticeService {
                 .modDate(notice.getModDate())
                 .regDate(notice.getRegDate())
                 .views(notice.getViews())
-                .email(notice.getWriter().getEmail())
-                .name(notice.getWriter().getName())
+                .email(notice.getMember().getEmail() != null ? notice.getMember().getEmail() : notice.getAssociates().getEmail())
+                .name(notice.getMember().getName() != null ? notice.getMember().getName() : notice.getAssociates().getName())
                 .build();
     }
 
-    default NoticeDto entityToDto(Notice notice, Member member){
+    default NoticeDto entityToDto(Notice notice, Member member, Associates associates){
         return NoticeDto.builder()
                 .idx(notice.getIdx())
                 .title(notice.getTitle())
@@ -42,8 +43,8 @@ public interface NoticeService {
                 .modDate(notice.getModDate())
                 .regDate(notice.getRegDate())
                 .views(notice.getViews())
-                .email(member.getEmail())
-                .name(member.getName())
+                .email(member.getEmail() != null ? member.getEmail() : associates.getEmail())
+                .name(member.getName() != null ? member.getName() : associates.getName())
                 .build();
     }
 

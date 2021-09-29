@@ -31,14 +31,6 @@ public class NoticeServiceImpl implements NoticeService {
 
     private final NoticeRepository noticeRepository;
 
-    @Override
-    public Long register(Integer writerIdx, Long qnaIdx, NoticeDto noticeDto, NoticeFractionation fractionation) {
-        Notice notice = dtoToEntity(noticeDto, writerIdx);
-        notice.setFractionation(fractionation);
-        notice.setParent(qnaIdx);
-        noticeRepository.save(notice);
-        return notice.getIdx();
-    }
 
     @Override
     @Transactional
@@ -55,13 +47,11 @@ public class NoticeServiceImpl implements NoticeService {
         Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeIdx, fractionation);
 
         if (result.isPresent()) {
-
             Notice notice = result.get();
             notice.addViews();
             NoticeDto noticeDto = entityToDto(notice);
 
             if(fractionation == NoticeFractionation.QNA){
-
                 List<Notice> children = noticeRepository.getAnswerByIdx(noticeIdx, fractionation);
                 List<NoticeDto> noticeDtoList = children.stream().map(this::entityToDto).collect(Collectors.toList());
                 noticeDto.setAnswer(noticeDtoList);
@@ -73,14 +63,28 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public void modify(Integer writerIdx, NoticeDto noticeDto,NoticeFractionation fractionation) {
+    public Long register(Integer writerIdx, Long qnaIdx, NoticeDto noticeDto, NoticeFractionation fractionation) {
+        Notice notice = dtoToEntity(noticeDto, writerIdx);
+        notice.setFractionation(fractionation);
+        notice.setParent(qnaIdx);
+        noticeRepository.save(notice);
+        return notice.getIdx();
+    }
+
+
+    /*
+    * Manager권한이 없는 맴버는 작성한 Notice에 대해 같은 PK만 수정할 수 있고
+    * Manager권한이 있는 맴버가 작성하면 다른 Manager가 변경할 수 있다.
+    * */
+    @Override
+    public Long modify(Integer writerIdx, NoticeDto noticeDto,NoticeFractionation fractionation) {
 
         Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeDto.getIdx(), fractionation);
 
         if (result.isPresent()) {
             Notice notice = result.get();
             log.info(notice.getWriter().getIdx().equals(writerIdx));
-            if(((fractionation == NoticeFractionation.NOTICE) && notice.getWriter().getRoleSet().contains(MemberRole.ROLE_ADMIN))
+            if(notice.getWriter().getRoleSet().contains(MemberRole.ROLE_MANAGER)
                     || notice.getWriter().getIdx().equals(writerIdx)) {
 
                 notice.chageWriter(writerIdx);
@@ -90,11 +94,13 @@ public class NoticeServiceImpl implements NoticeService {
                 log.info(notice);
                 noticeRepository.save(notice);
             }
+            return notice.getIdx();
         }
+        return null;
     }
 
     @Override
-    public void remove(Long noticeIdx, Integer writerIdx, NoticeFractionation fractionation) {
+    public Long remove(Integer writerIdx, Long noticeIdx, NoticeFractionation fractionation) {
         Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeIdx, fractionation);
         if (result.isPresent()) {
             Notice notice = result.get();
@@ -105,7 +111,9 @@ public class NoticeServiceImpl implements NoticeService {
                 notice.changeRemoved(true);
                 noticeRepository.save(notice);
             }
+            return notice.getIdx();
         }
+        return null;
     }
 
 

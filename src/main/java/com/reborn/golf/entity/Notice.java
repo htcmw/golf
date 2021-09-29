@@ -2,6 +2,7 @@ package com.reborn.golf.entity;
 
 import lombok.*;
 import org.hibernate.annotations.Where;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"writer"})
+@ToString(exclude = {"member", "associates"})
 public class Notice extends BaseEntity {
 
     @Id
@@ -26,7 +27,10 @@ public class Notice extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member writer;
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Associates associates;
     //조회수
     @Column
     private Integer views;
@@ -39,7 +43,7 @@ public class Notice extends BaseEntity {
     @OneToMany(mappedBy = "parent",  orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Notice> children = new ArrayList<>();
 
-    @Column
+    @Column(name = "is_removed")
     private boolean removed;
 
     @Enumerated(EnumType.STRING)
@@ -59,8 +63,8 @@ public class Notice extends BaseEntity {
         this.views++;
     }
 
-    public void chageWriter(Integer writerIdx) {
-        this.writer = Member.builder().idx(writerIdx).build();
+    public void chageAssociates(Integer writerIdx) {
+        this.associates = Associates.builder().idx(writerIdx).build();
     }
 
     public void changeTitle(String title) {
@@ -80,4 +84,6 @@ public class Notice extends BaseEntity {
     public void prePersist() {
         this.views = (this.views == null ? 0 : this.views);
     }
+//    SecurityContextHolder
+
 }

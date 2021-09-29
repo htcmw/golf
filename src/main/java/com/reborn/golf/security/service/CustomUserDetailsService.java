@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+
+
 @Log4j2
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final AssociatesRepository associatesRepository;
 
+    /*
+    * 맴버 이메일과 관계자 이메일이 겹치지 않는다고 가정하고
+    * 해당 이메일이 맴버 테이블에 없으면 관계자 테이블을 찾아본다.
+    * */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 

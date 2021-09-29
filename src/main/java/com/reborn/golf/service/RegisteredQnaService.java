@@ -8,13 +8,15 @@ import com.reborn.golf.entity.RegisteredQna;
 
 public interface RegisteredQnaService {
 
-    PageResultDto<RegisteredQna, RegisteredQnaDto> getList(PageRequestDto pageRequestDto);
+    PageResultDto<Object[], RegisteredQnaDto> getList(PageRequestDto pageRequestDto);
 
     RegisteredQnaDto read(Long idx);
 
-    void modify(RegisteredQnaDto registeredQnaDto);
+    Long Register(Integer memberIdx, RegisteredQnaDto registeredQnaDto);
 
-    void remove(Long idx);
+    Long modify(Integer memberIdx, RegisteredQnaDto registeredQnaDto);
+
+    Long remove(Integer memberIdx, Long idx);
 
     default RegisteredQnaDto entityToDto(RegisteredQna registeredQna){
         return RegisteredQnaDto.builder()
@@ -24,6 +26,18 @@ public interface RegisteredQnaService {
                 .answer(registeredQna.getAnswer())
                 .email(registeredQna.getWriter().getEmail())
                 .name(registeredQna.getWriter().getName())
+                .views(registeredQna.getViews())
+                .build();
+    }
+
+    default RegisteredQnaDto entityToDto(RegisteredQna registeredQna, Member member){
+        return RegisteredQnaDto.builder()
+                .idx(registeredQna.getIdx())
+                .title(registeredQna.getTitle())
+                .question(registeredQna.getQuestion())
+                .answer(registeredQna.getAnswer())
+                .email(member.getEmail())
+                .name(member.getName())
                 .views(registeredQna.getViews())
                 .build();
     }
