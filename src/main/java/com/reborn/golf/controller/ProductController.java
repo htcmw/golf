@@ -1,70 +1,79 @@
 package com.reborn.golf.controller;
 
 
+import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.ProductDto;
+import com.reborn.golf.dto.ProductPageResultDto;
 import com.reborn.golf.service.ProductService;
 import com.reborn.golf.util.MD5Generator;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
-@Controller
+@RestController
+@RequestMapping("/product")
+@Log4j2
+@RequiredArgsConstructor
 public class ProductController {
 
-    private ProductService productService;
+    private final ProductService productService; //final
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    // 상품 등록 관련 페이지
+    @GetMapping("/register")
+    public void register(){
     }
 
-    //테스트용 메인 페이지
-    @GetMapping("/")
-    public String list() {
-        return "product/list.html";
+    // 제품 리스트 조회
+    @GetMapping
+    public ResponseEntity<ProductPageResultDto<ProductDto, Object[]>> getList(PageRequestDto requestDto) {
+
+        ProductPageResultDto<ProductDto, Object[]> productDtoList = productService.getList(requestDto);
+
+        log.info(productDtoList);
+
+        return new ResponseEntity<>(productDtoList, HttpStatus.OK);
+    }
+//
+    // 제품 등록
+    @PostMapping(value = "/register")
+    public ResponseEntity<Long> register(ProductDto productDto) {
+
+        log.info("productDto: " + productDto);
+
+        Long pno = productService.register(productDto);
+
+        return new ResponseEntity<>(pno, HttpStatus.OK);
     }
 
-    //테스트용 제품 등록 페이지
-    @GetMapping("/post")
-    public String post() {
-        return "product/post.html";
+    // 제품 상세 페이지
+    @GetMapping("/{pno}")
+    public ResponseEntity<ProductDto> detail(@PathVariable Long pno) {
+
+        ProductDto productDto = productService.detail(pno);
+
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
-    //쇼핑몰 제품 등록
-    @PostMapping("/post")
-    public String Write(@RequestParam("file") MultipartFile files, ProductDto productDto) {
-        try{
-            String origFilename = files.getOriginalFilename();
-            String filename = new MD5Generator(origFilename).toString();
+    // 제품 정보 수정 (미완성)
+    @PutMapping(value = "/modify")
+    public ResponseEntity<String> modify(@RequestBody Long pno, ProductDto productDto) {
 
-            // 실행되는 위치의 'files' 폴더에 파일이 저장됨
-            String savePath = System.getProperty("user.dir") + "\\files";
+        productService.modify(pno, productDto);
 
-            // 파일이 저장되는 폴더가 없으면 폴더를 생성함
-            if (!new File(savePath).exists()) {
-                try{
-                    new File(savePath).mkdir();
-                }
-                catch (Exception e) {
-                    e.getStackTrace();
-                }
-            }
-            String filePath = savePath + "\\" + filename;
-            files.transferTo(new File(filePath));
+        return new ResponseEntity<>("success", HttpStatus.OK);
+    }
 
-            //변경된 file 관련 정보 저장
-            productDto.setOrigFilename(origFilename);
-            productDto.setFilename(filename);
-            productDto.setFilePath(filePath);
+    // 제품 정보 삭제
+    @DeleteMapping("/{pno}")
+    public ResponseEntity<String> remove(@PathVariable Long pno) {
+        productService.remove(pno);
 
-            productService.saveFile(productDto);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "redirect:/";
+        return new ResponseEntity<>("success", HttpStatus.OK);
     }
 }
