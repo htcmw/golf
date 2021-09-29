@@ -1,61 +1,62 @@
 package com.reborn.golf.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.reborn.golf.entity.BaseEntity;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.*;
 
-@Table (name = "product")
-@Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Product {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@ToString
+public class Product extends BaseEntity {
 
     @Id
-    @GeneratedValue
-    private Long Id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long pno;
 
-    @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
     private String brand;
 
-    @Column(nullable = false)
     private String rank;
 
-    @Column(nullable = false)
     private int quentity;
 
-    @Column(nullable = false)
     private int price;
 
-    @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private String origFilename;
+    private boolean removed;
 
-    @Column(nullable = false)
-    private String filename;
-
-    @Column(nullable = false)
-    private String filePath;
-
-    @Builder
-    public Product(Long Id, String title, String brand, String rank, int quentity, int price,
-                   String content, String origFilename, String filename, String filePath) {
-        this.Id = Id;
+    public void changeTitle(String title) {
         this.title = title;
+    }
+
+    public void changeBrand(String brand) {
         this.brand = brand;
+    }
+
+    public void changeRank(String rank) {
         this.rank = rank;
+    }
+
+    public void changeQuentity(int quentity) {
         this.quentity = quentity;
+    }
+
+    public void changePrice(int price) {
         this.price = price;
+    }
+
+    public void changeContent(String content) {
         this.content = content;
-        this.origFilename = origFilename;
-        this.filename = filename;
-        this.filePath = filePath;
+    }
+
+    public void changeRemoved(Boolean removed) {
+        this.removed = removed;
     }
 }

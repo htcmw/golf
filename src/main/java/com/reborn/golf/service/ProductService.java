@@ -1,41 +1,95 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.ProductDto;
+import com.reborn.golf.dto.*;
+
+import com.reborn.golf.entity.NoticeFractionation;
 import com.reborn.golf.entity.Product;
-import com.reborn.golf.repository.ProductRepository;
-import org.springframework.stereotype.Service;
+import com.reborn.golf.entity.ProductImage;
 
-import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-@Service
-public class ProductService {
-    private ProductRepository productRepository;
+public interface ProductService {
 
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    // 제품 리스트 조회
+    ProductPageResultDto<ProductDto, Object[]> getList(PageRequestDto requestDto);
+
+    // 제품 등록
+    Long register(ProductDto productDto);
+
+    // 제품 디테일페이지
+    ProductDto detail(Long pno);
+
+    // 제품 정보 수정
+    void modify(Long pno, ProductDto productDto);
+
+    // 제품 정보 삭제
+    void remove(Long pno);
+
+    default ProductDto entitiesToDTO(Product product, List<ProductImage> productImages, Double avg, Long reviewCnt){
+        ProductDto productDto = ProductDto.builder()
+                .pno(product.getPno())
+                .title(product.getTitle())
+                .brand(product.getBrand())
+                .rank(product.getRank())
+                .quentity(product.getQuentity())
+                .price(product.getPrice())
+                .content(product.getContent())
+                .regDate(product.getRegDate())
+                .modDate(product.getModDate())
+                .build();
+
+        List<ProductImageDto> productImageDtoList = productImages.stream().map(productImage -> {
+            return ProductImageDto.builder()
+                    .imgName(productImage.getImgName())
+                    .path(productImage.getPath())
+                    .uuid(productImage.getUuid())
+                    .build();
+        }).collect(Collectors.toList());
+
+        productDto.setImageDtoList(productImageDtoList);
+        productDto.setAvg(avg);
+        productDto.setReviewCnt(reviewCnt.intValue());
+
+
+        return productDto;
+
     }
 
-    @Transactional
-    public Long saveFile(ProductDto productDto) {
-        return productRepository.save(productDto.toEntity()).getId();
-    }
+    default Map<String, Object> dtoToEntity(ProductDto productDto){
 
-    @Transactional
-    public ProductDto getFile(Long id) {
-        Product product = productRepository.findById(id).get();
+        Map<String, Object> entityMap = new HashMap<>();
 
-       ProductDto productDto = ProductDto.builder()
-               .Id(product.getId())
-               .title(product.getTitle())
-               .brand(product.getBrand())
-               .rank(product.getRank())
-               .quentity(product.getQuentity())
-               .price(product.getPrice())
-               .content(product.getContent())
-               .origFilename(product.getOrigFilename())
-               .filename(product.getFilename())
-               .filePath(product.getFilePath())
-               .build();
-       return productDto;
+        Product product = Product.builder()
+                .pno(productDto.getPno())
+                .title(productDto.getTitle())
+                .brand(productDto.getBrand())
+                .rank(productDto.getRank())
+                .quentity(productDto.getQuentity())
+                .price(productDto.getPrice())
+                .content(productDto.getContent())
+                .build();
+
+        entityMap.put("product", product);
+
+        List<ProductImageDto> imageDtoList = productDto.getImageDtoList();
+
+        //ProductImageDto 처리
+        if(imageDtoList != null && imageDtoList.size() > 0 ) {
+            List<ProductImage> productImageList = imageDtoList.stream().map(productImageDto -> {
+                ProductImage productImage = ProductImage.builder()
+                        .path(productImageDto.getPath())
+                        .imgName(productImageDto.getImgName())
+                        .uuid(productImageDto.getUuid())
+                        .product(product)
+                        .build();
+                return  productImage;
+            }).collect(Collectors.toList());
+
+            entityMap.put("imgList", productImageList);
+        }
+        return entityMap;
     }
 }
