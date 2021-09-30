@@ -37,9 +37,8 @@ public class PageResultDto<Entity,Dto> {
         page = pageable.getPageNumber() + 1;
         size = pageable.getPageSize();
 
-        int tempEnd = (int)(Math.ceil(page / 5.0)) * 5;
-        System.out.println(tempEnd);
-        start = tempEnd - 4;
+        int tempEnd = (int)(Math.ceil(page / 1.0)) * 10;
+        start = tempEnd - 9;
         end = Math.min(tempEnd, totalPages);
         prev = start > 1;
         next = tempEnd < totalPages;

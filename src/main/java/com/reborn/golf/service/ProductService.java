@@ -2,7 +2,6 @@ package com.reborn.golf.service;
 
 import com.reborn.golf.dto.*;
 
-import com.reborn.golf.entity.NoticeFractionation;
 import com.reborn.golf.entity.Product;
 import com.reborn.golf.entity.ProductImage;
 
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
 public interface ProductService {
 
     // 제품 리스트 조회
-    ProductPageResultDto<ProductDto, Object[]> getList(PageRequestDto requestDto);
+    PageResultDto<Object[], ProductDto> getList(PageRequestDto requestDto);
 
     // 제품 등록
     Long register(ProductDto productDto);

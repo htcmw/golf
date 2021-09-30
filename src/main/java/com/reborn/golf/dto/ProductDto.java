@@ -19,6 +19,8 @@ public class ProductDto {
 
     private Long pno;
 
+    private String catagory;
+
     private String title;
 
     private String brand;

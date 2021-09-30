@@ -1,9 +1,8 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
+import com.reborn.golf.dto.PageResultDto;
 import com.reborn.golf.dto.ProductDto;
-import com.reborn.golf.dto.ProductPageResultDto;
 import com.reborn.golf.entity.*;
 import com.reborn.golf.repository.ProductImageRepository;
 import com.reborn.golf.repository.ProductRepository;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -30,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductPageResultDto<ProductDto, Object[]> getList(PageRequestDto requestDto) {
+    public PageResultDto<Object[], ProductDto> getList(PageRequestDto requestDto) {
         Pageable pageable = requestDto.getPageable(Sort.by("pno").descending());
         Page<Object[]> result = productRepository.getListPage(pageable);
 
@@ -46,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
                 (Long)arr[3])
         );
 
-        return new ProductPageResultDto<>(result, fn);
+        return new PageResultDto<>(result, fn);
     }
 
     @Override

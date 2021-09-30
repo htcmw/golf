@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 
 @Data
 @AllArgsConstructor
-public class ProductUploadResultDto  implements Serializable {
+public class ImageUploadResultDto implements Serializable {
 
     private String fileName;
     private String uuid;
