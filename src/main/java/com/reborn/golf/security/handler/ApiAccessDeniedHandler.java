@@ -2,11 +2,10 @@ package com.reborn.golf.security.handler;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reborn.golf.dto.ErrorDto;
-import com.reborn.golf.dto.ErrorResponseDto;
+import com.reborn.golf.advice.dto.ErrorDto;
+import com.reborn.golf.advice.dto.ErrorResponseDto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 

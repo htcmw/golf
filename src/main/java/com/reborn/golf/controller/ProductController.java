@@ -34,7 +34,7 @@ public class ProductController {
 
         return new ResponseEntity<>(productDtoList, HttpStatus.OK);
     }
-//
+
     // 제품 등록
     @PostMapping(value = "/register")
     public ResponseEntity<Long> register(ProductDto productDto) {

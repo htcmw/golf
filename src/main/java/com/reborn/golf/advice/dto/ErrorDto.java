@@ -1,4 +1,4 @@
-package com.reborn.golf.dto;
+package com.reborn.golf.advice.dto;
 
 import lombok.*;
 
