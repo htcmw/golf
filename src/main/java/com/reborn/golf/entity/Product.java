@@ -24,7 +24,7 @@ public class Product extends BaseEntity {
 
     private String rank;
 
-    private int quentity;
+    private int quantity;
 
     private int price;
 
@@ -44,8 +44,8 @@ public class Product extends BaseEntity {
         this.rank = rank;
     }
 
-    public void changeQuentity(int quentity) {
-        this.quentity = quentity;
+    public void changeQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public void changePrice(int price) {

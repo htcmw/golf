@@ -5,29 +5,26 @@ import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.ProductDto;
 import com.reborn.golf.dto.ProductPageResultDto;
 import com.reborn.golf.service.ProductService;
-import com.reborn.golf.util.MD5Generator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/shop")
 @Log4j2
 @RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService; //final
 
-    // 상품 등록 관련 페이지
-    @GetMapping("/register")
-    public void register(){
-    }
+//    // 상품 등록 관련 페이지
+//    @GetMapping("/register")
+//    public void register(){
+//    }
 
     // 제품 리스트 조회
     @GetMapping
@@ -39,10 +36,10 @@ public class ProductController {
 
         return new ResponseEntity<>(productDtoList, HttpStatus.OK);
     }
-//
+
     // 제품 등록
-    @PostMapping(value = "/register")
-    public ResponseEntity<Long> register(ProductDto productDto) {
+    @PostMapping
+    public ResponseEntity<Long> register(@RequestBody ProductDto productDto) {
 
         log.info("productDto: " + productDto);
 
@@ -52,7 +49,7 @@ public class ProductController {
     }
 
     // 제품 상세 페이지
-    @GetMapping("/{pno}")
+    @GetMapping(value = "/{pno}")
     public ResponseEntity<ProductDto> detail(@PathVariable Long pno) {
 
         ProductDto productDto = productService.detail(pno);
@@ -60,9 +57,9 @@ public class ProductController {
         return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
-    // 제품 정보 수정 (미완성)
-    @PutMapping(value = "/modify")
-    public ResponseEntity<String> modify(@RequestBody Long pno, ProductDto productDto) {
+    // 제품 정보 수정 (텍스트 수정 확인, 이미지 수정 테스트 픽요)
+    @PutMapping(value = "/{pno}")
+    public ResponseEntity<String> modify(@PathVariable Long pno, @RequestBody ProductDto productDto) {
 
         productService.modify(pno, productDto);
 
@@ -70,7 +67,7 @@ public class ProductController {
     }
 
     // 제품 정보 삭제
-    @DeleteMapping("/{pno}")
+    @DeleteMapping(value = "/{pno}")
     public ResponseEntity<String> remove(@PathVariable Long pno) {
         productService.remove(pno);
 

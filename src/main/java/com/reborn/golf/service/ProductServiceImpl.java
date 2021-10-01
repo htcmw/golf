@@ -1,9 +1,6 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.NoticeDto;
-import com.reborn.golf.dto.PageRequestDto;
-import com.reborn.golf.dto.ProductDto;
-import com.reborn.golf.dto.ProductPageResultDto;
+import com.reborn.golf.dto.*;
 import com.reborn.golf.entity.*;
 import com.reborn.golf.repository.ProductImageRepository;
 import com.reborn.golf.repository.ProductRepository;
@@ -103,12 +100,15 @@ public class ProductServiceImpl implements ProductService {
         Map<String, Object> entityMap = dtoToEntity(productDto);
         List<ProductImage> productImageList = (List<ProductImage>) entityMap.get("imgList");
 
+
+
         if (result.isPresent()) {
             Product product = result.get();
+            if (product.getPno().equals(productDto.getPno())) {
                 product.changeTitle(productDto.getTitle());
                 product.changeBrand(productDto.getBrand());
                 product.changeRank(productDto.getRank());
-                product.changeQuentity(productDto.getQuentity());
+                product.changeQuantity(productDto.getQuantity());
                 product.changePrice(productDto.getPrice());
                 product.changeContent(productDto.getContent());
 
@@ -118,6 +118,82 @@ public class ProductServiceImpl implements ProductService {
                 productImageList.forEach(productImage -> {
                     productImageRepository.save(productImage);
                 });
+            };
         }
     }
 }
+
+//
+//
+//    @Override
+//    public void modify(Integer idx, MemberDto memberDto) {
+//
+//        Optional<Member> result = memberRepository.getMemberByIdxAndRemovedFalse(idx);
+//
+//        if (result.isPresent()) {
+//
+//            Member member = result.get();
+//
+//            if (member.getEmail().equals(memberDto.getEmail())) {
+//
+//                member.changePassword(passwordEncoder.encode(memberDto.getPassword()));
+//                member.changeName(memberDto.getName());
+//                member.changeAddress(memberDto.getAddress());
+//                member.changePhone(memberDto.getPhone());
+//
+//                log.info(member);
+//                memberRepository.save(member);
+//
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void modify(Integer writerIdx, NoticeDto noticeDto,NoticeFractionation fractionation) {
+//
+//        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeDto.getIdx(), fractionation);
+//
+//        if (result.isPresent()) {
+//            Notice notice = result.get();
+//            log.info(notice.getWriter().getIdx().equals(writerIdx));
+//            if(((fractionation == NoticeFractionation.NOTICE) && notice.getWriter().getRoleSet().contains(MemberRole.ROLE_ADMIN))
+//                    || notice.getWriter().getIdx().equals(writerIdx)) {
+//
+//                notice.chageWriter(writerIdx);
+//                notice.changeTitle(noticeDto.getTitle());
+//                notice.changeContent(noticeDto.getContent());
+//
+//                log.info(notice);
+//                noticeRepository.save(notice);
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void modify(Long pno, ProductDto productDto) {
+//
+//        Optional<Product> result = productRepository.getProductByPno(pno);
+//        Map<String, Object> entityMap = dtoToEntity(productDto);
+//        List<ProductImage> productImageList = (List<ProductImage>) entityMap.get("imgList");
+//
+//
+//
+//        if (result.isPresent()) {
+//            Product product = result.get();
+//            if (product.getPno().equals(productDto.getPno())) {
+//                product.changeTitle(productDto.getTitle());
+//                product.changeBrand(productDto.getBrand());
+//                product.changeRank(productDto.getRank());
+//                product.changeQuantity(productDto.getQuantity());
+//                product.changePrice(productDto.getPrice());
+//                product.changeContent(productDto.getContent());
+//
+//                log.info(product);
+//                productRepository.save(product);
+//
+//                productImageList.forEach(productImage -> {
+//                    productImageRepository.save(productImage);
+//                });
+//            };
+//        }
+//    }

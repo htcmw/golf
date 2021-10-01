@@ -25,7 +25,7 @@ public class ProductDto {
 
     private String rank;
 
-    private int quentity;
+    private int quantity;
 
     private int price;
 
@@ -41,8 +41,8 @@ public class ProductDto {
     //리뷰 수 jpa의 count( )
     private int reviewCnt;
 
-    private LocalDateTime regDate;
-
-    private LocalDateTime modDate;
+//    private LocalDateTime regDate;
+//
+//    private LocalDateTime modDate;
 
 }

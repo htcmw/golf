@@ -1,11 +1,13 @@
 package com.reborn.golf.repository;
 
+import com.reborn.golf.entity.Member;
 import com.reborn.golf.entity.Notice;
 import com.reborn.golf.entity.NoticeFractionation;
 import com.reborn.golf.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository <Product, Long> {
 
+    // 리스트 불러올 때 사용
     @Query("SELECT p, pi, " +
             "AVG(COALESCE(r.grade,0)),  " +
             "COUNT(DISTINCT r) " +
@@ -22,7 +25,7 @@ public interface ProductRepository extends JpaRepository <Product, Long> {
             "GROUP BY p ")
     Page<Object[]> getListPage(Pageable pageable);
 
-
+    // 상세페이지 조회 때 사용
     @Query("SELECT p, pi," +
             "AVG(COALESCE(r.grade,0)),  " +
             "COUNT(r)" +
@@ -33,10 +36,12 @@ public interface ProductRepository extends JpaRepository <Product, Long> {
             "GROUP BY pi")
     List<Object[]> getProductWithAll(Long pno);
 
+    // 수정, 삭제 때 사용
     @Query("SELECT p " +
             "FROM Product p " +
             "WHERE p.pno = :pno " +
             "AND p.removed = false ")
     Optional<Product> getProductByPno(Long pno);
+
 
 }

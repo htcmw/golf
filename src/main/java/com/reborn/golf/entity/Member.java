@@ -4,12 +4,14 @@ import lombok.*;
 import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Builder
-@ToString
+@ToString (exclude = {"order"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -41,6 +43,9 @@ public class Member extends BaseEntity{
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
+
+//    @OneToMany(mappedBy = "member")
+//    private List<Order> order = new ArrayList<>();
 
     public void addMemberAuthority(MemberRole memberRole){
         roleSet.add(memberRole);
