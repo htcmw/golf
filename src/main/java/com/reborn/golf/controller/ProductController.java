@@ -37,7 +37,7 @@ public class ProductController {
 
     // 제품 등록
     @PostMapping(value = "/register")
-    public ResponseEntity<Long> register(ProductDto productDto) {
+    public ResponseEntity<Long> register(@RequestBody ProductDto productDto) {
 
         log.info("productDto: " + productDto);
 

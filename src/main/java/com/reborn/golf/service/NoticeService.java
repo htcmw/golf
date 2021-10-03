@@ -11,15 +11,15 @@ import com.reborn.golf.entity.NoticeFractionation;
 
 public interface NoticeService {
 
-    PageResultDto<Object[],NoticeDto> getList(PageRequestDto pageRequestDto, NoticeFractionation fractionation);
+    PageResultDto<Object[],NoticeDto> getList(PageRequestDto pageRequestDto);
 
-    NoticeDto read(Long noticeIdx, NoticeFractionation fractionation);
+    NoticeDto read(Long noticeIdx);
 
-    Long register(Integer writerIdx, Long qnaIdx,NoticeDto noticeDto, NoticeFractionation fractionation);
+    Long register(Integer writerIdx, NoticeDto noticeDto);
 
-    Long modify(Integer writerIdx, NoticeDto noticeDto, NoticeFractionation fractionation);
+    Long modify(Integer writerIdx, NoticeDto noticeDto);
 
-    Long remove(Integer memberIdx, Long noticeIdx, NoticeFractionation fractionation);
+    Long remove(Integer memberIdx, Long noticeIdx);
 
     default NoticeDto entityToDto(Notice notice){
         return NoticeDto.builder()

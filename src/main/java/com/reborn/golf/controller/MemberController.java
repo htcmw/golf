@@ -23,6 +23,7 @@ public class MemberController {
     // 회원가입할 때 사용
     @PostMapping
     public ResponseEntity<String> register(@RequestBody @Valid MemberDto memberDto) {
+        log.info(memberDto);
         if (memberService.register(memberDto)) {
             return new ResponseEntity<>("Success", HttpStatus.OK);
         } else {
@@ -58,4 +59,5 @@ public class MemberController {
         memberService.remove(idx);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
+
 }

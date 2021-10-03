@@ -33,39 +33,29 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional
-    public PageResultDto<Object[], NoticeDto> getList(PageRequestDto pageRequestDto, NoticeFractionation fractionation) {
-        Page<Object[]> result = noticeRepository.getNoticesWithWriter(fractionation, pageRequestDto.getPageable(Sort.by("regDate").ascending()));
+    public PageResultDto<Object[], NoticeDto> getList(PageRequestDto pageRequestDto) {
+        Page<Object[]> result = noticeRepository.getNoticesWithWriter(pageRequestDto.getPageable(Sort.by("regDate").ascending()));
         Function<Object[], NoticeDto> function = (arr -> entityToDto((Notice) arr[0], (Member) arr[1]));
         return new PageResultDto<>(result, function);
     }
 
     @Override
     @Transactional
-    public NoticeDto read(Long noticeIdx, NoticeFractionation fractionation) {
+    public NoticeDto read(Long noticeIdx) {
 
-        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeIdx, fractionation);
+        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeIdx);
 
         if (result.isPresent()) {
             Notice notice = result.get();
             notice.addViews();
-            NoticeDto noticeDto = entityToDto(notice);
-
-            if(fractionation == NoticeFractionation.QNA){
-                List<Notice> children = noticeRepository.getAnswerByIdx(noticeIdx, fractionation);
-                List<NoticeDto> noticeDtoList = children.stream().map(this::entityToDto).collect(Collectors.toList());
-                noticeDto.setAnswer(noticeDtoList);
-            }
-
-            return noticeDto;
+            return entityToDto(notice);
         }
         return null;
     }
 
     @Override
-    public Long register(Integer writerIdx, Long qnaIdx, NoticeDto noticeDto, NoticeFractionation fractionation) {
+    public Long register(Integer writerIdx, NoticeDto noticeDto) {
         Notice notice = dtoToEntity(noticeDto, writerIdx);
-        notice.setFractionation(fractionation);
-        notice.setParent(qnaIdx);
         noticeRepository.save(notice);
         return notice.getIdx();
     }
@@ -76,13 +66,15 @@ public class NoticeServiceImpl implements NoticeService {
      * Manager권한이 있는 맴버가 작성하면 다른 Manager가 변경할 수 있다.
      * */
     @Override
-    public Long modify(Integer writerIdx, NoticeDto noticeDto,NoticeFractionation fractionation) {
+    public Long modify(Integer writerIdx, NoticeDto noticeDto) {
 
-        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeDto.getIdx(), fractionation);
+        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeDto.getIdx());
 
         if (result.isPresent()) {
             Notice notice = result.get();
+
             log.info(notice.getWriter().getIdx().equals(writerIdx));
+
             if(notice.getWriter().getRoleSet().contains(MemberRole.ROLE_MANAGER)
                     || notice.getWriter().getIdx().equals(writerIdx)) {
 
@@ -99,8 +91,8 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public Long remove(Integer writerIdx, Long noticeIdx, NoticeFractionation fractionation) {
-        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeIdx, fractionation);
+    public Long remove(Integer writerIdx, Long noticeIdx) {
+        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeIdx);
         if (result.isPresent()) {
             Notice notice = result.get();
 

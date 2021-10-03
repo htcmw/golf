@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"writer"})
-public class Notice extends BaseEntity {
+public class Qna extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +30,21 @@ public class Notice extends BaseEntity {
     @Column
     private Integer views;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_idx")
+    private Qna parent;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "parent",  orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Qna> children = new ArrayList<>();
+
     @Column
     private boolean removed;
+
+    public void setParent(Long pIdx){
+        if (pIdx != null)
+            this.parent = Qna.builder().idx(pIdx).build();
+    }
 
     public void addViews() {
         this.views++;

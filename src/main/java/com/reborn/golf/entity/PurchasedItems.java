@@ -48,7 +48,7 @@ public class PurchasedItems extends BaseEntity {
         this.catagory = catagory;
     }
 
-    public void changeTitle(String name) {
+    public void changeName(String name) {
         this.name = name;
     }
 
@@ -75,6 +75,7 @@ public class PurchasedItems extends BaseEntity {
     public void changeRemoved(Boolean canceled) {
         this.canceled = canceled;
     }
+
     public void changeFinished(Boolean finished) {
         this.finished = finished;
     }

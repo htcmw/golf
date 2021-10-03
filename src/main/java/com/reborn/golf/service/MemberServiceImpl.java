@@ -59,8 +59,6 @@ public class MemberServiceImpl implements MemberService {
             Member member = result.get();
 
             if (member.getEmail().equals(memberDto.getEmail())) {
-
-                member.changePassword(passwordEncoder.encode(memberDto.getPassword()));
                 member.changeName(memberDto.getName());
                 member.changeAddress(memberDto.getAddress());
                 member.changePhone(memberDto.getPhone());

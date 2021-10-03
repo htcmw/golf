@@ -37,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
             log.info(Arrays.toString(arr));
         });
 
+
         Function<Object[], ProductDto> fn = (arr -> entitiesToDTO(
                 (Product) arr[0] ,
                 (List<ProductImage>)(Arrays.asList((ProductImage)arr[1])),

@@ -18,41 +18,17 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
             "SELECT n, w " +
                     "FROM Notice n " +
                     "LEFT JOIN n.writer w " +
-                    "WHERE n.fractionation = :fractionation AND n.removed = false ",
-            countQuery =
-                    "SELECT count(n) " +
-                            "FROM Notice n")
-    Page<Object[]> getNoticesWithWriter(NoticeFractionation fractionation, Pageable pageable);
+                    "WHERE n.removed = false ")
+    Page<Object[]> getNoticesWithWriter(Pageable pageable);
 
     //modify, remove 메서드에서 사용
-    Optional<Notice> getNoticeByIdxAndFractionationAndRemovedFalse(Long idx, NoticeFractionation fractionation);
-
 
     @Query(value =
                     "SELECT n, w.email, w.name " +
                     "FROM Notice n " +
                             "LEFT JOIN n.writer w " +
-                    "WHERE n.fractionation = :fractionation " +
-                            "AND n.idx = :idx " +
+                    "WHERE n.idx = :idx " +
                             "AND n.removed = false ")
-    Optional<Notice> getNoticeByIdx(Long idx, NoticeFractionation fractionation);
+    Optional<Notice> getNoticeByIdx(Long idx);
 
-    //read 메서드에서 사용, QnA의 답글을 가져오는 쿼리
-    @Query(value =
-                    "SELECT nc, w.email, w.name " +
-                    "FROM Notice n " +
-                            "JOIN Notice nc on n = nc.parent " +
-                            "LEFT JOIN nc.writer w " +
-                    "WHERE n.fractionation = :fractionation " +
-                            "AND n.idx = :idx " +
-                            "AND nc.removed = false " +
-                    "ORDER BY nc.regDate ASC")
-    List<Notice> getAnswerByIdx(Long idx, NoticeFractionation fractionation);
-
-    @Modifying
-    @Query("UPDATE Notice n SET n.views = :views")
-    void updateViews(Integer views);
-
-
-    //
 }

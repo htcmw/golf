@@ -25,9 +25,9 @@ public class RegisteredQnaController {
         return new ResponseEntity<>(registeredQnaDtos, HttpStatus.OK);
     }
 
-    @GetMapping("/{num}")
-    public ResponseEntity<RegisteredQnaDto> read(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long num) {
-        RegisteredQnaDto registeredQnaDto = registeredQnaService.read(num);
+    @GetMapping("/{idx}")
+    public ResponseEntity<RegisteredQnaDto> read(@PathVariable Long idx) {
+        RegisteredQnaDto registeredQnaDto = registeredQnaService.read(idx);
         return new ResponseEntity<>(registeredQnaDto, HttpStatus.OK);
     }
 
@@ -46,9 +46,9 @@ public class RegisteredQnaController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
-    @DeleteMapping("/{num}")
-    public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long num) {
-        registeredQnaService.remove(authMemeberDto.getIdx(), num);
+    @DeleteMapping("/{idx}")
+    public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long idx) {
+        registeredQnaService.remove(authMemeberDto.getIdx(), idx);
         return new ResponseEntity<>("Deletion was successful", HttpStatus.OK);
     }
 

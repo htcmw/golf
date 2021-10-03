@@ -6,6 +6,7 @@ import com.reborn.golf.dto.PageResultDto;
 import com.reborn.golf.entity.NoticeFractionation;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.NoticeService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,42 +20,34 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 
-/*
-* 공지사항, Q&A 컨트롤러
-* */
 @Log4j2
 @RestController
 @RequestMapping("/qna")
 @Validated
+@RequiredArgsConstructor
 public class QnaController {
 
     private final NoticeService noticeService;
-    private final NoticeFractionation QNAFractionation;
-
-    public QnaController(NoticeService noticeService) {
-        this.noticeService = noticeService;
-        this.QNAFractionation = NoticeFractionation.QNA;
-    }
 
     //모든 질문 목록을 출력
     @GetMapping
     public ResponseEntity<PageResultDto<Object[], NoticeDto>> getList(PageRequestDto pageRequestDto) {
-        PageResultDto<Object[], NoticeDto> noticeDtoList = noticeService.getList(pageRequestDto, QNAFractionation);
+        PageResultDto<Object[], NoticeDto> noticeDtoList = noticeService.getList(pageRequestDto);
         return new ResponseEntity<>(noticeDtoList, HttpStatus.OK);
     }
 
     //조회
-    @GetMapping("/{num}")
-    public ResponseEntity<NoticeDto> read(@PathVariable @Min(1) Long num) {
-        NoticeDto noticeDto = noticeService.read(num, QNAFractionation);
+    @GetMapping("/{idx}")
+    public ResponseEntity<NoticeDto> read(@PathVariable @Min(1) Long idx) {
+        NoticeDto noticeDto = noticeService.read(idx);
         return new ResponseEntity<>(noticeDto, HttpStatus.OK);
     }
 
     //등록
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
     @PostMapping
-    public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestParam @Nullable  Long qnaIdx, @RequestBody @Valid NoticeDto noticeDto) {
-        Long num = noticeService.register(authMemeberDto.getIdx(), qnaIdx, noticeDto, QNAFractionation);
+    public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
+        Long num = noticeService.register(authMemeberDto.getIdx(), noticeDto);
         return new ResponseEntity<>(num, HttpStatus.OK);
     }
 
@@ -62,17 +55,16 @@ public class QnaController {
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
     @PutMapping
     public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
-        noticeService.modify(authMemeberDto.getIdx(), noticeDto, QNAFractionation);
+        noticeService.modify(authMemeberDto.getIdx(), noticeDto);
         return new ResponseEntity<>("Modification was successful", HttpStatus.OK);
     }
 
     //삭제
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
-    @DeleteMapping("/{num}")
-    public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable @Min(1) Long num) {
-        noticeService.remove(authMemeberDto.getIdx(), num, QNAFractionation);
+    @DeleteMapping("/{idx}")
+    public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable @Min(1) Long idx) {
+        noticeService.remove(authMemeberDto.getIdx(), idx);
         return new ResponseEntity<>("Deletion was successful", HttpStatus.OK);
     }
-
 
 }

@@ -13,13 +13,20 @@ import java.util.Optional;
 public interface PurchasedItemsRepository extends JpaRepository<PurchasedItems,Long> {
 
     @Query(value =
-            "SELECT p, m " +
-            "FROM PurchasedItems p " +
-                    "LEFT JOIN p.purchasedItemsImages pi " +
-                    "LEFT JOIN p.member m " +
-            "WHERE m.idx = :memberIdx")
-    Page<Object[]> getPurchasedItemsbyMemberIdx(Integer memberIdx, Pageable pageable);
+                    "SELECT p " +
+                    "FROM PurchasedItems p " +
+                            "LEFT JOIN p.purchasedItemsImages pi " +
+                            "LEFT JOIN p.member m " +
+                    "WHERE m.idx = :memberIdx")
+    Page<PurchasedItems> getPurchasedItemsbyMemberIdx(Integer memberIdx, Pageable pageable);
 
-
+    @Query(value =
+                    "SELECT p " +
+                    "FROM PurchasedItems p " +
+                            "LEFT JOIN p.purchasedItemsImages pi " +
+                            "LEFT JOIN p.member m " +
+                    "WHERE m.idx = :memberIdx " +
+                            "AND p.idx = :idx")
+    Optional<PurchasedItems> getPurchasedItembyIdxAndMemberIdx(Integer memberIdx, Long idx);
 
 }

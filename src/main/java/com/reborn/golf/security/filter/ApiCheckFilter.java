@@ -32,7 +32,6 @@ public class ApiCheckFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("=================ApiCheckFilter==================");
-        log.info("Request URL : " + request.getRequestURI());
 
 
         Authentication authentication = getUsernamePasswordAuthenticationToken(request);
@@ -40,6 +39,7 @@ public class ApiCheckFilter extends OncePerRequestFilter {
         if (authentication != null) {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+        log.info("Request URL : " + request.getRequestURI());
 
         filterChain.doFilter(request, response);
     }

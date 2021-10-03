@@ -12,17 +12,34 @@ import java.util.List;
 
 public interface PurchasedItemsService {
 
-    PageResultDto<Object[], ProductDto> getList(Integer memberIdx, PageRequestDto requestDto);
+    PageResultDto<PurchasedItems, PurchasedItemsDto> getList(Integer memberIdx, PageRequestDto requestDto);
 
-    Long register(Integer writerIdx, ProductDto productDto);
+    Long register(Integer memberIdx, PurchasedItemsDto purchasedItemsDto);
 
-    ProductDto read(Integer writerIdx, Long productIdx);
+    PurchasedItemsDto read(Integer memberIdx, Long purchasedItemsIdx);
 
-    Long modify(Integer writerIdx, ProductDto productDto);
+    Long modify(Integer memberIdx, PurchasedItemsDto purchasedItemsDto);
 
-    Long remove(Integer writerIdx, Long productIdx);
+    Long remove(Integer memberIdx, Long purchasedItemsIdx);
 
-    default PurchasedItemsDto entityToDto(PurchasedItems items,  Member member) {
+    default PurchasedItems dtoToEntity(Integer memberIdx, PurchasedItemsDto itemsDto){
+        return PurchasedItems.builder()
+                .idx(itemsDto.getIdx())
+                .catagory(itemsDto.getCatagory())
+                .name(itemsDto.getName())
+                .brand(itemsDto.getBrand())
+                .state(itemsDto.getState())
+                .price(itemsDto.getPrice())
+                .quentity(itemsDto.getQuentity())
+                .details(itemsDto.getDetails())
+                .member(Member.builder().idx(memberIdx).build())
+                .purchasedItemsImages(itemsDto.getImageDtoList())
+                .canceled(itemsDto.isCanceled())
+                .finished(itemsDto.isFinished())
+                .build();
+    }
+
+    default PurchasedItemsDto entityToDto(PurchasedItems items) {
         return PurchasedItemsDto.builder()
                 .idx(items.getIdx())
                 .catagory(items.getCatagory())
@@ -32,8 +49,9 @@ public interface PurchasedItemsService {
                 .details(items.getDetails())
                 .finished(items.isFinished())
                 .imageDtoList(items.getPurchasedItemsImages())
-                .memberEmail(member.getEmail())
-                .memberName(member.getName())
+                .memberEmail(items.getMember().getEmail())
+                .memberName(items.getMember().getName())
                 .build();
     }
+
 }

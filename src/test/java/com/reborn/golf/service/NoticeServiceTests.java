@@ -2,7 +2,6 @@ package com.reborn.golf.service;
 
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
-import com.reborn.golf.dto.PageResultDto;
 import com.reborn.golf.entity.NoticeFractionation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ public class NoticeServiceTests {
                     .content("content.........." + i)
                     .views(0)
                     .build();
-            noticeService.register(((i % 10) + 1), null, noticeDto, NoticeFractionation.NOTICE);
+            noticeService.register(((i % 10) + 1), noticeDto);
         });
     }
 
@@ -46,7 +45,7 @@ public class NoticeServiceTests {
                     .title("Qna.........." + i)
                     .content("Qna.........." + i)
                     .build();
-            noticeService.register((i % 10) + 1, null, noticeDto, NoticeFractionation.QNA);
+//            noticeService.register((i % 10) + 1, null, noticeDto);
         });
         IntStream.rangeClosed(0, 100).forEach(i -> {
             NoticeDto noticeDto = NoticeDto.builder()
@@ -54,7 +53,7 @@ public class NoticeServiceTests {
                     .content("content..........plus" + i)
                     .build();
 
-            noticeService.register((i % 10) + 1, (i % 10) + 1L, noticeDto, NoticeFractionation.QNA);
+//            noticeService.register((i % 10) + 1, (i % 10) + 1L, noticeDto);
         });
     }
 
@@ -62,7 +61,7 @@ public class NoticeServiceTests {
     @Test
     public void getListNoticesTest(){
         PageRequestDto pageRequestDto = PageRequestDto.builder().page(1).size(10).build();
-        var resultDto= noticeService.getList(pageRequestDto, NoticeFractionation.QNA);
+        var resultDto= noticeService.getList(pageRequestDto);
         for (var list: resultDto.getDtoList()) {
             System.out.println(list);
         }
@@ -72,7 +71,7 @@ public class NoticeServiceTests {
     @Test
     public void getListQnaTest(){
         PageRequestDto pageRequestDto = PageRequestDto.builder().page(1).size(10).build();
-        var resultDto= noticeService.getList(pageRequestDto, NoticeFractionation.QNA);
+        var resultDto= noticeService.getList(pageRequestDto);
         for (var list: resultDto.getDtoList()) {
             System.out.println(list);
         }
@@ -80,7 +79,7 @@ public class NoticeServiceTests {
 
     @Test
     public void readTest(){
-        System.out.println(noticeService.read(1L, NoticeFractionation.QNA));
+        System.out.println(noticeService.read(1L));
     }
 
     @Test
