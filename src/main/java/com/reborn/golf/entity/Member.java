@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @ToString (exclude = {"order"})
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Member extends BaseEntity{
     //PK를 따로 만들어줘야 될 수 있음
@@ -43,9 +43,6 @@ public class Member extends BaseEntity{
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
-
-//    @OneToMany(mappedBy = "member")
-//    private List<Order> order = new ArrayList<>();
 
     public void addMemberAuthority(MemberRole memberRole){
         roleSet.add(memberRole);

@@ -9,7 +9,7 @@ import java.util.*;
 @Entity
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
 public class Product extends BaseEntity {
@@ -28,6 +28,7 @@ public class Product extends BaseEntity {
 
     private int price;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     private boolean removed;

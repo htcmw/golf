@@ -21,11 +21,6 @@ public class ProductController {
 
     private final ProductService productService; //final
 
-//    // 상품 등록 관련 페이지
-//    @GetMapping("/register")
-//    public void register(){
-//    }
-
     // 제품 리스트 조회
     @GetMapping
     public ResponseEntity<ProductPageResultDto<ProductDto, Object[]>> getList(PageRequestDto requestDto) {
