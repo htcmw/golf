@@ -4,14 +4,16 @@ import lombok.*;
 import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Builder
-@ToString
+@ToString (exclude = {"order"})
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Member extends BaseEntity{
     //PK를 따로 만들어줘야 될 수 있음

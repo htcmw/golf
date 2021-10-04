@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString(exclude = {"product","member"})
 public class ProductReply extends BaseEntity {

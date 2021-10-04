@@ -33,11 +33,11 @@ public interface ProductService {
                 .title(product.getTitle())
                 .brand(product.getBrand())
                 .rank(product.getRank())
-                .quentity(product.getQuentity())
+                .quantity(product.getQuantity())
                 .price(product.getPrice())
                 .content(product.getContent())
-                .regDate(product.getRegDate())
-                .modDate(product.getModDate())
+//                .regDate(product.getRegDate())
+//                .modDate(product.getModDate())
                 .build();
 
         List<ProductImageDto> productImageDtoList = productImages.stream().map(productImage -> {
@@ -66,7 +66,7 @@ public interface ProductService {
                 .title(productDto.getTitle())
                 .brand(productDto.getBrand())
                 .rank(productDto.getRank())
-                .quentity(productDto.getQuentity())
+                .quantity(productDto.getQuantity())
                 .price(productDto.getPrice())
                 .content(productDto.getContent())
                 .build();

@@ -1,8 +1,9 @@
 package com.reborn.golf.service;
 
+import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
-import com.reborn.golf.dto.PageResultDto;
 import com.reborn.golf.dto.ProductDto;
+import com.reborn.golf.dto.ProductPageResultDto;
 import com.reborn.golf.entity.*;
 import com.reborn.golf.repository.ProductImageRepository;
 import com.reborn.golf.repository.ProductRepository;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -28,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public PageResultDto<Object[], ProductDto> getList(PageRequestDto requestDto) {
+    public ProductPageResultDto<ProductDto, Object[]> getList(PageRequestDto requestDto) {
         Pageable pageable = requestDto.getPageable(Sort.by("pno").descending());
         Page<Object[]> result = productRepository.getListPage(pageable);
 
@@ -37,7 +39,6 @@ public class ProductServiceImpl implements ProductService {
             log.info(Arrays.toString(arr));
         });
 
-
         Function<Object[], ProductDto> fn = (arr -> entitiesToDTO(
                 (Product) arr[0] ,
                 (List<ProductImage>)(Arrays.asList((ProductImage)arr[1])),
@@ -45,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
                 (Long)arr[3])
         );
 
-        return new PageResultDto<>(result, fn);
+        return new ProductPageResultDto<>(result, fn);
     }
 
     @Override
@@ -104,6 +105,7 @@ public class ProductServiceImpl implements ProductService {
 
         if (result.isPresent()) {
             Product product = result.get();
+            if (product.getPno().equals(productDto.getPno())) {
                 product.changeTitle(productDto.getTitle());
                 product.changeBrand(productDto.getBrand());
                 product.changeRank(productDto.getRank());
@@ -117,6 +119,7 @@ public class ProductServiceImpl implements ProductService {
                 productImageList.forEach(productImage -> {
                     productImageRepository.save(productImage);
                 });
+            };
         }
     }
 }

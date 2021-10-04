@@ -1,40 +1,84 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>게시판 - 글쓰기</title>
-    <link rel='stylesheet' href='/webjars/bootstrap/4.5.0/css/bootstrap.min.css'>
-</head>
-<body>
-<div class="container">
-    <form action="/post" method="post">
-        <div class="form-group row">
-            <label for="inputTitle" class="col-sm-2 col-form-label"><strong>제목</strong></label>
-            <div class="col-sm-10">
-                <input type="text" name="title" class="form-control" id="inputTitle">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="inputAuthor" class="col-sm-2 col-form-label"><strong>작성자</strong></label>
-            <div class="col-sm-10">
-                <input type="text" name="author" class="form-control" id="inputAuthor">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="inputContent" class="col-sm-2 col-form-label"><strong>내용</strong></label>
-            <div class="col-sm-10">
-                <textarea type="text" name="content" class="form-control" id="inputContent"></textarea>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-auto mr-auto"></div>
-            <div class="col-auto">
-                <input class="btn btn-primary" type="submit" role="button" value="글쓰기">
-            </div>
-        </div>
-    </form>
-</div>
-<script src="/webjars/jquery/3.5.1/jquery.min.js"></script>
-<script src="/webjars/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-</body>
-</html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+
+    <th:block th:fragment="content">
+
+        <h1 class="mt-4">Product List Page
+            <span>
+                <a th:href="@{/product/register}">
+                    <button type="button" class="btn btn-outline-primary">REGISTER
+                    </button>
+                </a>
+            </span>
+        </h1>
+
+        <form action="/product/list" method="get" id="searchForm">
+            <input type="hidden" name="page" value="1">
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Picture</th>
+                <th scope="col">Title</th>
+                <th scope="col">Brand</th>
+                <th scope="col">Rank</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col">Content</th>
+                <th scope="col">Review Count</th>
+                <th scope="col">AVG Rating</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr th:each="dto : ${result.dtoList}" >
+                <th scope="row">
+                    <a th:href="@{/product/detail/(pno = ${dto.pno})}">
+<!--                    <a th:href="@{/product/detail/pno = ${dto.pno}}">-->
+                        [[${dto.pno}]]
+                    </a>
+                </th>
+                <td><img th:if="${dto.imageDtoList.size() > 0 && dto.imageDtoList[0].path != null }"
+                         th:src="|/display?fileName=${dto.imageDtoList[0].getThumbnailURL()}|" ></td>
+                <td><b>[[${dto.title}]]</b></td>
+                <td><b>[[${dto.brand}]]</b></td>
+                <td><b>[[${dto.rank}]]</b></td>
+                <td><b>[[${dto.quantity}]]</b></td>
+                <td><b>[[${dto.price}]]</b></td>
+                <td><b>[[${dto.content}]]</b></td>
+                <td><b>[[${dto.reviewCnt}]]</b></td>
+                <td><b>[[${dto.avg}]]</b></td>
+
+            </tr>
+
+            </tbody>
+        </table>
+
+        <ul class="pagination h-100 justify-content-center align-items-center">
+
+            <li class="page-item " th:if="${result.prev}">
+                <a class="page-link" th:href="@{/product/list(page= ${result.start -1})}" tabindex="-1">Previous</a>
+            </li>
+
+            <li th:class=" 'page-item ' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
+                <a class="page-link" th:href="@{/product/list(page = ${page})}">
+                    [[${page}]]
+                </a>
+            </li>
+
+            <li class="page-item" th:if="${result.next}">
+                <a class="page-link" th:href="@{/product/list(page= ${result.end + 1} )}">Next</a>
+            </li>
+        </ul>
+
+
+        <script th:inline="javascript">
+
+        </script>
+    </th:block>
+
+</th:block>

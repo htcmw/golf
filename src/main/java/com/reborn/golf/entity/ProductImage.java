@@ -5,9 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Embeddable
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
 @ToString(exclude = "product") //연관 관계시 항상 주의

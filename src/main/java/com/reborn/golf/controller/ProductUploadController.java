@@ -98,6 +98,7 @@ public class ProductUploadController {
         return folderPath;
     }
 
+    // 업로드 미리보기 삭제
     @PostMapping("/removeFile")
     public ResponseEntity<Boolean> removeFile(String fileName){
 
@@ -120,6 +121,7 @@ public class ProductUploadController {
 
     }
 
+    // 업로드 미리보기
     @GetMapping("/display")
     public ResponseEntity<byte[]> getFile(String fileName, String size) {
 
@@ -150,6 +152,4 @@ public class ProductUploadController {
         }
         return result;
     }
-
-
 }
