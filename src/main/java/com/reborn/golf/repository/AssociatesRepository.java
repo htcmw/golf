@@ -20,4 +20,5 @@ public interface AssociatesRepository extends JpaRepository<Associates,Integer> 
 
     //삭제되지 않은 동료 정보
     Optional<Associates> getAssociatesByIdxAndRemovedFalse(Integer idx);
+    Optional<Associates> getAssociatesByEmailAndPhoneAndRemovedFalse(String email, String phone);
 }

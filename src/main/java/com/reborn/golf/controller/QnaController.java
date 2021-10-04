@@ -22,7 +22,7 @@ import javax.validation.constraints.Min;
 
 @Log4j2
 @RestController
-@RequestMapping("/qna")
+@RequestMapping("/qnas")
 @Validated
 @RequiredArgsConstructor
 public class QnaController {

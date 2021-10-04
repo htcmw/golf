@@ -24,7 +24,7 @@ import javax.validation.constraints.Min;
 * */
 @Log4j2
 @RestController
-@RequestMapping("/notice")
+@RequestMapping("/notices")
 @Validated
 @RequiredArgsConstructor
 public class NoticeController {

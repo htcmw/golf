@@ -18,6 +18,9 @@ public class Associates extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idx;
 
+    @Column(unique = true,nullable = false)
+    private String employeeId;
+
     @Column(unique = true, nullable = false)
     private String email;
 

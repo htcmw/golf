@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member,Integer> {
@@ -19,5 +20,8 @@ public interface MemberRepository extends JpaRepository<Member,Integer> {
 
     //삭제되지 않은 고객정보
     Optional<Member> getMemberByIdxAndRemovedFalse(Integer idx);
+
+    //비밀번호 찾기
+    Optional<Member> getMemberByEmailAndPhoneAndRemovedFalse(String email, String phone);
 
 }

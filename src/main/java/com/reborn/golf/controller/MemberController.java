@@ -20,7 +20,7 @@ import javax.validation.Valid;
 public class MemberController {
     private final MemberService memberService;
 
-    // 회원가입할 때 사용
+    // 회원가입
     @PostMapping
     public ResponseEntity<String> register(@RequestBody @Valid MemberDto memberDto) {
         log.info(memberDto);
@@ -31,7 +31,7 @@ public class MemberController {
         }
     }
 
-    //회원 정보 조회할 때 사용
+    //회원 정보 조회
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MemberDto> read(@AuthenticationPrincipal AuthMemeberDto authMemeberDto) {
@@ -41,7 +41,7 @@ public class MemberController {
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
-    //회원 정보 수정할 때 사용
+    //회원 정보 수정
     @PutMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid MemberDto memberDto) throws Exception {
@@ -51,13 +51,34 @@ public class MemberController {
 
     }
 
-    //회원 탈퇴할 때 사용
+    //회원 탈퇴
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto) {
         Integer idx = authMemeberDto.getIdx();
         memberService.remove(idx);
         return new ResponseEntity<>("Success", HttpStatus.OK);
+    }
+
+    // 이메일 찾기
+    @PostMapping("/email")
+    public ResponseEntity<String> searchEmail(@RequestBody @Valid MemberDto memberDto) {
+        log.info(memberDto);
+        if (memberService.searchEmail(memberDto) != null) {
+            return new ResponseEntity<>("Success", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("The same email already exists.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //비밀번호 찾기
+    @PutMapping("/password/search")
+    public ResponseEntity<String> searchPassword(@RequestBody @Valid MemberDto memberDto) throws Exception {
+        if (memberService.searchPassword(memberDto) != null) {
+            return new ResponseEntity<>("Success", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("The same email already exists.", HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

@@ -27,7 +27,6 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> result = memberRepository.getMemberByEmailAndRemovedFalse(memberDto.getEmail());
 
         //추가 1. 삭제된 정보의 경우 언제부터 다시 회원가입 가능한지 조건 필요
-
         if (result.isEmpty()) {
             memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
             Member newMember = dtoToEntity(memberDto);
@@ -50,7 +49,7 @@ public class MemberServiceImpl implements MemberService {
 
     //이메일, 소셜 로그인 정보를 제외하고 모두 수정할 수 있다.
     @Override
-    public void modify(Integer idx, MemberDto memberDto) {
+    public Integer modify(Integer idx, MemberDto memberDto) {
 
         Optional<Member> result = memberRepository.getMemberByIdxAndRemovedFalse(idx);
 
@@ -65,14 +64,16 @@ public class MemberServiceImpl implements MemberService {
 
                 log.info(member);
                 memberRepository.save(member);
+                return member.getIdx();
 
             }
         }
+        return null;
     }
 
     @Override
     @Transactional
-    public void remove(Integer idx) {
+    public Integer remove(Integer idx) {
 
         Optional<Member> result = memberRepository.getMemberByIdxAndRemovedFalse(idx);
 
@@ -83,6 +84,30 @@ public class MemberServiceImpl implements MemberService {
 
             log.info(member);
             memberRepository.save(member);
+            return member.getIdx();
         }
+        return null;
     }
+
+    @Override
+    public String searchEmail(MemberDto memberDto) {
+        Optional<Member> result = memberRepository.getMemberByEmailAndRemovedFalse(memberDto.getEmail());
+        if(result.isPresent()){
+            Member member = result.get();
+            return member.getEmail();
+        }
+        return null;
+    }
+
+    @Override
+    public Integer searchPassword(MemberDto memberDto) {
+        Optional<Member> result = memberRepository.getMemberByEmailAndPhoneAndRemovedFalse(memberDto.getEmail(),memberDto.getPhone());
+        if(result.isPresent()){
+            Member member = result.get();
+            member.changePhone(memberDto.getPhone());
+            return member.getIdx();
+        }
+        return null;
+    }
+
 }

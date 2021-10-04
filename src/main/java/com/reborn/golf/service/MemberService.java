@@ -3,16 +3,19 @@ package com.reborn.golf.service;
 
 import com.reborn.golf.dto.MemberDto;
 import com.reborn.golf.entity.Member;
-import com.reborn.golf.entity.MemberRole;
 
 public interface MemberService {
     boolean register(MemberDto memberDto);
 
     MemberDto read(Integer email);
 
-    void modify(Integer idx, MemberDto memberDto);
+    Integer modify(Integer idx, MemberDto memberDto);
 
-    void remove(Integer idx);
+    Integer remove(Integer idx);
+
+    String searchEmail(MemberDto phone);
+
+    Integer searchPassword(MemberDto memberDto);
 
     default Member dtoToEntity(MemberDto memberDto){
         return Member.builder()
