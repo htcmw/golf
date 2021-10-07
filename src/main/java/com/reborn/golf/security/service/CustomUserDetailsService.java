@@ -1,13 +1,12 @@
 package com.reborn.golf.security.service;
 
-import com.reborn.golf.entity.Associates;
+import com.reborn.golf.entity.Employee;
 import com.reborn.golf.entity.Member;
-import com.reborn.golf.repository.AssociatesRepository;
+import com.reborn.golf.repository.EmployeeRepository;
 import com.reborn.golf.repository.MemberRepository;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
-    private final AssociatesRepository associatesRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -41,13 +40,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         log.info("----------------loadUserByUsername, Associates----------------------");
 
-        Optional<Associates> takenAssociates = associatesRepository.findByEmail(username);
+        Optional<Employee> takenAssociates = employeeRepository.findByEmail(username);
 
         if (takenAssociates.isPresent()) {
-            Associates associates = takenAssociates.get();
-            log.info(associates);
-            return new AuthMemeberDto(associates.getIdx(), associates.getEmail(), associates.getPassword(), false,
-                    associates.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority(memberRole.name())).collect(Collectors.toSet()));
+            Employee employee = takenAssociates.get();
+            log.info(employee);
+            return new AuthMemeberDto(employee.getIdx(), employee.getEmail(), employee.getPassword(), false,
+                    employee.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority(memberRole.name())).collect(Collectors.toSet()));
         }
 
         throw new UsernameNotFoundException("Please Check Email or Social");

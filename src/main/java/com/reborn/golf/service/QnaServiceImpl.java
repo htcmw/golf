@@ -5,6 +5,7 @@ import com.reborn.golf.dto.QnaDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
 import com.reborn.golf.entity.*;
+import com.reborn.golf.entity.Enum.Role;
 import com.reborn.golf.repository.QnaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -76,7 +77,7 @@ public class QnaServiceImpl implements QnaService {
 
         if (result.isPresent()) {
             Qna qna = result.get();
-            if (qna.getWriter().getRoleSet().contains(MemberRole.ROLE_MANAGER)
+            if (qna.getWriter().getRoleSet().contains(Role.ROLE_MANAGER)
                     || qna.getWriter().getIdx().equals(writerIdx)) {
 
                 qna.chageWriter(writerIdx);
@@ -98,7 +99,7 @@ public class QnaServiceImpl implements QnaService {
             Qna qna = result.get();
 
             if (qna.getWriter().getIdx().equals(writerIdx)
-                    || qna.getWriter().getRoleSet().contains(MemberRole.ROLE_ADMIN)) {
+                    || qna.getWriter().getRoleSet().contains(Role.ROLE_ADMIN)) {
 
                 qna.changeRemoved(true);
                 qnaRepository.save(qna);

@@ -18,10 +18,19 @@ public class OrderProduct {
 
     private int price;
 
-    private int Quantity;
+    private int quantity;
 
-//    필요시 사용
-//    @Column(columnDefinition = "TEXT")
-//    private String imageUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Orders orders;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Product product;
+
+
+    private boolean removed;
+
+    public void changeIsRemoved(boolean removed){
+        this.removed = removed;
+    }
 }
+

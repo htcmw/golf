@@ -1,5 +1,6 @@
 package com.reborn.golf.entity;
 
+import com.reborn.golf.entity.Enum.Role;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class Associates extends BaseEntity {
+public class Employee extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,13 +42,13 @@ public class Associates extends BaseEntity {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<MemberRole> roleSet = new HashSet<>();
+    private Set<Role> roleSet = new HashSet<>();
 
-    public void addMemberAuthority(MemberRole memberRole) {
-        roleSet.add(memberRole);
+    public void addMemberAuthority(Role role) {
+        roleSet.add(role);
     }
 
-    public Associates(String email) {
+    public Employee(String email) {
         this.email = email;
     }
 

@@ -1,8 +1,8 @@
 package com.reborn.golf.service;
 
 import com.reborn.golf.dto.MemberDto;
+import com.reborn.golf.entity.Enum.Role;
 import com.reborn.golf.entity.Member;
-import com.reborn.golf.entity.MemberRole;
 import com.reborn.golf.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,7 +30,7 @@ public class MemberServiceImpl implements MemberService {
         if (result.isEmpty()) {
             memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
             Member newMember = dtoToEntity(memberDto);
-            newMember.addMemberAuthority(MemberRole.ROLE_USER);
+            newMember.addMemberAuthority(Role.ROLE_USER);
             log.info(newMember);
             memberRepository.save(newMember);
             return true;

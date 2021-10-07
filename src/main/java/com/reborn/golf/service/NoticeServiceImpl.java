@@ -4,10 +4,9 @@ package com.reborn.golf.service;
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
+import com.reborn.golf.entity.Enum.Role;
 import com.reborn.golf.entity.Member;
-import com.reborn.golf.entity.MemberRole;
 import com.reborn.golf.entity.Notice;
-import com.reborn.golf.entity.NoticeFractionation;
 import com.reborn.golf.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -16,10 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /*
 * NoticeController, QnaController 에서 사용
@@ -75,7 +72,7 @@ public class NoticeServiceImpl implements NoticeService {
 
             log.info(notice.getWriter().getIdx().equals(writerIdx));
 
-            if(notice.getWriter().getRoleSet().contains(MemberRole.ROLE_MANAGER)
+            if(notice.getWriter().getRoleSet().contains(Role.ROLE_MANAGER)
                     || notice.getWriter().getIdx().equals(writerIdx)) {
 
                 notice.chageWriter(writerIdx);
@@ -97,7 +94,7 @@ public class NoticeServiceImpl implements NoticeService {
             Notice notice = result.get();
 
             if(notice.getWriter().getIdx().equals(writerIdx)
-                    || notice.getWriter().getRoleSet().contains(MemberRole.ROLE_ADMIN)) {
+                    || notice.getWriter().getRoleSet().contains(Role.ROLE_ADMIN)) {
 
                 notice.changeRemoved(true);
                 noticeRepository.save(notice);

@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class AssociatesDto {
+public class EmployeeDto {
 
     private Integer idx;
 

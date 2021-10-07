@@ -29,7 +29,7 @@ public interface ProductService {
 
     default ProductDto entitiesToDTO(Product product, List<ProductImage> productImages, Double avg, Long reviewCnt){
         ProductDto productDto = ProductDto.builder()
-                .pno(product.getPno())
+                .idx(product.getIdx())
                 .title(product.getTitle())
                 .brand(product.getBrand())
                 .rank(product.getRank())
@@ -62,7 +62,7 @@ public interface ProductService {
         Map<String, Object> entityMap = new HashMap<>();
 
         Product product = Product.builder()
-                .pno(productDto.getPno())
+                .idx(productDto.getIdx())
                 .title(productDto.getTitle())
                 .brand(productDto.getBrand())
                 .rank(productDto.getRank())

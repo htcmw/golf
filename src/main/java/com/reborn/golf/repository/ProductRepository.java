@@ -1,13 +1,9 @@
 package com.reborn.golf.repository;
 
-import com.reborn.golf.entity.Member;
-import com.reborn.golf.entity.Notice;
-import com.reborn.golf.entity.NoticeFractionation;
 import com.reborn.golf.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -32,16 +28,15 @@ public interface ProductRepository extends JpaRepository <Product, Long> {
             "FROM Product p " +
             "LEFT OUTER JOIN ProductImage pi ON pi.product = p " +
             "LEFT OUTER JOIN ProductReply  r ON r.product = p " +
-            "WHERE p.pno = :pno " +
+            "WHERE p.idx = :productIdx " +
             "GROUP BY pi")
-    List<Object[]> getProductWithAll(Long pno);
+    List<Object[]> getProductWithAll(Long productIdx);
 
     // 수정, 삭제 때 사용
     @Query("SELECT p " +
             "FROM Product p " +
-            "WHERE p.pno = :pno " +
+            "WHERE p.idx = :productIdx " +
             "AND p.removed = false ")
-    Optional<Product> getProductByPno(Long pno);
-
+    Optional<Product> getProductByIdx(Long productIdx);
 
 }

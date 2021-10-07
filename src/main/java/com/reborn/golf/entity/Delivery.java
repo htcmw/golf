@@ -1,5 +1,6 @@
 package com.reborn.golf.entity;
 
+import com.reborn.golf.entity.Enum.DeliveryStatus;
 import lombok.*;
 
 import javax.persistence.*;

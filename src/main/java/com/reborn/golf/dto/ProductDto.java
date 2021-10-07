@@ -1,6 +1,5 @@
 package com.reborn.golf.dto;
 
-import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,9 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductDto {
 
-    private Long pno;
-
-    private String catagory;
+    private Long idx;
 
     private String title;
 
@@ -27,9 +24,9 @@ public class ProductDto {
 
     private String rank;
 
-    private int quantity;
+    private Integer quantity;
 
-    private int price;
+    private Integer price;
 
     private String content;
 
@@ -37,14 +34,12 @@ public class ProductDto {
     @Builder.Default
     private List<ProductImageDto> imageDtoList = new ArrayList<>();
 
-    //영화의 평균 평점
-    private double avg;
+    private Double avg;
 
-    //리뷰 수 jpa의 count( )
-    private int reviewCnt;
+    private Integer reviewCnt;
 
-//    private LocalDateTime regDate;
-//
-//    private LocalDateTime modDate;
+    private LocalDateTime regDate;
+
+    private LocalDateTime modDate;
 
 }

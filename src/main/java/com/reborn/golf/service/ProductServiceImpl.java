@@ -2,8 +2,8 @@ package com.reborn.golf.service;
 
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
+import com.reborn.golf.dto.PageResultDto;
 import com.reborn.golf.dto.ProductDto;
-import com.reborn.golf.dto.ProductPageResultDto;
 import com.reborn.golf.entity.*;
 import com.reborn.golf.repository.ProductImageRepository;
 import com.reborn.golf.repository.ProductRepository;
@@ -30,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductPageResultDto<ProductDto, Object[]> getList(PageRequestDto requestDto) {
+    public PageResultDto<Object[], ProductDto> getList(PageRequestDto requestDto) {
         Pageable pageable = requestDto.getPageable(Sort.by("pno").descending());
         Page<Object[]> result = productRepository.getListPage(pageable);
 
@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
                 (Long)arr[3])
         );
 
-        return new ProductPageResultDto<>(result, fn);
+        return new PageResultDto<>(result, fn);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
             productImageRepository.save(productImage);
         });
 
-        return product.getPno();
+        return product.getIdx();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void remove(Long pno) {
-        Optional<Product> result = productRepository.getProductByPno(pno);
+        Optional<Product> result = productRepository.getProductByIdx(pno);
         if (result.isPresent()) {
             Product product = result.get();
 
@@ -99,17 +99,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void modify(Long pno, ProductDto productDto) {
 
-        Optional<Product> result = productRepository.getProductByPno(pno);
+        Optional<Product> result = productRepository.getProductByIdx(pno);
         Map<String, Object> entityMap = dtoToEntity(productDto);
         List<ProductImage> productImageList = (List<ProductImage>) entityMap.get("imgList");
 
         if (result.isPresent()) {
             Product product = result.get();
-            if (product.getPno().equals(productDto.getPno())) {
+            if (product.getIdx().equals(productDto.getIdx())) {
                 product.changeTitle(productDto.getTitle());
                 product.changeBrand(productDto.getBrand());
                 product.changeRank(productDto.getRank());
-                product.changeQuentity(productDto.getQuentity());
+                product.changeQuantity(productDto.getQuantity());
                 product.changePrice(productDto.getPrice());
                 product.changeContent(productDto.getContent());
 

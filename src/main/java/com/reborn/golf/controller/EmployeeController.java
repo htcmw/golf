@@ -1,10 +1,8 @@
 package com.reborn.golf.controller;
 
-import com.reborn.golf.dto.AssociatesDto;
-import com.reborn.golf.dto.MemberDto;
+import com.reborn.golf.dto.EmployeeDto;
 import com.reborn.golf.security.dto.AuthMemeberDto;
-import com.reborn.golf.service.AssociatesService;
-import com.reborn.golf.service.MemberService;
+import com.reborn.golf.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -18,17 +16,17 @@ import javax.validation.Valid;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/associates")
-public class AssociatesController {
+@RequestMapping("/employees")
+public class EmployeeController {
 
-    private final AssociatesService associatesService;
+    private final EmployeeService employeeService;
 
     //직원 입사
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<String> register(@RequestBody @Valid AssociatesDto associatesDto) {
-        log.info(associatesDto);
-        if (associatesService.register(associatesDto)) {
+//    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<String> register(@RequestBody @Valid EmployeeDto employeeDto) {
+        log.info(employeeDto);
+        if (employeeService.register(employeeDto)) {
             return new ResponseEntity<>("Success", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("The same email already exists.", HttpStatus.BAD_REQUEST);
@@ -38,19 +36,19 @@ public class AssociatesController {
     //직원 정보 조회
     @GetMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<AssociatesDto> read(@AuthenticationPrincipal AuthMemeberDto authMemeberDto) {
+    public ResponseEntity<EmployeeDto> read(@AuthenticationPrincipal AuthMemeberDto authMemeberDto) {
         Integer idx = authMemeberDto.getIdx();
         log.info(idx);
-        AssociatesDto associatesDto = associatesService.read(idx);
-        return new ResponseEntity<>(associatesDto, HttpStatus.OK);
+        EmployeeDto employeeDto = employeeService.read(idx);
+        return new ResponseEntity<>(employeeDto, HttpStatus.OK);
     }
 
     //직원 정보 수정
     @PutMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid AssociatesDto associatesDto) throws Exception {
+    public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid EmployeeDto employeeDto) throws Exception {
         Integer idx = authMemeberDto.getIdx();
-        associatesService.modify(idx, associatesDto);
+        employeeService.modify(idx, employeeDto);
         return new ResponseEntity<>("Success", HttpStatus.OK);
 
     }
@@ -60,10 +58,8 @@ public class AssociatesController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<String> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto) {
         Integer idx = authMemeberDto.getIdx();
-        associatesService.remove(idx);
+        employeeService.remove(idx);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
-
-
 
 }

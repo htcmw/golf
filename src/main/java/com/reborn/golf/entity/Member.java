@@ -1,12 +1,10 @@
 package com.reborn.golf.entity;
 
+import com.reborn.golf.entity.Enum.Role;
 import lombok.*;
-import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -42,10 +40,10 @@ public class Member extends BaseEntity{
 
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<MemberRole> roleSet = new HashSet<>();
+    private Set<Role> roleSet = new HashSet<>();
 
-    public void addMemberAuthority(MemberRole memberRole){
-        roleSet.add(memberRole);
+    public void addMemberAuthority(Role role){
+        roleSet.add(role);
     }
 
     public void changeName(String name){

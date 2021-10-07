@@ -16,7 +16,7 @@ public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pno;
+    private Long idx;
 
     private String title;
 
@@ -24,9 +24,9 @@ public class Product extends BaseEntity {
 
     private String rank;
 
-    private int quantity;
+    private Integer quantity;
 
-    private int price;
+    private Integer price;
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -44,7 +44,6 @@ public class Product extends BaseEntity {
     public void changeRank(String rank) {
         this.rank = rank;
     }
-
     public void changeQuantity(int quantity) {
         this.quantity = quantity;
     }
