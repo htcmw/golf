@@ -30,8 +30,6 @@ public class NoticeDto {
 
     private String name;
 
-    private List<NoticeDto> answer;
-
     private LocalDateTime regDate;
 
     private LocalDateTime modDate;

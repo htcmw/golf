@@ -26,10 +26,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         Optional<Employee> result = employeeRepository.getAssociatesByEmailAndRemovedFalse(employeeDto.getEmail());
 
         //추가 1. 삭제된 정보의 경우 언제부터 다시 회원가입 가능한지 조건 필요
+
         if (result.isEmpty()) {
             employeeDto.setPassword(passwordEncoder.encode(employeeDto.getPassword()));
             Employee newEmployee = dtoToEntity(employeeDto);
-            newEmployee.addMemberAuthority(Role.ROLE_USER);
+            newEmployee.addMemberAuthority(Role.ROLE_MANAGER);
             log.info(newEmployee);
             employeeRepository.save(newEmployee);
             return true;

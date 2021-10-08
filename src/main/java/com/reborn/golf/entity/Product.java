@@ -1,6 +1,5 @@
 package com.reborn.golf.entity;
 
-import com.reborn.golf.entity.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,6 +29,9 @@ public class Product extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
     private String content;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<ProductImage> productImages;
 
     private boolean removed;
 

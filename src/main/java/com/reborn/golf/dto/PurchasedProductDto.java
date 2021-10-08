@@ -1,6 +1,6 @@
 package com.reborn.golf.dto;
 
-import com.reborn.golf.entity.PurchasedItemsImage;
+import com.reborn.golf.entity.PurchasedProductImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PurchasedItemsDto {
+public class PurchasedProductDto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -39,7 +39,7 @@ public class PurchasedItemsDto {
 
     // 이미지 생성
     @Builder.Default
-    private List<PurchasedItemsImage> imageDtoList = new ArrayList<>();
+    private List<PurchasedProductImage> imageDtoList = new ArrayList<>();
 
     private boolean finished;
 

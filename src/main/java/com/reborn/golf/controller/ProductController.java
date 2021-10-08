@@ -43,7 +43,7 @@ public class ProductController {
 
     // 제품 상세 페이지
     @GetMapping("/{pno}")
-    public ResponseEntity<ProductDto> detail(@PathVariable Long pno) {
+    public ResponseEntity<ProductDto> read(@PathVariable Long pno) {
 
         ProductDto productDto = productService.detail(pno);
 

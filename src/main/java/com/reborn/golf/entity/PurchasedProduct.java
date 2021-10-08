@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 @Builder
-public class PurchasedItems extends BaseEntity {
+public class PurchasedProduct extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,17 +31,15 @@ public class PurchasedItems extends BaseEntity {
 
     private String details;
 
-    @Column(name = "is_finished")
     private boolean finished;
 
-    @Column(name = "is_canceled")
     private boolean canceled;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToMany(mappedBy = "purchasedItems",  orphanRemoval = true, cascade = CascadeType.ALL)
-    List<PurchasedItemsImage> purchasedItemsImages;
+    @OneToMany(mappedBy = "purchasedProduct",  orphanRemoval = true, cascade = CascadeType.ALL)
+    List<PurchasedProductImage> purchasedProductImages;
 
 
     public void changeCatagory(String catagory) {

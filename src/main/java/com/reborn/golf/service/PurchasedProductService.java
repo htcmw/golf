@@ -2,28 +2,24 @@ package com.reborn.golf.service;
 
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
-import com.reborn.golf.dto.ProductDto;
-import com.reborn.golf.dto.PurchasedItemsDto;
+import com.reborn.golf.dto.PurchasedProductDto;
 import com.reborn.golf.entity.Member;
-import com.reborn.golf.entity.PurchasedItems;
-import com.reborn.golf.entity.PurchasedItemsImage;
+import com.reborn.golf.entity.PurchasedProduct;
 
-import java.util.List;
+public interface PurchasedProductService {
 
-public interface PurchasedItemsService {
+    PageResultDto<PurchasedProduct, PurchasedProductDto> getList(Integer memberIdx, PageRequestDto requestDto);
 
-    PageResultDto<PurchasedItems, PurchasedItemsDto> getList(Integer memberIdx, PageRequestDto requestDto);
+    Long register(Integer memberIdx, PurchasedProductDto purchasedProductDto);
 
-    Long register(Integer memberIdx, PurchasedItemsDto purchasedItemsDto);
+    PurchasedProductDto read(Integer memberIdx, Long purchasedItemsIdx);
 
-    PurchasedItemsDto read(Integer memberIdx, Long purchasedItemsIdx);
-
-    Long modify(Integer memberIdx, PurchasedItemsDto purchasedItemsDto);
+    Long modify(Integer memberIdx, PurchasedProductDto purchasedProductDto);
 
     Long remove(Integer memberIdx, Long purchasedItemsIdx);
 
-    default PurchasedItems dtoToEntity(Integer memberIdx, PurchasedItemsDto itemsDto){
-        return PurchasedItems.builder()
+    default PurchasedProduct dtoToEntity(Integer memberIdx, PurchasedProductDto itemsDto){
+        return PurchasedProduct.builder()
                 .idx(itemsDto.getIdx())
                 .catagory(itemsDto.getCatagory())
                 .name(itemsDto.getName())
@@ -33,14 +29,14 @@ public interface PurchasedItemsService {
                 .quentity(itemsDto.getQuentity())
                 .details(itemsDto.getDetails())
                 .member(Member.builder().idx(memberIdx).build())
-                .purchasedItemsImages(itemsDto.getImageDtoList())
+                .purchasedProductImages(itemsDto.getImageDtoList())
                 .canceled(itemsDto.isCanceled())
                 .finished(itemsDto.isFinished())
                 .build();
     }
 
-    default PurchasedItemsDto entityToDto(PurchasedItems items) {
-        return PurchasedItemsDto.builder()
+    default PurchasedProductDto entityToDto(PurchasedProduct items) {
+        return PurchasedProductDto.builder()
                 .idx(items.getIdx())
                 .catagory(items.getCatagory())
                 .name(items.getName())
@@ -48,7 +44,7 @@ public interface PurchasedItemsService {
                 .canceled(items.isCanceled())
                 .details(items.getDetails())
                 .finished(items.isFinished())
-                .imageDtoList(items.getPurchasedItemsImages())
+                .imageDtoList(items.getPurchasedProductImages())
                 .memberEmail(items.getMember().getEmail())
                 .memberName(items.getMember().getName())
                 .build();

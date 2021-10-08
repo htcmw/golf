@@ -70,10 +70,7 @@ public class NoticeServiceImpl implements NoticeService {
         if (result.isPresent()) {
             Notice notice = result.get();
 
-            log.info(notice.getWriter().getIdx().equals(writerIdx));
-
-            if(notice.getWriter().getRoleSet().contains(Role.ROLE_MANAGER)
-                    || notice.getWriter().getIdx().equals(writerIdx)) {
+            if(notice.getWriter().getRoleSet().contains(Role.ROLE_MANAGER) || notice.getWriter().getIdx().equals(writerIdx)) {
 
                 notice.chageWriter(writerIdx);
                 notice.changeTitle(noticeDto.getTitle());

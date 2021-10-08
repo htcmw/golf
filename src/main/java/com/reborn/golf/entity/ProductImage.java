@@ -1,5 +1,6 @@
 package com.reborn.golf.entity;
 
+import com.reborn.golf.dto.ProductImageDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,6 +23,17 @@ public class ProductImage  {
 
     private String path;
 
+    public ProductImageDto ProductImageDto(){
+        return ProductImageDto.builder()
+                .uuid(this.getUuid())
+                .imgName(this.getImgName())
+                .path(this.getPath())
+                .build();
+    }
+
     @ManyToOne(fetch = FetchType.LAZY) //무조건 lazy로
     private Product product;
+
+
+
 }

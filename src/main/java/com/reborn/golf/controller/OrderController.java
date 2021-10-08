@@ -1,6 +1,7 @@
 package com.reborn.golf.controller;
 
 import com.reborn.golf.dto.*;
+import com.reborn.golf.entity.Orders;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -21,19 +22,19 @@ public class OrderController {
 
     // 주문 정보 불러오기
     @GetMapping
-    public ResponseEntity<PageResultDto<Object[], OrderDto>> getListWithUser(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, PageRequestDto pageRequestDto) {
+    public ResponseEntity<PageResultDto<Orders, OrdersDto>> getListWithUser(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, PageRequestDto pageRequestDto) {
         Integer memberIdx = authMemeberDto.getIdx();
 
-        PageResultDto<Object[], OrderDto> orderDtoList = orderService.getListWithUser(memberIdx, pageRequestDto);
+        PageResultDto<Orders, OrdersDto> orderDtoList = orderService.getListWithUser(memberIdx, pageRequestDto);
         log.info(orderDtoList);
         return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
     }
 
     // 주문 정보 불러오기
     @PostMapping
-    public ResponseEntity<Long> order(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, OrderDto orderDto) {
+    public ResponseEntity<Long> order(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, OrdersDto ordersDto) {
         Integer memberIdx = authMemeberDto.getIdx();
-        Long idx = orderService.order(memberIdx, orderDto);
+        Long idx = orderService.order(memberIdx, ordersDto);
         log.info(idx);
         return new ResponseEntity<>(idx, HttpStatus.OK);
     }
@@ -45,12 +46,20 @@ public class OrderController {
         log.info(idx);
         return new ResponseEntity<>(idx, HttpStatus.OK);
     }
+//
+//    @PostMapping("/carts")
+//    public ResponseEntity<Long> orderWithCart(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, CartListDto cartListDto) {
+//        Integer memberIdx = authMemeberDto.getIdx();
+//        Long idx = orderService.orderFromCart(memberIdx, cartListDto);
+//        log.info(idx);
+//        return new ResponseEntity<>(idx, HttpStatus.OK);
+//    }
 
 
     @GetMapping("/permit")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<PageResultDto<Object[], OrderDto>> getProcessingOrder(PageRequestDto pageRequestDto) {
-        PageResultDto<Object[], OrderDto> orderDtoList = orderService.getList(pageRequestDto);
+    public ResponseEntity<PageResultDto<Orders, OrdersDto>> getProcessingOrder(PageRequestDto pageRequestDto) {
+        PageResultDto<Orders, OrdersDto> orderDtoList = orderService.getList(pageRequestDto);
         log.info(orderDtoList);
         return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
     }

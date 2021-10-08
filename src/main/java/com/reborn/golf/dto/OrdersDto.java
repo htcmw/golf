@@ -13,13 +13,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class OrderDto {
+public class OrdersDto {
 
     private Long idx;
 
     private Integer totalPrice;
 
-    private String buyer;
+    private String email;
+
+    private String name;
 
     private String address;
 

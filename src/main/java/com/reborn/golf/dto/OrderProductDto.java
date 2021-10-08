@@ -1,6 +1,10 @@
 package com.reborn.golf.dto;
 
+import com.reborn.golf.entity.ProductImage;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -9,11 +13,16 @@ import lombok.*;
 @ToString
 public class OrderProductDto {
     private Long orderProductIdx;
-
-    private Long productIdx;
-
+    private Integer price;
     private Integer quentity;
 
-    private Integer price;
+    private Long productIdx;
+    private String title;
+    private String brand;
+    private String rank;
+    private String content;
+
+    @Builder.Default
+    private List<ProductImageDto> imageDtoList = new ArrayList<>();
 
 }

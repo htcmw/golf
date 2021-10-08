@@ -10,8 +10,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@ToString(exclude = "purchasedItems")
-public class PurchasedItemsImage {
+@ToString(exclude = "purchasedProduct")
+public class PurchasedProductImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,5 +24,5 @@ public class PurchasedItemsImage {
     private String path;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private PurchasedItems purchasedItems;
+    private PurchasedProduct purchasedProduct;
 }
