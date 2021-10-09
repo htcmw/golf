@@ -3,6 +3,7 @@ package com.reborn.golf.controller;
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
+import com.reborn.golf.dto.QnaDto;
 import com.reborn.golf.entity.NoticeFractionation;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.NoticeService;
@@ -46,8 +47,8 @@ public class QnaController {
     //등록
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
     @PostMapping
-    public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
-        Long num = noticeService.register(authMemeberDto.getIdx(), noticeDto);
+    public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid QnaDto QnaDto) {
+        Long num = noticeService.register(authMemeberDto.getIdx(), QnaDto);
         return new ResponseEntity<>(num, HttpStatus.OK);
     }
 

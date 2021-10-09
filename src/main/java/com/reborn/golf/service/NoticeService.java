@@ -4,9 +4,11 @@ package com.reborn.golf.service;
 import com.reborn.golf.dto.NoticeDto;
 import com.reborn.golf.dto.PageRequestDto;
 import com.reborn.golf.dto.PageResultDto;
+import com.reborn.golf.dto.QnaDto;
 import com.reborn.golf.entity.Member;
 import com.reborn.golf.entity.Notice;
 import com.reborn.golf.entity.NoticeFractionation;
+import com.reborn.golf.entity.Qna;
 
 
 public interface NoticeService {
@@ -15,46 +17,45 @@ public interface NoticeService {
 
     NoticeDto read(Long noticeIdx);
 
-    Long register(Integer writerIdx, NoticeDto noticeDto);
+    Long register(Integer writerIdx, QnaDto qnaDto);
 
-    Long modify(Integer writerIdx, NoticeDto noticeDto);
+    Long modify(Integer writerIdx, QnaDto qnaDto);
 
-    Long remove(Integer memberIdx, Long noticeIdx);
+    Long remove(Integer memberIdx, Long qnaIdx);
 
-    default NoticeDto entityToDto(Notice notice){
+    default NoticeDto entityToDto(Qna qna){
         return NoticeDto.builder()
-                .idx(notice.getIdx())
-                .title(notice.getTitle())
-                .content(notice.getContent())
-                .modDate(notice.getModDate())
-                .regDate(notice.getRegDate())
-                .views(notice.getViews())
-                .email(notice.getWriter().getEmail())
-                .name(notice.getWriter().getName())
+                .idx(qna.getIdx())
+                .title(qna.getTitle())
+                .content(qna.getContent())
+                .modDate(qna.getModDate())
+                .regDate(qna.getRegDate())
+                .views(qna.getViews())
+                .email(qna.getWriter().getEmail())
+                .name(qna.getWriter().getName())
                 .build();
     }
 
-    default NoticeDto entityToDto(Notice notice, Member member){
-        return NoticeDto.builder()
-                .idx(notice.getIdx())
-                .title(notice.getTitle())
-                .content(notice.getContent())
-                .modDate(notice.getModDate())
-                .regDate(notice.getRegDate())
-                .views(notice.getViews())
+    default QnaDto entityToDto(Qna qna, Member member){
+        return QnaDto.builder()
+                .idx(qna.getIdx())
+                .title(qna.getTitle())
+                .content(qna.getContent())
+                .modDate(qna.getModDate())
+                .regDate(qna.getRegDate())
+                .views(qna.getViews())
                 .email(member.getEmail())
                 .name(member.getName())
                 .build();
     }
 
-    default Notice dtoToEntity(NoticeDto noticeDto, Integer writerIdx){
-        return Notice.builder()
-                .idx(noticeDto.getIdx())
-                .title(noticeDto.getTitle())
-                .content(noticeDto.getContent())
+    default Qna dtoToEntity(QnaDto qnaDto, Integer writerIdx){
+        return Qna.builder()
+                .idx(qnaDto.getIdx())
+                .title(qnaDto.getTitle())
+                .content(qnaDto.getContent())
                 .writer(Member.builder().idx(writerIdx).build())
-                .writer(Member.builder().idx(writerIdx).build())
-                .views(noticeDto.getViews())
+                .views(qnaDto.getViews())
                 .build();
     }
 
