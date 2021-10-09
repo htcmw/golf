@@ -1,5 +1,6 @@
 package com.reborn.golf.service;
 
+import com.reborn.golf.dto.kakaopay.KakaoPayApprovalDto;
 import com.reborn.golf.dto.kakaopay.KakaoPayRequestDto;
 import com.reborn.golf.dto.kakaopay.KakaoPayResponseDto;
 import lombok.extern.log4j.Log4j2;
@@ -59,7 +60,6 @@ public class ChargeServiceImpl implements ChargeService{
             return kakaoPayResponseDto.getNext_redirect_pc_url();
 
         } catch (RestClientException | URISyntaxException e) {
-
             log.info(e.getMessage());
         }
 
@@ -67,13 +67,13 @@ public class ChargeServiceImpl implements ChargeService{
     }
 
     @Override
-    public String approvePayment(String pgToken) {
+    public KakaoPayApprovalDto approvePayment(String pgToken) {
 
         RestTemplate restTemplate = new RestTemplate();
 
         // 서버로 요청할 Header
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "KakaoAK " + "admin key를 넣어주세요~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!");
+        headers.add("Authorization", "KakaoAK " + "d9b58db600786919de1739863953c201");
         headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
         // 서버로 요청할 Body
@@ -88,20 +88,13 @@ public class ChargeServiceImpl implements ChargeService{
         HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
 
         try {
-            kakaoPayApprovalVO = restTemplate.postForObject(new URI(HOST + "/v1/payment/approve"), body, KakaoPayApprovalVO.class);
-            log.info("" + kakaoPayApprovalVO);
+            KakaoPayApprovalDto kakaoPayApprovalDto = restTemplate.postForObject(new URI(HOST + "/v1/payment/approve"), body, KakaoPayApprovalDto.class);
+            log.info(kakaoPayApprovalDto);
+            return kakaoPayApprovalDto;
 
-            return kakaoPayApprovalVO;
-
-        } catch (RestClientException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (RestClientException | URISyntaxException e) {
+            log.info(e.getMessage());
         }
-
-        return null;
         return null;
     }
 }
