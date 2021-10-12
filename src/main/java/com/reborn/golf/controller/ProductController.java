@@ -10,10 +10,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-@RestController
-@RequestMapping("/product")
 @Log4j2
+@RestController
+@RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
 

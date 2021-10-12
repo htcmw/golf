@@ -29,17 +29,16 @@ public interface ProductService {
     // 제품 정보 삭제
     void remove(Long pno);
 
-    default ProductDto entitiesToDTO(Product product, List<ProductImage> productImages, Double avg, Long reviewCnt){
+    default ProductDto entityToDto(Product product, List<ProductImage> productImages, Double avg, Long reviewCnt){
         ProductDto productDto = ProductDto.builder()
                 .idx(product.getIdx())
                 .title(product.getTitle())
                 .brand(product.getBrand())
-                .rank(product.getRank())
                 .quantity(product.getQuantity())
                 .price(product.getPrice())
                 .content(product.getContent())
-//                .regDate(product.getRegDate())
-//                .modDate(product.getModDate())
+                .regDate(product.getRegDate())
+                .modDate(product.getModDate())
                 .build();
 
         List<ProductImageDto> productImageDtoList = productImages.stream().map(productImage -> {
@@ -67,7 +66,6 @@ public interface ProductService {
                 .idx(productDto.getIdx())
                 .title(productDto.getTitle())
                 .brand(productDto.getBrand())
-                .rank(productDto.getRank())
                 .quantity(productDto.getQuantity())
                 .price(productDto.getPrice())
                 .content(productDto.getContent())

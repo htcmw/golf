@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <!-- iamport.payment.js -->
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+    <script th:inline="javascript">
+        function payment() {
+            var IMP = window.IMP; // 생략가능
+            IMP.init('imp38404270');
+
+            IMP.request_pay({
+                pg: 'kakaopay',
+                pay_method: 'card',
+                merchant_uid: new Date().getTime(),
+                name: "주문이름",
+                amount: 10000,           // 상품 가격
+                buyer_email: "gildong@gmail.com",
+                buyer_name: "유저이름",
+                buyer_addr: "유저주소",
+                buyer_tel: "010-4242-4242",
+                buyer_postcode: "01181"
+            }, function (rsp) {
+                var msg = "";
+                if (rsp.success) {
+                    var paymentSuccessData = {
+                        impUid: rsp.imp_uid,
+                        orderNumber: rsp.merchant_uid,
+                        userId: "유저 번호",
+                        email: "유저 이메일",
+                        buyerName: "유저 이름",
+                        orderName: "주문 이름",
+                        deliveryMessage: "배달메세지",
+                        address: "유저 주소",
+                        amount: "주문 수량",
+                        useSavings: "포인트",
+                        orderProductList: [
+                            {
+                                "productIdx": 1,
+                                "quentity": 1
+                            },
+                            {
+                                "productIdx": 1,
+                                "quentity": 1
+                            }]
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/payment/success",
+                        contentType: "application/json",
+                        data: JSON.stringify(paymentSuccessData),
+                        success: function (data) {
+                            alert(성공);
+                            console.log(data)
+                            alert(msg);
+                        },
+                        error: function (e) {
+                            alert(e.responseText);
+                        }
+                    })
+                } else {
+                    msg += '결제에 실패하였습니다.\n';
+                    msg += '에러내용 : ' + rsp.error_msg;
+                    alert(msg);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<button name="payment" value="결제하기" onclick="payment()"></button>
+
+</body>
+</html>

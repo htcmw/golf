@@ -29,7 +29,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public PageResultDto<Object[], ProductDto> getList(PageRequestDto requestDto) {
-        Pageable pageable = requestDto.getPageable(Sort.by("pno").descending());
+        Pageable pageable = requestDto.getPageable(Sort.by("regDate").descending());
         Page<Object[]> result = productRepository.getListPage(pageable);
 
         log.info("==============================================");
@@ -37,11 +37,8 @@ public class ProductServiceImpl implements ProductService {
             log.info(Arrays.toString(arr));
         });
 
-        Function<Object[], ProductDto> fn = (arr -> entitiesToDTO(
-                (Product) arr[0] ,
-                (List<ProductImage>)(Arrays.asList((ProductImage)arr[1])),
-                (Double) arr[2],
-                (Long)arr[3])
+        Function<Object[], ProductDto> fn =
+                (arr -> entityToDto((Product) arr[0] ,(List<ProductImage>)(Arrays.asList((ProductImage)arr[1])),(Double) arr[2], (Long)arr[3])
         );
 
         return new PageResultDto<>(result, fn);
@@ -80,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
         Double avg = (Double) result.get(0)[2];
         Long reviewCnt = (Long) result.get(0)[3];
 
-        return entitiesToDTO(product, productImageList, avg, reviewCnt);
+        return entityToDto(product, productImageList, avg, reviewCnt);
     }
 
     @Override
@@ -106,7 +103,6 @@ public class ProductServiceImpl implements ProductService {
             if (product.getIdx().equals(productDto.getIdx())) {
                 product.changeTitle(productDto.getTitle());
                 product.changeBrand(productDto.getBrand());
-                product.changeRank(productDto.getRank());
                 product.changeQuantity(productDto.getQuantity());
                 product.changePrice(productDto.getPrice());
                 product.changeContent(productDto.getContent());

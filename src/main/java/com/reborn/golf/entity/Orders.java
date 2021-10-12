@@ -54,9 +54,10 @@ public class Orders extends BaseEntity {
     @ManyToOne (fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToMany (fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany (fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "orders")
     private List<OrderProduct> orderProducts;
-    @OneToOne (fetch = FetchType.LAZY)
+
+    @OneToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Delivery delivery;
 
     private boolean removed;
@@ -86,7 +87,6 @@ public class Orders extends BaseEntity {
                     .productIdx(product.getIdx())
                     .title(product.getTitle())
                     .brand(product.getBrand())
-                    .rank(product.getRank())
                     .content(product.getContent())
                     .imageDtoList(productImageDtoList)
                     .build();

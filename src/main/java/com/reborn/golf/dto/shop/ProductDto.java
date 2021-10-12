@@ -22,8 +22,6 @@ public class ProductDto {
 
     private String brand;
 
-    private String rank;
-
     private Integer quantity;
 
     private Integer price;

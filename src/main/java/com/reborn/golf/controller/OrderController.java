@@ -34,29 +34,22 @@ public class OrderController {
 
     // 주문 정보 불러오기
     @PostMapping
-    public ResponseEntity<String> order(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, OrdersDto ordersDto) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<String> order(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody OrdersDto ordersDto) {
         Integer memberIdx = authMemeberDto.getIdx();
+        log.info("here");
         String url = orderService.order(memberIdx, ordersDto);
-        log.info(url);
         return new ResponseEntity<>(url, HttpStatus.OK);
     }
 
     @DeleteMapping("/{idx}")
-    public ResponseEntity<Long> cancel(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long orderIdx) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Long> cancel(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long idx) {
         Integer memberIdx = authMemeberDto.getIdx();
-        Long idx = orderService.cancel(memberIdx, orderIdx);
-        log.info(idx);
-        return new ResponseEntity<>(idx, HttpStatus.OK);
+        Long num = orderService.cancel(memberIdx, idx);
+        log.info(num);
+        return new ResponseEntity<>(num, HttpStatus.OK);
     }
-//
-//    @PostMapping("/carts")
-//    public ResponseEntity<Long> orderWithCart(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, CartListDto cartListDto) {
-//        Integer memberIdx = authMemeberDto.getIdx();
-//        Long idx = orderService.orderFromCart(memberIdx, cartListDto);
-//        log.info(idx);
-//        return new ResponseEntity<>(idx, HttpStatus.OK);
-//    }
-
 
     @GetMapping("/permit")
     @PreAuthorize("hasRole('ROLE_MANAGER')")

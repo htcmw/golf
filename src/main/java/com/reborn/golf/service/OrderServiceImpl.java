@@ -30,7 +30,13 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderProductService orderProductService;
-    private final ChargeService chargeService;
+
+    @Override
+    public PageResultDto<Orders, OrdersDto> getListWithUser(Integer memberIdx, PageRequestDto pageRequestDto) {
+        Page<Orders> result = orderRepository.getOrdersByMemberIdxAndRemovedFalse(memberIdx, pageRequestDto.getPageable(Sort.by("regDate").descending()));
+        Function<Orders, OrdersDto> function = (this::entityToDto);
+        return new PageResultDto<>(result, function);
+    }
 
     @Override
     @Transactional
@@ -41,15 +47,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageResultDto<Orders, OrdersDto> getListWithUser(Integer memberIdx, PageRequestDto pageRequestDto) {
-        Page<Orders> result = orderRepository.getOrdersByMemberIdxAndRemovedFalse(memberIdx, pageRequestDto.getPageable(Sort.by("idx").descending()));
-        Function<Orders, OrdersDto> function = (this::entityToDto);
-        return new PageResultDto<>(result, function);
-    }
-
-    @Override
     @Transactional
     public String order(Integer memberIdx, OrdersDto ordersDto) {
+        log.info(ordersDto);
         List<OrderProduct> orderProducts = orderProductService.makeOrderProduct(ordersDto.getOrderProductList());
 
         Member member = Member.builder().idx(memberIdx).build();
@@ -63,30 +63,22 @@ public class OrderServiceImpl implements OrderService {
         String partnerOrderId = LocalDate.now() + UUID.randomUUID().toString();
 
         Integer taxFreeAmount = 0;
-        try {
-            KakaoPayResponseDto kakaoPayResponseDto = chargeService.readyPayment(partnerOrderId, member.getEmail(), itemName, orderProducts.size(), totalPrice, taxFreeAmount);
 
-            Orders orders = Orders.builder()
-                    .orderState(OrderStatus.ORDER)
-                    .member(member)
-                    .delivery(delivery)
-                    .orderProducts(orderProducts)
-                    .partnerOrderId(partnerOrderId)
-                    .tid(kakaoPayResponseDto.getTid())
-                    .totalPrice(totalPrice)
-                    .taxFreeAmount(taxFreeAmount)
-                    .orderProductsCount(orderProducts.size())
-                    .chargeCreatedAt(kakaoPayResponseDto.getCreated_at())
-                    .build();
+        Orders orders = Orders.builder()
+                .orderState(OrderStatus.ORDER)
+                .member(member)
+                .delivery(delivery)
+                .orderProducts(orderProducts)
+                .partnerOrderId(partnerOrderId)
+                .totalPrice(totalPrice)
+                .taxFreeAmount(taxFreeAmount)
+                .orderProductsCount(orderProducts.size())
+                .build();
 
-            orderRepository.save(orders);
+        orderRepository.save(orders);
 
-            return kakaoPayResponseDto.getNext_redirect_pc_url();
-
-        } catch (URISyntaxException | RestClientException e) {
-            e.printStackTrace();
-        }
-        return null;
+        log.info(orders);
+        return orders.getIdx().toString();
 
     }
 
@@ -98,16 +90,11 @@ public class OrderServiceImpl implements OrderService {
 
         if (optionalOrders.isPresent()) {
             Orders orders = optionalOrders.get();
-            try {
-                chargeService.cancelPayment(orders);
-                orders.changeIsRemoved(false);
-                orderProductService.removeOrderProduct(orders.getOrderProducts());
+            orders.changeIsRemoved(true);
+            orderProductService.removeOrderProduct(orders.getOrderProducts());
+            orderRepository.save(orders);
 
-                return orders.getIdx();
-
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+            return orders.getIdx();
         }
         return null;
     }

@@ -34,10 +34,12 @@ public class ProductUploadController {
     @Value("${com.reborn.golf.path}")
     private String uploadPath;
 
-    @PostMapping("/uploadAjax")
+    @PostMapping("/img")
     public ResponseEntity<List<ImageUploadResultDto>> uploadFile(MultipartFile[] uploadFiles){
 
         List<ImageUploadResultDto> resultDTOList = new ArrayList<>();
+
+        log.info(uploadFiles);
 
         for (MultipartFile uploadFile: uploadFiles) {
 

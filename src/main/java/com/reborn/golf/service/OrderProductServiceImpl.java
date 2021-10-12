@@ -8,6 +8,7 @@ import com.reborn.golf.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class OrderProductServiceImpl implements OrderProductService{
 
         List<OrderProduct> orderProducts = new ArrayList<>();
 
+        log.info(orderProductList);
         for (OrderProductDto orderProductDto : orderProductList) {
 
             Optional<Product> optionalProduct = productRepository.getProductByIdx(orderProductDto.getProductIdx());
@@ -39,13 +41,9 @@ public class OrderProductServiceImpl implements OrderProductService{
                         .quantity(orderProductDto.getQuentity())
                         .product(product)
                         .build();
+
                 orderProductRepository.save(orderProduct);
-
-
                 orderProducts.add(orderProduct);
-            }
-            else{
-                throw new RuntimeException();
             }
         }
         return orderProducts;
@@ -54,7 +52,7 @@ public class OrderProductServiceImpl implements OrderProductService{
     public void removeOrderProduct(List<OrderProduct> orderProducts){
 
         for(OrderProduct orderProduct : orderProducts){
-            orderProduct.changeIsRemoved(false);
+            orderProduct.changeIsRemoved(true);
 
             Optional<Product> optionalProduct = productRepository.getProductByIdx(orderProduct.getIdx());
             if(optionalProduct.isPresent()){
