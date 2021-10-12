@@ -1,6 +1,6 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.EmployeeDto;
+import com.reborn.golf.dto.user.EmployeeDto;
 import com.reborn.golf.entity.Employee;
 import com.reborn.golf.entity.Enum.Role;
 import com.reborn.golf.repository.EmployeeRepository;

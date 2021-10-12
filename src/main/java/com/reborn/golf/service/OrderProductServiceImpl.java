@@ -1,6 +1,6 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.OrderProductDto;
+import com.reborn.golf.dto.shop.OrderProductDto;
 import com.reborn.golf.entity.OrderProduct;
 import com.reborn.golf.entity.Product;
 import com.reborn.golf.repository.OrderProductRepository;
@@ -43,6 +43,9 @@ public class OrderProductServiceImpl implements OrderProductService{
 
 
                 orderProducts.add(orderProduct);
+            }
+            else{
+                throw new RuntimeException();
             }
         }
         return orderProducts;

@@ -1,6 +1,6 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.MemberDto;
+import com.reborn.golf.dto.user.MemberDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

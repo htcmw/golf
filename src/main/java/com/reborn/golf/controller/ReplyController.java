@@ -1,8 +1,8 @@
 package com.reborn.golf.controller;
 
-import com.reborn.golf.dto.PageRequestDto;
-import com.reborn.golf.dto.PageResultDto;
-import com.reborn.golf.dto.ReplyDto;
+import com.reborn.golf.dto.common.PageRequestDto;
+import com.reborn.golf.dto.common.PageResultDto;
+import com.reborn.golf.dto.common.ReplyDto;
 import com.reborn.golf.entity.Reply;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.ReplyService;

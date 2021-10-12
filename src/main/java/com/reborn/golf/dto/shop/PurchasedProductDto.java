@@ -1,4 +1,4 @@
-package com.reborn.golf.dto;
+package com.reborn.golf.dto.shop;
 
 import com.reborn.golf.entity.PurchasedProductImage;
 import lombok.AllArgsConstructor;

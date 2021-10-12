@@ -1,7 +1,7 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.CartDto;
-import com.reborn.golf.dto.CartListDto;
+import com.reborn.golf.dto.shop.CartDto;
+import com.reborn.golf.dto.shop.CartListDto;
 
 public interface CartService {
     CartListDto getList(Integer memberIdx);

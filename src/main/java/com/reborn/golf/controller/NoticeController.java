@@ -1,9 +1,8 @@
 package com.reborn.golf.controller;
 
-import com.reborn.golf.dto.NoticeDto;
-import com.reborn.golf.dto.PageRequestDto;
-import com.reborn.golf.dto.PageResultDto;
-import com.reborn.golf.entity.NoticeFractionation;
+import com.reborn.golf.dto.customerservice.NoticeDto;
+import com.reborn.golf.dto.common.PageRequestDto;
+import com.reborn.golf.dto.common.PageResultDto;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.NoticeService;
 import lombok.RequiredArgsConstructor;

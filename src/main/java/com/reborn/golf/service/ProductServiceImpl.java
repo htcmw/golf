@@ -1,9 +1,8 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.NoticeDto;
-import com.reborn.golf.dto.PageRequestDto;
-import com.reborn.golf.dto.PageResultDto;
-import com.reborn.golf.dto.ProductDto;
+import com.reborn.golf.dto.common.PageRequestDto;
+import com.reborn.golf.dto.common.PageResultDto;
+import com.reborn.golf.dto.shop.ProductDto;
 import com.reborn.golf.entity.*;
 import com.reborn.golf.repository.ProductImageRepository;
 import com.reborn.golf.repository.ProductRepository;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2

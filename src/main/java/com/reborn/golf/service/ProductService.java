@@ -1,7 +1,9 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.*;
-
+import com.reborn.golf.dto.common.PageRequestDto;
+import com.reborn.golf.dto.common.PageResultDto;
+import com.reborn.golf.dto.shop.ProductDto;
+import com.reborn.golf.dto.shop.ProductImageDto;
 import com.reborn.golf.entity.Product;
 import com.reborn.golf.entity.ProductImage;
 

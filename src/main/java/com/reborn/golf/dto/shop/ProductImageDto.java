@@ -1,23 +1,29 @@
-package com.reborn.golf.dto;
+package com.reborn.golf.dto.shop;
+
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 @Data
 @AllArgsConstructor
-public class ImageUploadResultDto implements Serializable {
+@NoArgsConstructor
+@Builder
+public class ProductImageDto {
 
-    private String fileName;
     private String uuid;
-    private String folderPath;
+
+    private String imgName;
+
+    private String path;
 
     public String getImageURL(){
         try {
-            return URLEncoder.encode(folderPath+"/"+uuid+"_"+fileName,"UTF-8");
+            return URLEncoder.encode(path+"/"+uuid+"_"+imgName,"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -26,11 +32,11 @@ public class ImageUploadResultDto implements Serializable {
 
     public String getThumbnailURL(){
         try {
-            return URLEncoder.encode(folderPath+"/s_"+uuid+"_"+fileName,"UTF-8");
+            return URLEncoder.encode(path+"/s_"+uuid+"_"+imgName,"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return "";
     }
-
 }
+

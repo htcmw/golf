@@ -2,7 +2,6 @@ package com.reborn.golf.dto.kakaopay;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -11,15 +10,15 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class KakaoPayApprovalDto {
+public class KakaoPayCancelResponseDto {
     //요청 고유 번호
     private String aid;
     //결제 고유 번호, 10자
     private String tid;
     //가맹점 코드, 20자
     private String cid;
-    //정기결제용 ID, 정기결제 CID로 단건결제 요청 시 발급
-    private String sid;
+    //결제 상태
+    private String status;
     //가맹점 주문번호, 최대 100자
     private String partner_order_id;
     //가맹점 회원 id, 최대 100자
@@ -28,8 +27,12 @@ public class KakaoPayApprovalDto {
     private String payment_method_type;
     //결제 금액 정보
     private AmountDto amount;
-    //결제 상세 정보, 결제수단이 카드일 경우만 포함
-    private CardInfoDto card_info;
+    //이번 요청으로 취소된 금액
+    private AmountDto approved_cancel_amount;
+    //누계 취소 금액
+    private AmountDto canceled_amount;
+    //남은 취소 가능 금액
+    private AmountDto cancel_available_amount;
     //상품 이름, 최대 100자
     private String item_name;
     //상품 코드, 최대 100자
@@ -37,9 +40,11 @@ public class KakaoPayApprovalDto {
     //상품 수량
     private Integer quantity;
     //결제 준비 요청 시각
-    private LocalDateTime created_at;
+    private Date created_at;
     //결제 승인 시각
-    private LocalDateTime approved_at;
-    //결제 승인 요청에 대해 저장한 값, 요청 시 전달된 내용
+    private Date approved_at;
+    //결제 취소 시각
+    private Date canceled_at;
+    //	취소 요청 시 전달한 값
     private String payload;
 }

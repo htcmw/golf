@@ -1,7 +1,7 @@
 package com.reborn.golf.advice;
 
-import com.reborn.golf.advice.dto.ErrorDto;
-import com.reborn.golf.advice.dto.ErrorResponseDto;
+import com.reborn.golf.dto.exception.ErrorDto;
+import com.reborn.golf.dto.exception.ErrorResponseDto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

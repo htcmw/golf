@@ -1,6 +1,6 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.OrderProductDto;
+import com.reborn.golf.dto.shop.OrderProductDto;
 import com.reborn.golf.entity.OrderProduct;
 
 import java.util.List;

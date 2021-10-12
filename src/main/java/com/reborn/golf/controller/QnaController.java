@@ -1,12 +1,9 @@
 package com.reborn.golf.controller;
 
-import com.reborn.golf.dto.NoticeDto;
-import com.reborn.golf.dto.PageRequestDto;
-import com.reborn.golf.dto.PageResultDto;
-import com.reborn.golf.dto.QnaDto;
-import com.reborn.golf.entity.NoticeFractionation;
+import com.reborn.golf.dto.common.PageRequestDto;
+import com.reborn.golf.dto.common.PageResultDto;
+import com.reborn.golf.dto.customerservice.QnaDto;
 import com.reborn.golf.security.dto.AuthMemeberDto;
-import com.reborn.golf.service.NoticeService;
 import com.reborn.golf.service.QnaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,7 +14,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 

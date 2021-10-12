@@ -1,13 +1,10 @@
 package com.reborn.golf.service;
 
 
-import com.reborn.golf.dto.NoticeDto;
-import com.reborn.golf.dto.PageRequestDto;
-import com.reborn.golf.dto.PageResultDto;
-import com.reborn.golf.dto.QnaDto;
+import com.reborn.golf.dto.common.PageRequestDto;
+import com.reborn.golf.dto.common.PageResultDto;
+import com.reborn.golf.dto.customerservice.QnaDto;
 import com.reborn.golf.entity.Member;
-import com.reborn.golf.entity.Notice;
-import com.reborn.golf.entity.NoticeFractionation;
 import com.reborn.golf.entity.Qna;
 
 

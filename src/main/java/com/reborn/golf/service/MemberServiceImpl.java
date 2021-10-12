@@ -1,6 +1,6 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.MemberDto;
+import com.reborn.golf.dto.user.MemberDto;
 import com.reborn.golf.entity.Enum.Role;
 import com.reborn.golf.entity.Member;
 import com.reborn.golf.repository.MemberRepository;

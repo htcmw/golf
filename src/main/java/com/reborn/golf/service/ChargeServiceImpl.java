@@ -1,12 +1,16 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.kakaopay.KakaoPayApprovalDto;
-import com.reborn.golf.dto.kakaopay.KakaoPayRequestDto;
-import com.reborn.golf.dto.kakaopay.KakaoPayResponseDto;
+import com.reborn.golf.dto.kakaopay.*;
+import com.reborn.golf.entity.Enum.DeliveryStatus;
+import com.reborn.golf.entity.Enum.OrderStatus;
+import com.reborn.golf.entity.Orders;
+import com.reborn.golf.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -15,86 +19,135 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 @Service
 @Log4j2
-public class ChargeServiceImpl implements ChargeService{
+@RequiredArgsConstructor
+public class ChargeServiceImpl implements ChargeService {
 
-    @Value("${KAKAOPAY-HOST}")
+
+    @Value("${KAKAOPAY_CID}")
+    private String CID;
+
+    @Value("${KAKAOPAY_HOST}")
     private String HOST;
 
-    private KakaoPayResponseDto kakaoPayResponseDto;
+    @Value("${KAKAOPAY_HOST_KEY}")
+    private String HOST_KEY;
+
+    private final OrderRepository orderRepository;
 
     @Override
-    public String readyPayment(KakaoPayRequestDto kakaoPayRequestDto) {
+    public KakaoPayResponseDto readyPayment(String partnerOrderId, String partnerUserId, String itemName, Integer quantity, Integer totalAmount, Integer taxFreeAmount) throws RestClientException, URISyntaxException {
 
         RestTemplate restTemplate = new RestTemplate();
 
         // 서버로 요청할 Header
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "KakaoAK " +"d9b58db600786919de1739863953c201");
-        headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-
-        System.out.println("partnerUserId : " + kakaoPayRequestDto.getPartnerUserId());
-
+        HttpHeaders headers = makeHeaders();
         // 서버로 요청할 Body
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
-        params.add("cid", "TC0ONETIME");
-        params.add("partner_order_id", kakaoPayRequestDto.getPartnerOrderId());
-        params.add("partner_user_id", kakaoPayRequestDto.getPartnerUserId());
-        params.add("item_name", kakaoPayRequestDto.getTitle());
-        params.add("quantity", "1");
-        params.add("total_amount", kakaoPayRequestDto.getTotalAmount().toString());
-        params.add("tax_free_amount", "0");
-        params.add("approval_url", "http://localhost:8089/payments/kakaopay/approval");
-        params.add("cancel_url", "http://localhost:8089/payments/kakaopay/cancel");
+        params.add("cid", CID);
+        params.add("partner_order_id", partnerOrderId);
+        params.add("partner_user_id", partnerUserId);
+        params.add("item_name", itemName);
+        params.add("quantity", quantity.toString());
+        params.add("total_amount", totalAmount.toString());
+        params.add("tax_free_amount", taxFreeAmount.toString());
+        params.add("approval_url", "http://localhost:8089/payments/kakaopay/approval/" + partnerOrderId);
+        params.add("cancel_url", "http://localhost:8089/payments/kakaopay/cancel" + partnerUserId);
         params.add("fail_url", "http://localhost:8089/payments/kakaopay/fail");
 
         HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
 
-        try {
-            kakaoPayResponseDto = restTemplate.postForObject(new URI(HOST + "/v1/payment/ready"), body, KakaoPayResponseDto.class);
+        KakaoPayResponseDto kakaoPayResponseDto = restTemplate.postForObject(new URI(HOST + "/v1/payment/ready"), body, KakaoPayResponseDto.class);
 
-            log.info("" + kakaoPayResponseDto);
+        log.info(kakaoPayResponseDto);
 
-            return kakaoPayResponseDto.getNext_redirect_pc_url();
+        return kakaoPayResponseDto;
 
-        } catch (RestClientException | URISyntaxException e) {
-            log.info(e.getMessage());
-        }
+    }
 
-        return null;
+    private HttpHeaders makeHeaders(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "KakaoAK " + HOST_KEY);
+        headers.add("Accept", MediaType.APPLICATION_JSON_UTF8_VALUE);
+        headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+        return headers;
     }
 
     @Override
-    public KakaoPayApprovalDto approvePayment(String pgToken) {
+    public KakaoPayApprovalDto approvePayment(String partnerOrderId, String pgToken) {
+        Orders orders = orderRepository.getOrdersByPartnerOrderId(partnerOrderId);
 
         RestTemplate restTemplate = new RestTemplate();
-
         // 서버로 요청할 Header
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "KakaoAK " + "d9b58db600786919de1739863953c201");
-        headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-
+        HttpHeaders headers = makeHeaders();
         // 서버로 요청할 Body
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
-        params.add("cid", "TC0ONETIME");
-        params.add("tid", kakaoPayResponseDto.getTid());
-        params.add("partner_order_id", kakaoPayResponseDto.getPartnerOrderId());
-        params.add("partner_user_id", kakaoPayResponseDto.getPartnerUserId());
+        params.add("cid", CID);
+        params.add("tid", orders.getTid());
+        params.add("partner_order_id", orders.getPartnerOrderId());
+        params.add("partner_user_id", orders.getMember().getEmail());
         params.add("pg_token", pgToken);
-        params.add("total_amount", kakaoPayResponseDto.getTotalAmount().toString());
+        params.add("total_amount", orders.getTotalPrice().toString());
 
         HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
 
         try {
             KakaoPayApprovalDto kakaoPayApprovalDto = restTemplate.postForObject(new URI(HOST + "/v1/payment/approve"), body, KakaoPayApprovalDto.class);
             log.info(kakaoPayApprovalDto);
+            orders.setChargeApprovedAt(kakaoPayApprovalDto.getApproved_at());
+            orders.setChargeCreatedAt(kakaoPayApprovalDto.getCreated_at());
+            orders.setOrderState(OrderStatus.PROCESSING);
+            orders.getDelivery().setDeliveryStatus(DeliveryStatus.READY);
+
+            orderRepository.save(orders);
+
             return kakaoPayApprovalDto;
 
         } catch (RestClientException | URISyntaxException e) {
-            log.info(e.getMessage());
+            e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public KakaoPayCancelResponseDto cancelPayment(String partnerOrderId) throws RestClientException, URISyntaxException {
+        Orders orders = orderRepository.getOrdersByPartnerOrderId(partnerOrderId);
+        RestTemplate restTemplate = new RestTemplate();
+        // 서버로 요청할 Header
+        HttpHeaders headers = makeHeaders();
+        // 서버로 요청할 Body
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+        params.add("cid", CID);
+        params.add("tid", orders.getTid());
+        params.add("cancel_amount", orders.getTotalPrice().toString());
+        params.add("quantity", orders.getOrderProductsCount().toString());
+        params.add("cancel_tax_free_amount", orders.getTaxFreeAmount().toString());
+
+        HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
+
+        KakaoPayCancelResponseDto kakaoPayResponseDto = restTemplate.postForObject(new URI(HOST + "/v1/payment/cancel"), body, KakaoPayCancelResponseDto.class);
+
+
+        return null;
+    }
+    @Override
+    public void cancelPayment(Orders orders) throws RestClientException, URISyntaxException {
+        RestTemplate restTemplate = new RestTemplate();
+        // 서버로 요청할 Header
+        HttpHeaders headers = makeHeaders();
+        // 서버로 요청할 Body
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+        params.add("cid", CID);
+        params.add("tid", orders.getTid());
+        params.add("cancel_amount", orders.getTotalPrice().toString());
+        params.add("quantity", orders.getOrderProductsCount().toString());
+        params.add("cancel_tax_free_amount", orders.getTaxFreeAmount().toString());
+
+        HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
+
+        KakaoPayCancelResponseDto kakaoPayResponseDto = restTemplate.postForObject(new URI(HOST + "/v1/payment/cancel"), body, KakaoPayCancelResponseDto.class);
     }
 }

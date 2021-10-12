@@ -2,6 +2,8 @@ package com.reborn.golf.dto.kakaopay;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Getter
 @Setter
@@ -9,10 +11,10 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class KakaoPayResponseDto {
-    private String partnerOrderId;
-    private String partnerUserId;
+    //결제 고유번호
     private String tid;
-    private Integer totalAmount;
-    private String created_at;
-    private String next_redirect_pc_url;//mockup-pg-web.kakao.com/v1/xxxxxxxxxx/info",
+    //결제 준비 요청 시각
+    private LocalDateTime created_at;
+
+    private String next_redirect_pc_url;
 }

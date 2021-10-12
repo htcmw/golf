@@ -1,4 +1,4 @@
-package com.reborn.golf.dto;
+package com.reborn.golf.dto.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,11 +8,12 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Builder
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartListDto {
+@Data
+public class ErrorResponseDto {
+    private String statusCode;
+    private String result;
+    private List<ErrorDto> errorList;
 
-    private Integer totalPrice;
-    List<CartDto> cartDtos;
 }

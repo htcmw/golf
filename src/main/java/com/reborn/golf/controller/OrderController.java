@@ -1,6 +1,8 @@
 package com.reborn.golf.controller;
 
-import com.reborn.golf.dto.*;
+import com.reborn.golf.dto.common.PageRequestDto;
+import com.reborn.golf.dto.common.PageResultDto;
+import com.reborn.golf.dto.shop.OrdersDto;
 import com.reborn.golf.entity.Orders;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.OrderService;
@@ -32,11 +34,11 @@ public class OrderController {
 
     // 주문 정보 불러오기
     @PostMapping
-    public ResponseEntity<Long> order(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, OrdersDto ordersDto) {
+    public ResponseEntity<String> order(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, OrdersDto ordersDto) {
         Integer memberIdx = authMemeberDto.getIdx();
-        Long idx = orderService.order(memberIdx, ordersDto);
-        log.info(idx);
-        return new ResponseEntity<>(idx, HttpStatus.OK);
+        String url = orderService.order(memberIdx, ordersDto);
+        log.info(url);
+        return new ResponseEntity<>(url, HttpStatus.OK);
     }
 
     @DeleteMapping("/{idx}")

@@ -1,11 +1,12 @@
 package com.reborn.golf.entity;
 
-import com.reborn.golf.dto.OrderProductDto;
-import com.reborn.golf.dto.ProductImageDto;
+import com.reborn.golf.dto.shop.OrderProductDto;
+import com.reborn.golf.dto.shop.ProductImageDto;
 import com.reborn.golf.entity.Enum.OrderStatus;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,10 +22,32 @@ public class Orders extends BaseEntity {
     @Id
     @GeneratedValue ( strategy =  GenerationType.IDENTITY)
     private Long idx;
-
+    //결제 요청 ID
+    @Column
+    private String partnerOrderId;
+    //결제 고유번호
+    @Setter
+    @Column
+    private String tid;
+    //결제 준비 요청 시각
+    @Setter
+    @Column
+    private LocalDateTime chargeCreatedAt;
+    //결제 승인 시각
+    @Setter
+    @Column
+    private LocalDateTime chargeApprovedAt;
+    //비과세 금액
+    @Column
+    private Integer taxFreeAmount;
+    //결제 금액
     @Column(nullable = false)
-    private int totalPrice;
-    // ORDER, CANCEL
+    private Integer totalPrice;
+    //상품 종류 수
+    @Column
+    private Integer orderProductsCount;
+    //주문 단계
+    @Setter
     @Enumerated(EnumType.STRING)
     private OrderStatus orderState;
 
@@ -33,7 +56,6 @@ public class Orders extends BaseEntity {
 
     @OneToMany (fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<OrderProduct> orderProducts;
-
     @OneToOne (fetch = FetchType.LAZY)
     private Delivery delivery;
 

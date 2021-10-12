@@ -1,6 +1,6 @@
 package com.reborn.golf.controller;
-import com.reborn.golf.dto.CartDto;
-import com.reborn.golf.dto.CartListDto;
+import com.reborn.golf.dto.shop.CartDto;
+import com.reborn.golf.dto.shop.CartListDto;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.CartService;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/carts")

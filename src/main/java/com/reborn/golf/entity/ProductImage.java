@@ -1,6 +1,6 @@
 package com.reborn.golf.entity;
 
-import com.reborn.golf.dto.ProductImageDto;
+import com.reborn.golf.dto.shop.ProductImageDto;
 import lombok.*;
 
 import javax.persistence.*;

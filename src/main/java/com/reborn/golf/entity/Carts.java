@@ -1,6 +1,6 @@
 package com.reborn.golf.entity;
 
-import com.reborn.golf.dto.CartDto;
+import com.reborn.golf.dto.shop.CartDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

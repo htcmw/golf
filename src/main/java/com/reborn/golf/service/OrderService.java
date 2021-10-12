@@ -1,9 +1,8 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.CartListDto;
-import com.reborn.golf.dto.OrdersDto;
-import com.reborn.golf.dto.PageRequestDto;
-import com.reborn.golf.dto.PageResultDto;
+import com.reborn.golf.dto.shop.OrdersDto;
+import com.reborn.golf.dto.common.PageRequestDto;
+import com.reborn.golf.dto.common.PageResultDto;
 import com.reborn.golf.entity.Orders;
 
 public interface OrderService {
@@ -12,7 +11,7 @@ public interface OrderService {
 
     PageResultDto<Orders, OrdersDto> getList(PageRequestDto pageRequestDto);
 
-    Long order(Integer memberIdx, OrdersDto ordersDto);
+    String order(Integer memberIdx, OrdersDto ordersDto);
 
 //    Long orderFromCart(Integer memberIdx, CartListDto cartListDto);
 

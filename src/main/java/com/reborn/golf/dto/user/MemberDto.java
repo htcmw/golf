@@ -1,4 +1,4 @@
-package com.reborn.golf.dto;
+package com.reborn.golf.dto.user;
 
 import lombok.*;
 
@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class EmployeeDto {
+public class MemberDto {
 
     private Integer idx;
 

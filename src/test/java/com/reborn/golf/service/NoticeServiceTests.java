@@ -1,8 +1,7 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.NoticeDto;
-import com.reborn.golf.dto.PageRequestDto;
-import com.reborn.golf.entity.NoticeFractionation;
+import com.reborn.golf.dto.customerservice.NoticeDto;
+import com.reborn.golf.dto.common.PageRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

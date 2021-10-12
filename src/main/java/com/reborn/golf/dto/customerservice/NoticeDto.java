@@ -1,29 +1,31 @@
-package com.reborn.golf.dto;
+package com.reborn.golf.dto.customerservice;
 
 import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @ToString
-public class ReplyDto {
+public class NoticeDto {
 
     private Long idx;
 
     @NotBlank
-    private String text;
+    private String title;
 
-    @Min(1)
-    private Long noticeIdx;
+    @NotBlank
+    private String content;
 
-    @Email
+    private Integer views;
+
     private String email;
 
     private String name;
@@ -33,5 +35,3 @@ public class ReplyDto {
     private LocalDateTime modDate;
 
 }
-
-

@@ -1,6 +1,6 @@
 package com.reborn.golf.controller;
 
-import com.reborn.golf.dto.ImageUploadResultDto;
+import com.reborn.golf.dto.shop.ImageUploadResultDto;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.beans.factory.annotation.Value;

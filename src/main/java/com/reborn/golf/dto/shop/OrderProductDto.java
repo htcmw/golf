@@ -1,6 +1,5 @@
-package com.reborn.golf.dto;
+package com.reborn.golf.dto.shop;
 
-import com.reborn.golf.entity.ProductImage;
 import lombok.*;
 
 import java.util.ArrayList;

@@ -1,8 +1,5 @@
-package com.reborn.golf.dto;
+package com.reborn.golf.dto.shop;
 
-import com.reborn.golf.entity.Delivery;
-import com.reborn.golf.entity.Member;
-import com.reborn.golf.entity.OrderProduct;
 import lombok.*;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
 package com.reborn.golf.entity.Enum;
 
 public enum DeliveryStatus {
-    READY, DELIVERY, COMPLETE
+    NULL, READY, DELIVERY, COMPLETE
 }
 

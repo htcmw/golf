@@ -19,6 +19,7 @@ public class Delivery {
 
     private String address;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 

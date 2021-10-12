@@ -1,6 +1,6 @@
 package com.reborn.golf.controller;
 
-import com.reborn.golf.dto.MemberDto;
+import com.reborn.golf.dto.user.MemberDto;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.MemberService;
 import lombok.RequiredArgsConstructor;

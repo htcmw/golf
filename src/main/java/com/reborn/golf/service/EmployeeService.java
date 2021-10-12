@@ -1,7 +1,7 @@
 package com.reborn.golf.service;
 
 
-import com.reborn.golf.dto.EmployeeDto;
+import com.reborn.golf.dto.user.EmployeeDto;
 import com.reborn.golf.entity.Employee;
 
 public interface EmployeeService {

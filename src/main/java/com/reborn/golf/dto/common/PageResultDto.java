@@ -1,4 +1,4 @@
-package com.reborn.golf.dto;
+package com.reborn.golf.dto.common;
 
 import lombok.*;
 import org.springframework.data.domain.Page;

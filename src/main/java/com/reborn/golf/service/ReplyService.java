@@ -1,8 +1,8 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.PageRequestDto;
-import com.reborn.golf.dto.PageResultDto;
-import com.reborn.golf.dto.ReplyDto;
+import com.reborn.golf.dto.common.PageRequestDto;
+import com.reborn.golf.dto.common.PageResultDto;
+import com.reborn.golf.dto.common.ReplyDto;
 import com.reborn.golf.entity.Member;
 import com.reborn.golf.entity.Notice;
 import com.reborn.golf.entity.Reply;
