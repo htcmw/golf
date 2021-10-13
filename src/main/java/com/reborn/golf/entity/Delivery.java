@@ -17,7 +17,10 @@ public class Delivery {
     @GeneratedValue( strategy =  GenerationType.IDENTITY)
     private Long idx;
 
+    @Column(nullable = false)
     private String address;
+
+    private String deliveryMessage;
 
     @Setter
     @Enumerated(EnumType.STRING)

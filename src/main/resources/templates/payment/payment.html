@@ -36,8 +36,8 @@
                         orderName: "주문 이름",
                         deliveryMessage: "배달메세지",
                         address: "유저 주소",
-                        amount: "주문 수량",
-                        useSavings: "포인트",
+                        amount: 10000,
+                        useSavings: 10000,
                         orderProductList: [
                             {
                                 "productIdx": 1,
@@ -48,26 +48,20 @@
                                 "quentity": 1
                             }]
                     }
-
-                    $.ajax({
-                        type: "POST",
-                        url: "/payment/success",
-                        contentType: "application/json",
+                    jQuery.ajax({
+                        url: "/payment/success", // 가맹점 서버
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
                         data: JSON.stringify(paymentSuccessData),
-                        success: function (data) {
-                            alert(성공);
-                            console.log(data)
-                            alert(msg);
-                        },
-                        error: function (e) {
-                            alert(e.responseText);
-                        }
+                    }).done(function (data) {
+                        console.log(data)
+                        alert(msg);
+                        // 가맹점 서버 결제 API 성공시 로직
                     })
                 } else {
-                    msg += '결제에 실패하였습니다.\n';
-                    msg += '에러내용 : ' + rsp.error_msg;
-                    alert(msg);
+                    alert("결제에 실패하였습니다. 에러 내용: " + rsp.error_msg);
                 }
+
             });
         }
     </script>

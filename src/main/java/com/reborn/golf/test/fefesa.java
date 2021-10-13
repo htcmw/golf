@@ -1,21 +1,16 @@
 package com.reborn.golf.test;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @Log4j2
-public class testController {
-    @GetMapping("/payment/payment")
-    public void pay(){
-
-    }
-
-    @PostMapping("/paymen")
+public class fefesa {
+    @PostMapping(value = "/payment/success",produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     Test suc(@RequestBody Test test){
         log.info(test);

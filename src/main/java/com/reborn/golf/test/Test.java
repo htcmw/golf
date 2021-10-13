@@ -1,6 +1,7 @@
 package com.reborn.golf.test;
 
 import com.reborn.golf.dto.shop.OrderProductDto;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -8,6 +9,10 @@ import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Test {
     private String impUid;
     private String orderNumber;
@@ -19,5 +24,5 @@ public class Test {
     private String address;
     private Integer amount;
     private Integer useSavings;
-    private List<OrderProductDto> cartIdList;
+    private List<OrderProductDto> orderProductList;
 }

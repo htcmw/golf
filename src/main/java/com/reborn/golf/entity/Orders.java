@@ -22,27 +22,24 @@ public class Orders extends BaseEntity {
     @Id
     @GeneratedValue ( strategy =  GenerationType.IDENTITY)
     private Long idx;
-    //결제 요청 ID
-    @Column
-    private String partnerOrderId;
-    //결제 고유번호
-    @Setter
-    @Column
-    private String tid;
-    //결제 준비 요청 시각
-    @Setter
-    @Column
-    private LocalDateTime chargeCreatedAt;
-    //결제 승인 시각
-    @Setter
-    @Column
-    private LocalDateTime chargeApprovedAt;
-    //비과세 금액
-    @Column
-    private Integer taxFreeAmount;
-    //결제 금액
+
+    //아임포트 아이디
     @Column(nullable = false)
-    private Integer totalPrice;
+    private String impUid;
+
+    //아임포트 주문 결제 idx
+    @Column(nullable = false)
+    private String orderNumber;
+
+    //주문 이름
+    @Column(nullable = false)
+    private String orderName;
+
+    @Column(nullable = false)
+    private Integer orderPrice;
+    //포인트
+    @Column(nullable = false)
+    private Integer tokenAmount;
     //상품 종류 수
     @Column
     private Integer orderProductsCount;
