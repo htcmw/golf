@@ -1,6 +1,6 @@
 package com.reborn.golf.controller;
 
-import com.reborn.golf.dto.shop.ImageUploadResultDto;
+import com.reborn.golf.dto.shop.ProductImageDto;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,9 +35,9 @@ public class ProductUploadController {
     private String uploadPath;
 
     @PostMapping("/img")
-    public ResponseEntity<List<ImageUploadResultDto>> uploadFile(MultipartFile[] uploadFiles){
+    public ResponseEntity<List<ProductImageDto>> uploadFile(MultipartFile[] uploadFiles){
 
-        List<ImageUploadResultDto> resultDTOList = new ArrayList<>();
+        List<ProductImageDto> resultDTOList = new ArrayList<>();
 
         log.info(uploadFiles);
 
@@ -74,7 +74,7 @@ public class ProductUploadController {
                 File thumbnailFile = new File(thumbnailSaveName);
                 //섬네일 생성
                 Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile,100,100 );
-                resultDTOList.add(new ImageUploadResultDto(fileName,uuid,folderPath));
+                resultDTOList.add(new ProductImageDto(fileName,uuid,folderPath));
 
             } catch (IOException e) {
                 e.printStackTrace();

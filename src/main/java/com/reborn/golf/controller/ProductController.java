@@ -28,11 +28,10 @@ public class ProductController {
 
         return new ResponseEntity<>(productDtoList, HttpStatus.OK);
     }
-//
     // 제품 등록
     @PostMapping
     public ResponseEntity<Long> register(@RequestBody ProductDto productDto) {
-
+        log.info("213141412");
         log.info("productDto: " + productDto);
 
         Long pno = productService.register(productDto);

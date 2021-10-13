@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"writer"})
+@ToString(exclude = {"writer", "parent", "children"})
 public class Qna extends BaseEntity {
 
     @Id
@@ -35,7 +35,7 @@ public class Qna extends BaseEntity {
     private Qna parent;
 
     @Builder.Default
-    @OneToMany(mappedBy = "parent",  orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     private List<Qna> children = new ArrayList<>();
 
     @Column
@@ -48,10 +48,6 @@ public class Qna extends BaseEntity {
 
     public void addViews() {
         this.views++;
-    }
-
-    public void chageWriter(Integer writerIdx) {
-        this.writer = Member.builder().idx(writerIdx).build();
     }
 
     public void changeTitle(String title) {

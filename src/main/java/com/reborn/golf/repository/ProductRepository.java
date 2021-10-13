@@ -12,12 +12,11 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository <Product, Long> {
 
     // 리스트 불러올 때 사용
-    @Query("SELECT p, pi, " +
-            "AVG(COALESCE(r.grade,0)),  " +
-            "COUNT(DISTINCT r) " +
+    @Query(
+            "SELECT p, pi, AVG(COALESCE(r.grade,0)), COUNT(DISTINCT r) " +
             "FROM Product p " +
-            "LEFT OUTER JOIN ProductImage pi ON pi.product = p " +
-            "LEFT OUTER JOIN ProductReply r ON r.product = p " +
+                    "LEFT OUTER JOIN ProductImage pi ON pi.product = p " +
+                    "LEFT OUTER JOIN ProductReply r ON r.product = p " +
             "GROUP BY p ")
     Page<Object[]> getListPage(Pageable pageable);
 

@@ -27,6 +27,12 @@ public interface OrderService {
                 .orderState(orders.getOrderState().name())
                 .deliveryStatus(orders.getDelivery().getDeliveryStatus().name())
                 .orderProductList(orders.toOrderProductDto())
+                .impUid(orders.getImpUid())
+                .orderName(orders.getOrderName())
+                .orderNumber(orders.getOrderNumber())
+                .tokenAmount(orders.getTokenAmount())
+                .regDate(orders.getRegDate())
+                .modDate(orders.getModDate())
                 .build();
     }
 

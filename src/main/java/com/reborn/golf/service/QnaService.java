@@ -14,7 +14,7 @@ public interface QnaService {
 
     QnaDto read(Long qnaIdx);
 
-    Long register(Integer writerIdx, Long qnaIdx, QnaDto qnaDto);
+    Long register(Integer writerIdx, QnaDto qnaDto);
 
     Long modify(Integer writerIdx, QnaDto qnaDto);
 
@@ -34,6 +34,10 @@ public interface QnaService {
     }
 
     default QnaDto entityToDto(Qna qna, Member member){
+        Long pidx = null;
+        if(qna.getParent() != null)
+            pidx = qna.getParent().getIdx();
+
         return QnaDto.builder()
                 .idx(qna.getIdx())
                 .title(qna.getTitle())
@@ -43,6 +47,7 @@ public interface QnaService {
                 .views(qna.getViews())
                 .email(member.getEmail())
                 .name(member.getName())
+                .pidx(pidx)
                 .build();
     }
 

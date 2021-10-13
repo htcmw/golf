@@ -6,6 +6,7 @@ import com.reborn.golf.dto.shop.ProductDto;
 import com.reborn.golf.dto.shop.ProductImageDto;
 import com.reborn.golf.entity.Product;
 import com.reborn.golf.entity.ProductImage;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ public interface ProductService {
     // 제품 정보 삭제
     void remove(Long pno);
 
-    default ProductDto entityToDto(Product product, List<ProductImage> productImages, Double avg, Long reviewCnt){
+    default ProductDto entityToDto(Product product, List<ProductImage> productImages, Double avg, Long reviewCnt) {
         ProductDto productDto = ProductDto.builder()
                 .idx(product.getIdx())
                 .title(product.getTitle())
@@ -41,14 +42,10 @@ public interface ProductService {
                 .modDate(product.getModDate())
                 .build();
 
-        List<ProductImageDto> productImageDtoList = productImages.stream().map(productImage -> {
-            return ProductImageDto.builder()
-                    .imgName(productImage.getImgName())
-                    .path(productImage.getPath())
-                    .uuid(productImage.getUuid())
-                    .build();
-        }).collect(Collectors.toList());
+        List<ProductImageDto> productImageDtoList = null; //productImages.stream().map(productImage -> ProductImageDto.builder().imgName(productImage.getImgName()).path(productImage.getPath()).uuid(productImage.getUuid()).build()).collect(Collectors.toList());
+        productImages.stream().map(productImage -> ProductImageDto.builder().imgName(productImage.getImgName()).path(productImage.getPath()).uuid(productImage.getUuid()).build()).forEach(System.out::println);
 
+        System.out.println("===========================================================");
         productDto.setImageDtoList(productImageDtoList);
         productDto.setAvg(avg);
         productDto.setReviewCnt(reviewCnt.intValue());
@@ -58,7 +55,7 @@ public interface ProductService {
 
     }
 
-    default Map<String, Object> dtoToEntity(ProductDto productDto){
+    default Map<String, Object> dtoToEntity(ProductDto productDto) {
 
         Map<String, Object> entityMap = new HashMap<>();
 
@@ -76,7 +73,7 @@ public interface ProductService {
         List<ProductImageDto> imageDtoList = productDto.getImageDtoList();
 
         //ProductImageDto 처리
-        if(imageDtoList != null && imageDtoList.size() > 0 ) {
+        if (imageDtoList != null && imageDtoList.size() > 0) {
             List<ProductImage> productImageList = imageDtoList.stream().map(productImageDto -> {
                 ProductImage productImage = ProductImage.builder()
                         .path(productImageDto.getPath())
@@ -84,7 +81,7 @@ public interface ProductService {
                         .uuid(productImageDto.getUuid())
                         .product(product)
                         .build();
-                return  productImage;
+                return productImage;
             }).collect(Collectors.toList());
 
             entityMap.put("imgList", productImageList);

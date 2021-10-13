@@ -29,8 +29,7 @@ public class ProductDto {
     private String content;
 
     // 이미지 생성
-    @Builder.Default
-    private List<ProductImageDto> imageDtoList = new ArrayList<>();
+    private List<ProductImageDto> imageDtoList;
 
     private Double avg;
 

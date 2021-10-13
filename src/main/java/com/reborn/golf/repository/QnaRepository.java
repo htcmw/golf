@@ -17,7 +17,7 @@ public interface QnaRepository extends JpaRepository<Qna, Long> {
             "SELECT q, w " +
                     "FROM Qna q " +
                     "LEFT JOIN q.writer w " +
-                    "WHERE q.removed = false")
+                    "WHERE q.removed = false AND q.parent is null")
     Page<Object[]> getQnasWithWriter(Pageable pageable);
 
     @Query(value =

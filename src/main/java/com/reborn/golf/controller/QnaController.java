@@ -43,9 +43,9 @@ public class QnaController {
 
     //등록
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
-    @PostMapping("/{idx}")
-    public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable @Min(0) Long idx, @RequestBody @Valid QnaDto qnaDto) {
-        Long num = qnaService.register(authMemeberDto.getIdx(), idx, qnaDto);
+    @PostMapping
+    public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid QnaDto qnaDto) {
+        Long num = qnaService.register(authMemeberDto.getIdx(), qnaDto);
         return new ResponseEntity<>(num, HttpStatus.OK);
     }
 

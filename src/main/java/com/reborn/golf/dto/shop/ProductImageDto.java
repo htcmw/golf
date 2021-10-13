@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -13,7 +14,7 @@ import java.net.URLEncoder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductImageDto {
+public class ProductImageDto  implements Serializable {
 
     private String uuid;
 

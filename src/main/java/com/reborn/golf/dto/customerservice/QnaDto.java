@@ -16,6 +16,8 @@ public class QnaDto {
 
     private Long idx;
 
+    private Long pidx;
+
     @NotBlank
     private String title;
 

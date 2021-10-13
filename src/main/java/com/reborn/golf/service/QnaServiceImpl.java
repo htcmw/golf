@@ -58,9 +58,9 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
-    public Long register(Integer writerIdx, Long qnaIdx, QnaDto qnaDto) {
+    public Long register(Integer writerIdx, QnaDto qnaDto) {
         Qna qna = dtoToEntity(qnaDto, writerIdx);
-        qna.setParent(qnaIdx);
+        qna.setParent(qnaDto.getPidx());
         qnaRepository.save(qna);
         return qna.getIdx();
     }
@@ -77,13 +77,9 @@ public class QnaServiceImpl implements QnaService {
 
         if (result.isPresent()) {
             Qna qna = result.get();
-            if (qna.getWriter().getRoleSet().contains(Role.ROLE_MANAGER)
-                    || qna.getWriter().getIdx().equals(writerIdx)) {
-
-                qna.chageWriter(writerIdx);
+            if (qna.getWriter().getIdx().equals(writerIdx)) {
                 qna.changeTitle(qnaDto.getTitle());
                 qna.changeContent(qnaDto.getContent());
-
                 log.info(qna);
                 qnaRepository.save(qna);
             }

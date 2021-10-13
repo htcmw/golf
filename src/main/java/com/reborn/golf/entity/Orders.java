@@ -23,19 +23,19 @@ public class Orders extends BaseEntity {
     @GeneratedValue ( strategy =  GenerationType.IDENTITY)
     private Long idx;
     //아임포트 아이디
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String impUid;
     //아임포트 주문 결제 idx
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String orderNumber;
     //주문 이름
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String orderName;
     //주문한 총 금액
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private Integer totalPrice;
     //포인트
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private Integer tokenAmount;
     //상품 종류 수
     @Column

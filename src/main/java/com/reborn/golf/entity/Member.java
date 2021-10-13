@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Builder
-@ToString (exclude = {"order"})
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

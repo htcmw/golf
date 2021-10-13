@@ -30,6 +30,7 @@ public class CartController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody CartDto cartDto){
         Integer memberIdx = authMemeberDto.getIdx();
+        log.info(cartDto);
         Long cartIdx = cartService.register(memberIdx, cartDto);
 
         return new ResponseEntity<>(cartIdx, HttpStatus.OK);

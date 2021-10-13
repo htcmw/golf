@@ -45,7 +45,6 @@ public class CartServiceImpl implements CartService {
         Optional<Product> optionalProduct = productRepository.getProductByIdx(cartDto.getProductIdx());
 
         if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
             Carts carts = Carts.builder()
                     .member(Member.builder().idx(memberIdx).build())
                     .product(Product.builder().idx(cartDto.getProductIdx()).build())

@@ -7,9 +7,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @SpringBootTest
-public class Test {
-
-    @org.junit.jupiter.api.Test
+public class UnitTestClass {
     public void abc(){
         String orderId = LocalDate.now() + UUID.randomUUID().toString();
 

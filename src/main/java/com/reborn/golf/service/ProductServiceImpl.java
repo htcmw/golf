@@ -3,6 +3,7 @@ package com.reborn.golf.service;
 import com.reborn.golf.dto.common.PageRequestDto;
 import com.reborn.golf.dto.common.PageResultDto;
 import com.reborn.golf.dto.shop.ProductDto;
+import com.reborn.golf.dto.shop.ProductImageDto;
 import com.reborn.golf.entity.*;
 import com.reborn.golf.repository.ProductImageRepository;
 import com.reborn.golf.repository.ProductRepository;
@@ -32,13 +33,8 @@ public class ProductServiceImpl implements ProductService {
         Pageable pageable = requestDto.getPageable(Sort.by("regDate").descending());
         Page<Object[]> result = productRepository.getListPage(pageable);
 
-        log.info("==============================================");
-        result.getContent().forEach(arr -> {
-            log.info(Arrays.toString(arr));
-        });
-
         Function<Object[], ProductDto> fn =
-                (arr -> entityToDto((Product) arr[0] ,(List<ProductImage>)(Arrays.asList((ProductImage)arr[1])),(Double) arr[2], (Long)arr[3])
+                (arr -> entityToDto((Product) arr[0] , List.of((ProductImage) arr[1]),(Double) arr[2], (Long)arr[3])
         );
 
         return new PageResultDto<>(result, fn);
