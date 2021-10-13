@@ -52,15 +52,11 @@ public class OrderServiceImpl implements OrderService {
 
         Member member = Member.builder().idx(memberIdx).build();
 
-        Delivery delivery = Delivery.builder().address(ordersDto.getAddress()).deliveryStatus(DeliveryStatus.NULL).build();
+        Delivery delivery = Delivery.builder().address(ordersDto.getUserAddress()).deliveryStatus(DeliveryStatus.NULL).build();
 
         Integer totalPrice = orderProducts.stream().mapToInt(OrderProduct::getPrice).sum();
 
-        String itemName = orderProducts.get(0).getProduct().getTitle() + " 외 " + (orderProducts.size() - 1);
-
-        String partnerOrderId = LocalDate.now() + UUID.randomUUID().toString();
-
-        Integer taxFreeAmount = 0;
+//        String itemName = orderProducts.get(0).getProduct().getTitle() + " 외 " + (orderProducts.size() - 1);
 
         Orders orders = Orders.builder()
                 .orderState(OrderStatus.ORDER)

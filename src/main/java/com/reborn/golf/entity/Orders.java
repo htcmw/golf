@@ -22,41 +22,38 @@ public class Orders extends BaseEntity {
     @Id
     @GeneratedValue ( strategy =  GenerationType.IDENTITY)
     private Long idx;
-
     //아임포트 아이디
     @Column(nullable = false)
     private String impUid;
-
     //아임포트 주문 결제 idx
     @Column(nullable = false)
     private String orderNumber;
-
     //주문 이름
     @Column(nullable = false)
     private String orderName;
-
+    //주문한 총 금액
     @Column(nullable = false)
-    private Integer orderPrice;
+    private Integer totalPrice;
     //포인트
     @Column(nullable = false)
     private Integer tokenAmount;
     //상품 종류 수
     @Column
     private Integer orderProductsCount;
-    //주문 단계
+    //주문 상태
     @Setter
     @Enumerated(EnumType.STRING)
     private OrderStatus orderState;
-
+    //구매자
     @ManyToOne (fetch = FetchType.LAZY)
     private Member member;
-
+    //구매 물품 및 수량
     @OneToMany (fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "orders")
     private List<OrderProduct> orderProducts;
-
+    //배달
     @OneToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Delivery delivery;
-
+    //취소 T or F
     private boolean removed;
 
     public void changeIsRemoved(boolean removed){
