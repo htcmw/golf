@@ -17,12 +17,12 @@ public class Test {
     private String impUid;
     private String orderNumber;
     private String userId;
-    private String email;
-    private String buyerName;
+    private String userEmail;
+    private String userName;
     private String orderName;
     private String deliveryMessage;
-    private String address;
-    private Integer amount;
-    private Integer useSavings;
+    private String userAddress;
+    private Integer totalPrice;
+    private Integer tokenAmount;
     private List<OrderProductDto> orderProductList;
 }

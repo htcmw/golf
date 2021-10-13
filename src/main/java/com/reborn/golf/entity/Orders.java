@@ -83,6 +83,7 @@ public class Orders extends BaseEntity {
                     .brand(product.getBrand())
                     .content(product.getContent())
                     .imageDtoList(productImageDtoList)
+                    .isRemoved(orderProduct.isRemoved())
                     .build();
             orderProductDtos.add(orderProductDto);
         }

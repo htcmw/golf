@@ -4,6 +4,9 @@ import com.reborn.golf.dto.shop.OrdersDto;
 import com.reborn.golf.dto.common.PageRequestDto;
 import com.reborn.golf.dto.common.PageResultDto;
 import com.reborn.golf.entity.Orders;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+
+import java.io.IOException;
 
 public interface OrderService {
 
@@ -11,7 +14,7 @@ public interface OrderService {
 
     PageResultDto<Orders, OrdersDto> getList(PageRequestDto pageRequestDto);
 
-    String order(Integer memberIdx, OrdersDto ordersDto);
+    String order(Integer memberIdx, OrdersDto ordersDto) throws IamportResponseException, IOException;
 
 //    Long orderFromCart(Integer memberIdx, CartListDto cartListDto);
 

@@ -2,12 +2,12 @@ package com.reborn.golf.service;
 
 import com.reborn.golf.dto.common.PageRequestDto;
 import com.reborn.golf.dto.common.PageResultDto;
-import com.reborn.golf.dto.kakaopay.KakaoPayResponseDto;
 import com.reborn.golf.dto.shop.OrdersDto;
 import com.reborn.golf.entity.*;
 import com.reborn.golf.entity.Enum.DeliveryStatus;
 import com.reborn.golf.entity.Enum.OrderStatus;
 import com.reborn.golf.repository.OrderRepository;
+import com.siot.IamportRestClient.exception.IamportResponseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -15,10 +15,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -28,7 +27,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderProductService orderProductService;
-
+    private final IamportManager iamportManager;
     @Override
     public PageResultDto<Orders, OrdersDto> getListWithUser(Integer memberIdx, PageRequestDto pageRequestDto) {
         Page<Orders> result = orderRepository.getOrdersByMemberIdxAndRemovedFalse(memberIdx, pageRequestDto.getPageable(Sort.by("regDate").descending()));
@@ -46,17 +45,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public String order(Integer memberIdx, OrdersDto ordersDto) {
+    public String order(Integer memberIdx, OrdersDto ordersDto) throws IamportResponseException, IOException {
         log.info(ordersDto);
+//        iamportManager.paymentVerification(ordersDto);
+
         List<OrderProduct> orderProducts = orderProductService.makeOrderProduct(ordersDto.getOrderProductList());
-
         Member member = Member.builder().idx(memberIdx).build();
-
         Delivery delivery = Delivery.builder().address(ordersDto.getUserAddress()).deliveryStatus(DeliveryStatus.NULL).build();
-
         Integer totalPrice = orderProducts.stream().mapToInt(OrderProduct::getPrice).sum();
-
-//        String itemName = orderProducts.get(0).getProduct().getTitle() + " 외 " + (orderProducts.size() - 1);
 
         Orders orders = Orders.builder()
                 .orderState(OrderStatus.ORDER)
@@ -73,7 +69,6 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(orders);
 
-        log.info(orders);
         return orders.getIdx().toString();
 
     }
@@ -87,6 +82,7 @@ public class OrderServiceImpl implements OrderService {
         if (optionalOrders.isPresent()) {
             Orders orders = optionalOrders.get();
             orders.changeIsRemoved(true);
+            orders.setOrderState(OrderStatus.CANCEL);
             orderProductService.removeOrderProduct(orders.getOrderProducts());
             orderRepository.save(orders);
 

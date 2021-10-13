@@ -31,6 +31,8 @@ public class OrdersDto {
     private String userName;
     //유저 주소
     private String userAddress;
+    //유저 전화번호
+    private String userPhone;
     //주문 상태
     private String orderState;
     //배달 상태

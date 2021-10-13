@@ -20,6 +20,7 @@ public class OrderProductDto {
     private String brand;
     private String rank;
     private String content;
+    private Boolean isRemoved;
 
     @Builder.Default
     private List<ProductImageDto> imageDtoList = new ArrayList<>();

@@ -6,6 +6,7 @@ import com.reborn.golf.dto.shop.OrdersDto;
 import com.reborn.golf.entity.Orders;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.OrderService;
+import com.siot.IamportRestClient.exception.IamportResponseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/orders")
@@ -37,9 +40,13 @@ public class OrderController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> order(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody OrdersDto ordersDto) {
         Integer memberIdx = authMemeberDto.getIdx();
-        log.info("here");
-        String url = orderService.order(memberIdx, ordersDto);
-        return new ResponseEntity<>(url, HttpStatus.OK);
+        try {
+            String idx = orderService.order(memberIdx, ordersDto);
+            return new ResponseEntity<>(idx, HttpStatus.OK);
+        } catch (IamportResponseException | IOException e) {
+            log.debug(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/{idx}")

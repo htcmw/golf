@@ -18,7 +18,7 @@ public class testController {
     @PostMapping("/paymen")
     public @ResponseBody
     Test suc(@RequestBody Test test){
-        log.info(test);
+
         return test;
     }
 }
