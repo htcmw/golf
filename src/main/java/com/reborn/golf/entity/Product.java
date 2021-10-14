@@ -28,6 +28,9 @@ public class Product extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     List<ProductImage> productImages;
 
