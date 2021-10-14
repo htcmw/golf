@@ -16,6 +16,8 @@ public interface CategoryService {
         return CategoryDto.builder()
                 .idx(category.getIdx())
                 .name(category.getName())
+                .code(category.getCode())
+                .priority(category.getPriority())
                 .build();
     }
     default Category dtoToEntiry(CategoryDto categoryDto){

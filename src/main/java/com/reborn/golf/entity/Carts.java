@@ -19,7 +19,7 @@ public class Carts extends BaseEntity{
     @GeneratedValue( strategy =  GenerationType.IDENTITY)
     private Long idx;
 
-    private Integer quentity;
+    private Integer quantity;
 
     @ManyToOne (fetch = FetchType.LAZY)
     private Member member;
@@ -27,19 +27,18 @@ public class Carts extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    public void changeQuentity(Integer quentity){
-        this.quentity = quentity;
+    public void changeQuentity(Integer quantity){
+        this.quantity = quantity;
     }
-
 
     public CartDto toCartDto(){
         return CartDto.builder()
                 .cartIdx(getIdx())
-                .quentity(getQuentity())
+                .quantity(getQuantity())
                 .productIdx(getProduct().getIdx())
                 .imageDtoList(getProduct().getProductImages().get(0).ProductImageDto())
                 .title(getProduct().getTitle())
-                .totalPrice(getQuentity() * getProduct().getPrice())
+                .totalPrice(getQuantity() * getProduct().getPrice())
                 .price(getProduct().getPrice())
                 .modDate(getModDate())
                 .regDate(getRegDate())

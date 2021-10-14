@@ -15,7 +15,7 @@ public class CartDto {
 
     private Integer totalPrice;
 
-    private Integer quentity;
+    private Integer quantity;
 
     private Long productIdx;
 
@@ -35,7 +35,7 @@ public class CartDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartDto cartDto = (CartDto) o;
-        return Objects.equals(cartIdx, cartDto.cartIdx) && Objects.equals(totalPrice, cartDto.totalPrice) && Objects.equals(quentity, cartDto.quentity) && Objects.equals(productIdx, cartDto.productIdx) && Objects.equals(price, cartDto.price) && Objects.equals(title, cartDto.title) && Objects.equals(imageDtoList, cartDto.imageDtoList) && Objects.equals(regDate, cartDto.regDate) && Objects.equals(modDate, cartDto.modDate);
+        return Objects.equals(cartIdx, cartDto.cartIdx) && Objects.equals(totalPrice, cartDto.totalPrice) && Objects.equals(quantity, cartDto.quantity) && Objects.equals(productIdx, cartDto.productIdx) && Objects.equals(price, cartDto.price) && Objects.equals(title, cartDto.title) && Objects.equals(imageDtoList, cartDto.imageDtoList) && Objects.equals(regDate, cartDto.regDate) && Objects.equals(modDate, cartDto.modDate);
     }
 
 }

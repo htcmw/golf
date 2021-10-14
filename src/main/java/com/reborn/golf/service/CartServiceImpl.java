@@ -48,7 +48,7 @@ public class CartServiceImpl implements CartService {
             Carts carts = Carts.builder()
                     .member(Member.builder().idx(memberIdx).build())
                     .product(Product.builder().idx(cartDto.getProductIdx()).build())
-                    .quentity(cartDto.getQuentity())
+                    .quantity(cartDto.getQuantity())
                     .build();
             cartRepository.save(carts);
             return carts.getIdx();

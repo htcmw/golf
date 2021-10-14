@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,8 +22,18 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public List<CategoryDto> getList() {
-        List<Category> categories = categoryRepository.findCategoriesByRemovedFalse(Sort.by("name").ascending());
-        return categories.stream().map(this::entiryToDto).collect(Collectors.toList());
+        List<Category> categories = categoryRepository.getCategories();
+        List<CategoryDto> categoryDtos = new ArrayList<>();
+        for(Category category : categories){
+            CategoryDto categoryDto = CategoryDto.builder()
+                            .code(category.getCode())
+                            .idx(category.getIdx())
+                            .name(category.getName())
+                            .priority(category.getPriority())
+                            .categories(category.getChildren().stream().map(this::entiryToDto).collect(Collectors.toList())).build();
+            categoryDtos.add(categoryDto);
+        }
+        return categoryDtos;
     }
 
     @Override
