@@ -18,6 +18,8 @@ public class ProductDto {
 
     private Long idx;
 
+    private Integer categoryIdx;
+
     private String title;
 
     private String brand;
@@ -27,6 +29,8 @@ public class ProductDto {
     private Integer price;
 
     private String content;
+
+    private Integer salesVolume;
 
     // 이미지 생성
     private List<ProductImageDto> imageDtoList;

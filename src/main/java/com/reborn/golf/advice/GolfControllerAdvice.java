@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -34,11 +36,8 @@ public class GolfControllerAdvice {
      * */
     @ExceptionHandler
     public void exception(Exception e) throws Exception {
-
-        log.info("Custom Exception : " + e.getClass().getName());
-
+        log.info("<<<<<<<<<<<<<<<<<<<<GolfControllerAdvice>>>>>>>>>>>>>>>>>>>>>");
         e.printStackTrace();
-
         throw new Exception();
     }
 

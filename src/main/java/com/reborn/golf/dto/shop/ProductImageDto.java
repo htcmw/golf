@@ -15,10 +15,9 @@ import java.net.URLEncoder;
 @NoArgsConstructor
 @Builder
 public class ProductImageDto  implements Serializable {
+    private String imgName;
 
     private String uuid;
-
-    private String imgName;
 
     private String path;
 

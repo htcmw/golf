@@ -23,6 +23,8 @@ public class Product extends BaseEntity {
 
     private Integer quantity;
 
+    private Integer salesVolume;
+
     private Integer price;
 
     @Column(columnDefinition = "TEXT")
@@ -33,6 +35,9 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     List<ProductImage> productImages;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 
     private boolean removed;
 
@@ -58,5 +63,9 @@ public class Product extends BaseEntity {
 
     public void changeRemoved(Boolean removed) {
         this.removed = removed;
+    }
+
+    public void changeCategory(Integer categoryIdx) {
+        this.category = Category.builder().idx(categoryIdx).build();
     }
 }

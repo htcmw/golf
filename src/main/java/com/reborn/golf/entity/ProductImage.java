@@ -23,6 +23,8 @@ public class ProductImage  {
 
     private String path;
 
+    private boolean removed;
+
     public ProductImageDto ProductImageDto(){
         return ProductImageDto.builder()
                 .uuid(this.getUuid())
@@ -34,6 +36,8 @@ public class ProductImage  {
     @ManyToOne(fetch = FetchType.LAZY) //무조건 lazy로
     private Product product;
 
-
+    public void changeRemoved(boolean removed){
+        this.removed = removed;
+    }
 
 }

@@ -4,6 +4,7 @@ import com.reborn.golf.dto.common.PageRequestDto;
 import com.reborn.golf.dto.common.PageResultDto;
 import com.reborn.golf.dto.shop.ProductDto;
 import com.reborn.golf.dto.shop.ProductImageDto;
+import com.reborn.golf.entity.Category;
 import com.reborn.golf.entity.Product;
 import com.reborn.golf.entity.ProductImage;
 import lombok.extern.log4j.Log4j2;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public interface ProductService {
 
     // 제품 리스트 조회
-    PageResultDto<Object[], ProductDto> getList(PageRequestDto requestDto);
+    PageResultDto<Object[], ProductDto> getList(Integer categoryIdx, PageRequestDto requestDto);
 
     // 제품 등록
     Long register(ProductDto productDto);
@@ -30,13 +31,14 @@ public interface ProductService {
     // 제품 정보 삭제
     void remove(Long pno);
 
-    default ProductDto entityToDto(Product product, List<ProductImage> productImages, Double avg, Long reviewCnt) {
+    default ProductDto entitiesToDto(Product product, List<ProductImage> productImages, Double avg, Long reviewCnt) {
         ProductDto productDto = ProductDto.builder()
                 .idx(product.getIdx())
                 .title(product.getTitle())
                 .brand(product.getBrand())
                 .quantity(product.getQuantity())
                 .price(product.getPrice())
+                .salesVolume(product.getSalesVolume())
                 .content(product.getContent())
                 .regDate(product.getRegDate())
                 .modDate(product.getModDate())
@@ -53,11 +55,13 @@ public interface ProductService {
 
     }
 
+
     default Map<String, Object> dtoToEntity(ProductDto productDto) {
 
         Map<String, Object> entityMap = new HashMap<>();
 
         Product product = Product.builder()
+                .category(Category.builder().idx(productDto.getCategoryIdx()).build())
                 .idx(productDto.getIdx())
                 .title(productDto.getTitle())
                 .brand(productDto.getBrand())
@@ -69,7 +73,6 @@ public interface ProductService {
         entityMap.put("product", product);
 
         List<ProductImageDto> imageDtoList = productDto.getImageDtoList();
-
         //ProductImageDto 처리
         if (imageDtoList != null && imageDtoList.size() > 0) {
             List<ProductImage> productImageList = imageDtoList.stream().map(productImageDto -> {

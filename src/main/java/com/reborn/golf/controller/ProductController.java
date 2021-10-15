@@ -12,56 +12,47 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 @Log4j2
 @RestController
-@RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService; //final
 
     // 제품 리스트 조회
-    @GetMapping
-    public ResponseEntity<PageResultDto<Object[], ProductDto>> getList(PageRequestDto requestDto) {
-
-        PageResultDto<Object[], ProductDto> productDtoList = productService.getList(requestDto);
-
-        log.info(productDtoList);
-
+    @GetMapping("/categories/{categoryIdx}/products")
+    public ResponseEntity<PageResultDto<Object[], ProductDto>> getList(@PathVariable Integer categoryIdx, PageRequestDto requestDto) {
+        log.info(categoryIdx);
+        PageResultDto<Object[], ProductDto> productDtoList = productService.getList(categoryIdx, requestDto);
         return new ResponseEntity<>(productDtoList, HttpStatus.OK);
-    }
-    // 제품 등록
-    @PostMapping
-    public ResponseEntity<Long> register(@RequestBody ProductDto productDto) {
-        log.info("213141412");
-        log.info("productDto: " + productDto);
-
-        Long pno = productService.register(productDto);
-
-        return new ResponseEntity<>(pno, HttpStatus.OK);
     }
 
     // 제품 상세 페이지
-    @GetMapping("/{pno}")
-    public ResponseEntity<ProductDto> read(@PathVariable Long pno) {
-
-        ProductDto productDto = productService.detail(pno);
-
+    @GetMapping("/products/{productIdx}")
+    public ResponseEntity<ProductDto> read(@PathVariable Long productIdx) {
+        ProductDto productDto = productService.detail(productIdx);
         return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
+    // 제품 등록
+    @PostMapping("/categories/{categoryIdx}/products")
+    public ResponseEntity<Long> register(@RequestBody ProductDto productDto) {
+        log.info(productDto);
+        Long pno = productService.register(productDto);
+        return new ResponseEntity<>(pno, HttpStatus.OK);
+    }
+
+
     // 제품 정보 수정 (텍스트 수정 확인, 이미지 수정 테스트 픽요)
-    @PutMapping(value = "/{pno}")
-    public ResponseEntity<String> modify(@PathVariable Long pno, @RequestBody ProductDto productDto) {
-
-        productService.modify(pno, productDto);
-
-        return new ResponseEntity<>("success", HttpStatus.OK);
+    @PutMapping("/products/{productIdx}")
+    public ResponseEntity<String> modify(@PathVariable Long productIdx, @RequestBody ProductDto productDto) {
+        productService.modify(productIdx, productDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 제품 정보 삭제
-    @DeleteMapping("/{pno}")
-    public ResponseEntity<String> remove(@PathVariable Long pno) {
-        productService.remove(pno);
+    @DeleteMapping("/products/{productIdx}")
+    public ResponseEntity<String> remove(@PathVariable Long productIdx) {
+        productService.remove(productIdx);
 
-        return new ResponseEntity<>("success", HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

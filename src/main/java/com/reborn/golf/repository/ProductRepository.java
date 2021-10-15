@@ -9,15 +9,15 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository <Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, QuerydslProductRepository {
 
     // 리스트 불러올 때 사용
     @Query(
             "SELECT p, pi, AVG(COALESCE(r.grade,0)), COUNT(DISTINCT r) " +
-            "FROM Product p " +
+                    "FROM Product p " +
                     "LEFT OUTER JOIN ProductImage pi ON pi.product = p " +
                     "LEFT OUTER JOIN ProductReply r ON r.product = p " +
-            "GROUP BY p ")
+                    "GROUP BY p ")
     Page<Object[]> getListPage(Pageable pageable);
 
     // 상세페이지 조회 때 사용
@@ -28,6 +28,7 @@ public interface ProductRepository extends JpaRepository <Product, Long> {
             "LEFT OUTER JOIN ProductImage pi ON pi.product = p " +
             "LEFT OUTER JOIN ProductReply  r ON r.product = p " +
             "WHERE p.idx = :productIdx " +
+            "AND pi.removed = false " +
             "GROUP BY pi")
     List<Object[]> getProductWithAll(Long productIdx);
 

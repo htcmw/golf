@@ -11,6 +11,6 @@ public class ProductServiceTests {
     ProductService productService;
     @Test
     public void getListTest(){
-        System.out.println(productService.getList(new PageRequestDto()));
+//        System.out.println(productService.getList(new PageRequestDto()));
     }
 }
