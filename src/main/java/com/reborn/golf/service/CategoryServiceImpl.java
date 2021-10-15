@@ -28,7 +28,6 @@ public class CategoryServiceImpl implements CategoryService {
         return categories.stream().map(this::entiryToDto).collect(Collectors.toList());
     }
 
-
     @Override
     public Integer register(CategoryDto categoryDto) {
         Optional<Category> optionalCategory = categoryRepository.getCategoryByName(categoryDto.getName());
@@ -36,6 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
             Category category = Category.builder()
                     .name(categoryDto.getName())
                     .priority(categoryDto.getPriority())
+                    .code(categoryDto.getCode())
                     .build();
             if (categoryDto.getPidx() != null) {
                 Category parent = categoryRepository.findById(categoryDto.getPidx())

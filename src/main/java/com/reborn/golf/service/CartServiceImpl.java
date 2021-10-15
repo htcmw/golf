@@ -47,7 +47,7 @@ public class CartServiceImpl implements CartService {
         if (optionalProduct.isPresent()) {
             Carts carts = Carts.builder()
                     .member(Member.builder().idx(memberIdx).build())
-                    .product(Product.builder().idx(cartDto.getProductIdx()).build())
+//                    .product(Product.builder().idx(cartDto.getProductIdx()).build())
                     .quantity(cartDto.getQuantity())
                     .build();
             cartRepository.save(carts);
