@@ -1,4 +1,4 @@
-package com.reborn.golf.dto.user;
+package com.reborn.golf.test;
 
 import lombok.*;
 

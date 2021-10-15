@@ -7,7 +7,6 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.*;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -16,18 +15,16 @@ import java.math.BigDecimal;
 @Service
 @Log4j2
 public class IamportManager {
-
-    @Value("${IAMPORT_APIKEY}")
-    private String APIKEY;
-
-    @Value("${IAMPORT_SECRET}")
-    private String SECRETKEY;
+//
+//    @Value("${IAMPORT_APIKEY}")
+//    private String APIKEY;
+//
+//    @Value("${IAMPORT_SECRET}")
+//    private String SECRETKEY;
 
     private final IamportClient iamportClient;
 
     public IamportManager() {
-        log.info(APIKEY);
-        log.info(SECRETKEY);
         this.iamportClient = new IamportClient("3870373320666877", "f605a3631b647fcd153d134aebfc442eb638d7daea68be45cda866a367c41589cf45f625d63da0b5");
     }
 

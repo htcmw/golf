@@ -1,4 +1,4 @@
-package com.reborn.golf.entity;
+package com.reborn.golf.test;
 
 import com.reborn.golf.entity.Enum.Role;
 import lombok.*;
@@ -13,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class Employee extends BaseEntity {
+public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

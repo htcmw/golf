@@ -1,6 +1,5 @@
 package com.reborn.golf.security.service;
 
-import com.reborn.golf.entity.Employee;
 import com.reborn.golf.entity.Member;
 import com.reborn.golf.repository.EmployeeRepository;
 import com.reborn.golf.repository.MemberRepository;
@@ -36,17 +35,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             log.info(member);
             return new AuthMemeberDto(member.getIdx(), member.getEmail(), member.getPassword(), member.isFromSocial(),
                     member.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority(memberRole.name())).collect(Collectors.toSet()));
-        }
-
-        log.info("----------------loadUserByUsername, Associates----------------------");
-
-        Optional<Employee> takenAssociates = employeeRepository.findByEmail(username);
-
-        if (takenAssociates.isPresent()) {
-            Employee employee = takenAssociates.get();
-            log.info(employee);
-            return new AuthMemeberDto(employee.getIdx(), employee.getEmail(), employee.getPassword(), false,
-                    employee.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority(memberRole.name())).collect(Collectors.toSet()));
         }
 
         throw new UsernameNotFoundException("Please Check Email or Social");

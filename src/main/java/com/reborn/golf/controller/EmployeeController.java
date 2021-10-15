@@ -1,6 +1,6 @@
 package com.reborn.golf.controller;
 
-import com.reborn.golf.dto.user.EmployeeDto;
+import com.reborn.golf.dto.user.MemberDto;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import com.reborn.golf.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -24,31 +24,29 @@ public class EmployeeController {
     //직원 입사
     @PostMapping
 //    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<String> register(@RequestBody @Valid EmployeeDto employeeDto) {
-        log.info(employeeDto);
-        if (employeeService.register(employeeDto)) {
-            return new ResponseEntity<>("Success", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("The same email already exists.", HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<String> register(@RequestBody @Valid MemberDto memberDto) {
+        log.info(memberDto);
+        employeeService.register(memberDto);
+        return new ResponseEntity<>("회원가입을 축하드립니다", HttpStatus.OK);
+
     }
 
     //직원 정보 조회
     @GetMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<EmployeeDto> read(@AuthenticationPrincipal AuthMemeberDto authMemeberDto) {
+    public ResponseEntity<MemberDto> read(@AuthenticationPrincipal AuthMemeberDto authMemeberDto) {
         Integer idx = authMemeberDto.getIdx();
         log.info(idx);
-        EmployeeDto employeeDto = employeeService.read(idx);
-        return new ResponseEntity<>(employeeDto, HttpStatus.OK);
+        MemberDto memberDto = employeeService.read(idx);
+        return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
     //직원 정보 수정
     @PutMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid EmployeeDto employeeDto) throws Exception {
+    public ResponseEntity<String> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid MemberDto memberDto) throws Exception {
         Integer idx = authMemeberDto.getIdx();
-        employeeService.modify(idx, employeeDto);
+        employeeService.modify(idx, memberDto);
         return new ResponseEntity<>("Success", HttpStatus.OK);
 
     }

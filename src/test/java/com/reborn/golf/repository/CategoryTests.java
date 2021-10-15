@@ -1,4 +1,4 @@
-package com.reborn.golf.service;
+package com.reborn.golf.repository;
 
 import com.reborn.golf.entity.Category;
 import com.reborn.golf.repository.CategoryRepository;
@@ -25,6 +25,8 @@ public class CategoryTests {
         }
     }
     @Test
+    @Transactional
+    @Rollback(value = false)
     public void secondCategory(){
         String[][] arr = {{"드라이버","우드","아이언","풀세트"},{"골프공","골프가방","골프장갑","골프모자","골프화"},{"아우터","상의","하의","양말"}};
         int cnt = 0;
@@ -43,5 +45,6 @@ public class CategoryTests {
     @Test
     public void findAllWithQuerydslTest(){
         List<Category> categoryList = categoryRepository.getCategories();
+
     }
 }

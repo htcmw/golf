@@ -1,24 +1,20 @@
 package com.reborn.golf.service;
 
 
-import com.reborn.golf.dto.user.EmployeeDto;
-import com.reborn.golf.entity.Employee;
+import com.reborn.golf.dto.user.MemberDto;
+import com.reborn.golf.entity.Member;
 
 public interface EmployeeService {
-    boolean register(EmployeeDto employeeDto);
+    void register(MemberDto employeeDto);
 
-    EmployeeDto read(Integer email);
+    MemberDto read(Integer email);
 
-    Integer modify(Integer idx, EmployeeDto employeeDto);
+    Integer modify(Integer idx, MemberDto employeeDto);
 
-    Integer remove(Integer idx);
+    void remove(Integer idx);
 
-    String searchEmail(EmployeeDto phone);
-
-    Integer searchPassword(EmployeeDto employeeDto);
-
-    default Employee dtoToEntity(EmployeeDto employeeDto) {
-        return Employee.builder()
+    default Member dtoToEntity(MemberDto employeeDto) {
+        return Member.builder()
                 .idx(employeeDto.getIdx())
                 .email(employeeDto.getEmail())
                 .password(employeeDto.getPassword())
@@ -28,8 +24,8 @@ public interface EmployeeService {
                 .build();
     }
 
-    default EmployeeDto entityToDto(Employee employee) {
-        return EmployeeDto.builder()
+    default MemberDto entityToDto(Member employee) {
+        return MemberDto.builder()
                 .idx(employee.getIdx())
                 .email(employee.getEmail())
                 .password(employee.getPassword())

@@ -1,9 +1,12 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.user.EmployeeDto;
-import com.reborn.golf.entity.Employee;
+import com.reborn.golf.dto.exception.AlreadyExistEntityException;
+import com.reborn.golf.dto.exception.DifferentEmailException;
+import com.reborn.golf.dto.exception.NotExistEntityException;
+import com.reborn.golf.dto.user.MemberDto;
 import com.reborn.golf.entity.Enum.Role;
-import com.reborn.golf.repository.EmployeeRepository;
+import com.reborn.golf.entity.Member;
+import com.reborn.golf.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+
+/*
+ * 직원 CRUD 클래스
+ * 직원 테이블을 따로 만들게 될경우 변경해야함
+ * */
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -19,94 +27,62 @@ public class EmployeeServiceImpl implements EmployeeService {
     //비밀번호 암호화
     private final PasswordEncoder passwordEncoder;
 
-    private final EmployeeRepository employeeRepository;
+    private final MemberRepository memberRepository;
 
     @Override
-    public boolean register(EmployeeDto employeeDto) {
-        Optional<Employee> result = employeeRepository.getAssociatesByEmailAndRemovedFalse(employeeDto.getEmail());
+    public void register(MemberDto memberDto) {
 
-        //추가 1. 삭제된 정보의 경우 언제부터 다시 회원가입 가능한지 조건 필요
+        Optional<Member> result = memberRepository.getMemberByEmailAndRemovedFalse(memberDto.getEmail());
 
         if (result.isEmpty()) {
-            employeeDto.setPassword(passwordEncoder.encode(employeeDto.getPassword()));
-            Employee newEmployee = dtoToEntity(employeeDto);
-            newEmployee.addMemberAuthority(Role.ROLE_MANAGER);
-            log.info(newEmployee);
-            employeeRepository.save(newEmployee);
-            return true;
+            memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
+            Member newMember = dtoToEntity(memberDto);
+            newMember.addMemberAuthority(Role.ROLE_MANAGER);
+            log.info(newMember);
+            memberRepository.save(newMember);
+        } else {
+            throw new AlreadyExistEntityException("같은 이메일이 이미 있습니다.");
         }
-        return false;
     }
 
     @Override
-    public EmployeeDto read(Integer idx) {
+    public MemberDto read(Integer idx) {
 
-        Optional<Employee> result = employeeRepository.getAssociatesByIdxAndRemovedFalse(idx);
+        Member member = memberRepository.getMemberByIdxAndRemovedFalse(idx)
+                .orElseThrow(() -> new NotExistEntityException("NotExistEntityException"));
+        ;
 
-        return result.map(this::entityToDto).orElse(null);
+        return entityToDto(member);
 
     }
 
     @Override
-    public Integer modify(Integer idx, EmployeeDto employeeDto) {
+    public Integer modify(Integer idx, MemberDto memberDto) {
+        Member member = memberRepository.getMemberByIdxAndRemovedFalse(idx)
+                .orElseThrow(() -> new NotExistEntityException("NotExistEntityException"));
 
-        Optional<Employee> result = employeeRepository.getAssociatesByIdxAndRemovedFalse(idx);
+        if (member.getEmail().equals(memberDto.getEmail())) {
+            member.changeName(memberDto.getName());
+            member.changeAddress(memberDto.getAddress());
+            member.changePhone(memberDto.getPhone());
 
-        if (result.isPresent()) {
-
-            Employee employee = result.get();
-
-            if (employee.getEmail().equals(employeeDto.getEmail())) {
-                employee.changeName(employeeDto.getName());
-                employee.changeAddress(employeeDto.getAddress());
-                employee.changePhone(employeeDto.getPhone());
-
-                log.info(employee);
-                employeeRepository.save(employee);
-                return employee.getIdx();
-
-            }
+            log.info(member);
+            memberRepository.save(member);
+            return member.getIdx();
         }
-        return null;
+        throw new DifferentEmailException("이메일이 다릅니다");
+
     }
 
     @Override
     @Transactional
-    public Integer remove(Integer idx) {
+    public void remove(Integer idx) {
 
-        Optional<Employee> result = employeeRepository.getAssociatesByIdxAndRemovedFalse(idx);
-
-        if (result.isPresent()) {
-
-            Employee employee = result.get();
-            employee.changeIsRemoved(true);
-
-            log.info(employee);
-            employeeRepository.save(employee);
-            return employee.getIdx();
-        }
-        return null;
-    }
-
-    @Override
-    public String searchEmail(EmployeeDto employeeDto) {
-        Optional<Employee> result = employeeRepository.getAssociatesByEmailAndRemovedFalse(employeeDto.getEmail());
-        if(result.isPresent()){
-            Employee employee = result.get();
-            return employee.getEmail();
-        }
-        return null;
-    }
-
-    @Override
-    public Integer searchPassword(EmployeeDto employeeDto) {
-        Optional<Employee> result = employeeRepository.getAssociatesByEmailAndPhoneAndRemovedFalse(employeeDto.getEmail(), employeeDto.getPhone());
-        if(result.isPresent()){
-            Employee employee = result.get();
-            employee.changePhone(employeeDto.getPhone());
-            return employee.getIdx();
-        }
-        return null;
+        Member member = memberRepository.getMemberByIdxAndRemovedFalse(idx)
+                .orElseThrow(() -> new NotExistEntityException("NotExistEntityException"));
+        member.changeIsRemoved(true);
+        log.info(member);
+        memberRepository.save(member);
     }
 
 }

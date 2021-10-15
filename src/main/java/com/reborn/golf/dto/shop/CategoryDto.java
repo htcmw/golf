@@ -1,4 +1,4 @@
-package com.reborn.golf.controller;
+package com.reborn.golf.dto.shop;
 
 import lombok.*;
 
@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 public class CategoryDto {
     private Integer idx;
+    private Integer pidx;
     private String name;
     private String code;
     private Integer priority;

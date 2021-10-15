@@ -1,15 +1,16 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.controller.CategoryDto;
+import com.reborn.golf.dto.shop.CategoryDto;
 import com.reborn.golf.entity.Category;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface CategoryService {
     List<CategoryDto> getList();
-    Integer register(String categoryName);
+    Integer register(CategoryDto categoryDto);
     Integer modify(CategoryDto categoryDto);
-    Integer remove(Integer categoryIdx);
+    void remove(Integer categoryIdx);
 
 
     default CategoryDto entiryToDto(Category category){
@@ -18,6 +19,7 @@ public interface CategoryService {
                 .name(category.getName())
                 .code(category.getCode())
                 .priority(category.getPriority())
+                .categories(category.getChildren().stream().map(this::entiryToDto).collect(Collectors.toList()))
                 .build();
     }
     default Category dtoToEntiry(CategoryDto categoryDto){

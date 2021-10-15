@@ -1,6 +1,6 @@
 package com.reborn.golf.repository;
 
-import com.reborn.golf.entity.Employee;
+import com.reborn.golf.test.Employee;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

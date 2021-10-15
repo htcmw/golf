@@ -11,12 +11,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = {"parent","children"})
-public class Category extends BaseEntity{
+@ToString(exclude = {"parent", "children"})
+public class Category extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idx;
 
+    @Setter
     private String code;
 
     private String name;
@@ -34,11 +35,19 @@ public class Category extends BaseEntity{
 
     private boolean removed;
 
-    public void changeName(String name){
+    public void changeName(String name) {
         this.name = name;
     }
 
-    public void changeRemoved(boolean removed){
+    public void changeCode(String code) {
+        this.code = code;
+    }
+
+    public void changePriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    public void changeRemoved(boolean removed) {
         this.removed = removed;
     }
 }
