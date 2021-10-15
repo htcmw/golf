@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
         Page<Object[]> result = productRepository.getListPage(pageable);
 
         Function<Object[], ProductDto> fn =
-                (arr -> entityToDto((Product) arr[0] , List.of((ProductImage) arr[1]),(Double) arr[2], (Long)arr[3])
+                (arr -> entityToDto((Product) arr[0] ,  (List<ProductImage>) Arrays.asList((ProductImage) arr[1]),(Double) arr[2], (Long)arr[3])
         );
 
         return new PageResultDto<>(result, fn);

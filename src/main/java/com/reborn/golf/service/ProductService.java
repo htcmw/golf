@@ -42,10 +42,8 @@ public interface ProductService {
                 .modDate(product.getModDate())
                 .build();
 
-        List<ProductImageDto> productImageDtoList = null; //productImages.stream().map(productImage -> ProductImageDto.builder().imgName(productImage.getImgName()).path(productImage.getPath()).uuid(productImage.getUuid()).build()).collect(Collectors.toList());
-        productImages.stream().map(productImage -> ProductImageDto.builder().imgName(productImage.getImgName()).path(productImage.getPath()).uuid(productImage.getUuid()).build()).forEach(System.out::println);
+        List<ProductImageDto> productImageDtoList = productImages.stream().map(productImage -> ProductImageDto.builder().imgName(productImage.getImgName()).path(productImage.getPath()).uuid(productImage.getUuid()).build()).collect(Collectors.toList());
 
-        System.out.println("===========================================================");
         productDto.setImageDtoList(productImageDtoList);
         productDto.setAvg(avg);
         productDto.setReviewCnt(reviewCnt.intValue());
