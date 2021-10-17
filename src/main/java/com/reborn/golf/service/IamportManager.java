@@ -15,12 +15,6 @@ import java.math.BigDecimal;
 @Service
 @Log4j2
 public class IamportManager {
-//
-//    @Value("${IAMPORT_APIKEY}")
-//    private String APIKEY;
-//
-//    @Value("${IAMPORT_SECRET}")
-//    private String SECRETKEY;
 
     private final IamportClient iamportClient;
 

@@ -6,7 +6,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
 public class TickerDto {
     //결과 상태 코드 (정상: 0000, 그 외 에러 코드 참조)
     private String status;
@@ -14,8 +13,7 @@ public class TickerDto {
 
     @Getter
     @Setter
-    @ToString
-    private static class DataDto {
+    public static class DataDto {
         //시가 00시 기준
         private String opening_price;
         //종가 00시 기준
