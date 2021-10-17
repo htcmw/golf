@@ -1,6 +1,6 @@
 package com.reborn.golf.test;
 
-import com.reborn.golf.service.IamportManager;
+import com.reborn.golf.api.IamportManager;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

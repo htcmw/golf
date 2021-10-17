@@ -1,4 +1,4 @@
-package com.reborn.golf.Coin;
+package com.reborn.golf.test;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,6 @@ import javax.servlet.annotation.WebListener;
 
 
 @Log4j2
-@WebListener
 public class CustomServletContextListener implements ServletContextListener, Runnable {
     //작업을 수행할 thread
     private Thread thread;
