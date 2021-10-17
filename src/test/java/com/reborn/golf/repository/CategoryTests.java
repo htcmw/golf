@@ -24,6 +24,7 @@ public class CategoryTests {
             categoryRepository.save(Category.builder().name(temp).priority(cnt).code(String.format("%02d",cnt)).build());
         }
     }
+
     @Test
     @Transactional
     @Rollback(value = false)
