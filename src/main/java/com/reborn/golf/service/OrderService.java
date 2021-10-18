@@ -12,11 +12,9 @@ public interface OrderService {
 
     PageResultDto<Orders, OrdersDto> getListWithUser(Integer memberIdx, PageRequestDto pageRequestDto);
 
-    PageResultDto<Orders, OrdersDto> getList(PageRequestDto pageRequestDto);
+    PageResultDto<Orders, OrdersDto> getListWithState(String state, PageRequestDto pageRequestDto);
 
     String order(Integer memberIdx, OrdersDto ordersDto) throws IamportResponseException, IOException;
-
-//    Long orderFromCart(Integer memberIdx, CartListDto cartListDto);
 
     Long cancel(Integer memberIdx, Long orderIdx);
 

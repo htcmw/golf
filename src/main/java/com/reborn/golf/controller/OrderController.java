@@ -25,7 +25,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    // 주문 정보 불러오기
+    // 유저의 주문 리스트 불러오기
     @GetMapping
     public ResponseEntity<PageResultDto<Orders, OrdersDto>> getListWithUser(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, PageRequestDto pageRequestDto) {
         Integer memberIdx = authMemeberDto.getIdx();
@@ -35,7 +35,7 @@ public class OrderController {
         return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
     }
 
-    // 주문 정보 불러오기
+    // 주문 하기
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> order(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody OrdersDto ordersDto) {
@@ -48,7 +48,7 @@ public class OrderController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
+    //주문 취소하기
     @DeleteMapping("/{idx}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Long> cancel(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long idx) {
@@ -58,10 +58,11 @@ public class OrderController {
         return new ResponseEntity<>(num, HttpStatus.OK);
     }
 
-    @GetMapping("/permit")
+    //어떤 상태의 주문 정보리스트 불러오기
+    @GetMapping("/state")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<PageResultDto<Orders, OrdersDto>> getProcessingOrder(PageRequestDto pageRequestDto) {
-        PageResultDto<Orders, OrdersDto> orderDtoList = orderService.getList(pageRequestDto);
+    public ResponseEntity<PageResultDto<Orders, OrdersDto>> getProcessingOrder(@RequestParam String state, PageRequestDto pageRequestDto) {
+        PageResultDto<Orders, OrdersDto> orderDtoList = orderService.getListWithState(state, pageRequestDto);
         log.info(orderDtoList);
         return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
     }

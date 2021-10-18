@@ -38,8 +38,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
             Member newMember = dtoToEntity(memberDto);
             newMember.addMemberAuthority(Role.ROLE_MANAGER);
-            log.info(newMember);
+            newMember.addMemberAuthority(Role.ROLE_VIP);
+            newMember.addMemberAuthority(Role.ROLE_USER);
             memberRepository.save(newMember);
+            log.info(newMember);
         } else {
             throw new AlreadyExistEntityException("같은 이메일이 이미 있습니다.");
         }
@@ -49,8 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public MemberDto read(Integer idx) {
 
         Member member = memberRepository.getMemberByIdxAndRemovedFalse(idx)
-                .orElseThrow(() -> new NotExistEntityException("NotExistEntityException"));
-        ;
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 고객정보가 DB에 없습니다"));
 
         return entityToDto(member);
 
@@ -59,7 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Integer modify(Integer idx, MemberDto memberDto) {
         Member member = memberRepository.getMemberByIdxAndRemovedFalse(idx)
-                .orElseThrow(() -> new NotExistEntityException("NotExistEntityException"));
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 고객정보가 DB에 없습니다"));
 
         if (member.getEmail().equals(memberDto.getEmail())) {
             member.changeName(memberDto.getName());
@@ -77,12 +78,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void remove(Integer idx) {
-
         Member member = memberRepository.getMemberByIdxAndRemovedFalse(idx)
-                .orElseThrow(() -> new NotExistEntityException("NotExistEntityException"));
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 고객정보가 DB에 없습니다"));
+
         member.changeIsRemoved(true);
-        log.info(member);
         memberRepository.save(member);
+        log.info(member + " : 삭제");
     }
 
 }

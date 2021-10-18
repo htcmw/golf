@@ -10,6 +10,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @Log4j2
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +27,13 @@ public class ProductController {
         PageResultDto<Object[], ProductDto> productDtoList = productService.getList(categoryIdx, requestDto);
         return new ResponseEntity<>(productDtoList, HttpStatus.OK);
     }
+    // 제품 리스트 조회
+    @GetMapping("/products/best")
+    public ResponseEntity<List<ProductDto>> getBestList(@RequestParam String attr, @RequestParam Integer limit) {
 
+        List<ProductDto> productDtoList = productService.getBestList(attr, limit);
+        return new ResponseEntity<>(productDtoList, HttpStatus.OK);
+    }
     // 제품 상세 페이지
     @GetMapping("/products/{productIdx}")
     public ResponseEntity<ProductDto> read(@PathVariable Long productIdx) {

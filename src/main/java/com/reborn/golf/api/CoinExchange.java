@@ -1,7 +1,7 @@
 package com.reborn.golf.api;
 
 
-import com.reborn.golf.dto.TickerDto;
+import com.reborn.golf.dto.shop.TickerDto;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.ApplicationArguments;
@@ -22,19 +22,21 @@ public class CoinExchange implements ApplicationRunner, Runnable, ApplicationLis
     private String url;
     private RestTemplate restTemplate;
 
-    @Getter
-    private static Integer coinPrice;
 
+    @Getter
+    private Double coinPrice;
+
+    //Application 시작시 실행
     @Override
     public void run(ApplicationArguments args) throws Exception {
         log.info(">>>>>>>>>> ApplicationRunner");
-        url = "https://api.bithumb.com/public/ticker/" + "BTC" + "_" + "KRW";
+        url = "https://api.bithumb.com/public/ticker/" + "MBL" + "_" + "KRW";
         this.restTemplate = new RestTemplate();
         isShutdown = false;
         startDaemon();
     }
 
-    //스레드가 실제로 작업하는 부분
+    //Thread
     @Override
     public void run() {
         Thread currentThread = Thread.currentThread();
@@ -42,7 +44,7 @@ public class CoinExchange implements ApplicationRunner, Runnable, ApplicationLis
             while (currentThread == thread && !this.isShutdown) {
                 TickerDto tickerDto = restTemplate.getForObject(new URI(url), TickerDto.class);
                 if (tickerDto != null) {
-                    coinPrice = Integer.parseInt(tickerDto.getData().getClosing_price());
+                    coinPrice = Double.parseDouble(tickerDto.getData().getClosing_price());
                     log.info(coinPrice);
                     Thread.sleep(1000);
                 }
@@ -65,7 +67,7 @@ public class CoinExchange implements ApplicationRunner, Runnable, ApplicationLis
             thread.start();
         }
     }
-
+    //Application 종료시 실행
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
         this.isShutdown = true;
@@ -77,5 +79,4 @@ public class CoinExchange implements ApplicationRunner, Runnable, ApplicationLis
             ie.printStackTrace();
         }
     }
-
 }

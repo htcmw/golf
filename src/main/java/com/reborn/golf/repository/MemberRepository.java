@@ -17,6 +17,7 @@ public interface MemberRepository extends JpaRepository<Member,Integer> {
 
     //삭제되지 않은 고객정보
     Optional<Member> getMemberByEmailAndRemovedFalse(String email);
+    Optional<Member> getMemberByPhoneAndRemovedFalse(String phone);
 
     //삭제되지 않은 고객정보
     Optional<Member> getMemberByIdxAndRemovedFalse(Integer idx);

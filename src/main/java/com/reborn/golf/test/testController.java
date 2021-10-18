@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class testController {
     @GetMapping("/coin")
     public ResponseEntity<?> pay(){
-        return ResponseEntity.ok().body(CoinExchange.getCoinPrice());
+        return ResponseEntity.ok().body("CoinExchange.getCoinPrice()");
     }
 
     @PostMapping("/paymen")

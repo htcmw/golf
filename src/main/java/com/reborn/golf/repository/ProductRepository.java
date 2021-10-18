@@ -3,6 +3,7 @@ package com.reborn.golf.repository;
 import com.reborn.golf.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -38,5 +39,12 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
             "WHERE p.idx = :productIdx " +
             "AND p.removed = false ")
     Optional<Product> getProductByIdx(Long productIdx);
+
+    @Query("SELECT p, pi, AVG(COALESCE(r.grade,0)), COUNT(DISTINCT r) " +
+            "FROM Product p " +
+                    "LEFT OUTER JOIN ProductImage pi ON pi.product = p " +
+                    "LEFT OUTER JOIN ProductReply r ON r.product = p " +
+            "GROUP BY p ")
+    List<Object[]> getBestProducts(Pageable pageable);
 
 }

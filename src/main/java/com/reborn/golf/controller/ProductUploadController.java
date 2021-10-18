@@ -35,15 +35,15 @@ public class ProductUploadController {
     private String uploadPath;
 
     @PostMapping("/img")
-    public ResponseEntity<List<ProductImageDto>> uploadFile(MultipartFile[] uploadFiles){
+    public ResponseEntity<List<ProductImageDto>> uploadFile(MultipartFile[] uploadFiles) {
 
         List<ProductImageDto> resultDTOList = new ArrayList<>();
 
         log.info(uploadFiles);
 
-        for (MultipartFile uploadFile: uploadFiles) {
+        for (MultipartFile uploadFile : uploadFiles) {
 
-            if(uploadFile.getContentType().startsWith("image") == false) {
+            if (uploadFile.getContentType().startsWith("image") == false) {
                 log.warn("this file is not image type");
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
@@ -60,7 +60,7 @@ public class ProductUploadController {
             String uuid = UUID.randomUUID().toString();
 
             //저장할 파일 이름 중간에 "_"를 이용해서 구분
-            String saveName = uploadPath + File.separator + folderPath + File.separator + uuid +"_" + fileName;
+            String saveName = uploadPath + File.separator + folderPath + File.separator + uuid + "_" + fileName;
             Path savePath = Paths.get(saveName);
 
             try {
@@ -69,12 +69,12 @@ public class ProductUploadController {
 
                 //섬네일 생성
                 String thumbnailSaveName = uploadPath + File.separator + folderPath + File.separator
-                        +"s_" + uuid +"_" + fileName;
+                        + "s_" + uuid + "_" + fileName;
                 //섬네일 파일 이름은 중간에 s_로 시작하도록
                 File thumbnailFile = new File(thumbnailSaveName);
                 //섬네일 생성
-                Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile,100,100 );
-                resultDTOList.add(new ProductImageDto(fileName,uuid,folderPath));
+                Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 100, 100);
+                resultDTOList.add(new ProductImageDto(fileName, uuid, folderPath));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -89,7 +89,7 @@ public class ProductUploadController {
 
         String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 
-        String folderPath =  str.replace("//", File.separator);
+        String folderPath = str.replace("//", File.separator);
 
         // make folder --------
         File uploadPathFolder = new File(uploadPath, folderPath);
@@ -102,12 +102,12 @@ public class ProductUploadController {
 
     // 업로드 미리보기 삭제
     @PostMapping("/removeFile")
-    public ResponseEntity<Boolean> removeFile(String fileName){
+    public ResponseEntity<Boolean> removeFile(String fileName) {
 
         String srcFileName = null;
         try {
-            srcFileName = URLDecoder.decode(fileName,"UTF-8");
-            File file = new File(uploadPath +File.separator+ srcFileName);
+            srcFileName = URLDecoder.decode(fileName, "UTF-8");
+            File file = new File(uploadPath + File.separator + srcFileName);
             boolean result = file.delete();
 
             File thumbnail = new File(file.getParent(), "s_" + file.getName());
@@ -130,14 +130,14 @@ public class ProductUploadController {
         ResponseEntity<byte[]> result = null;
 
         try {
-            String srcFileName =  URLDecoder.decode(fileName,"UTF-8");
+            String srcFileName = URLDecoder.decode(fileName, "UTF-8");
 
             log.info("fileName: " + srcFileName);
 
-            File file = new File(uploadPath +File.separator+ srcFileName);
+            File file = new File(uploadPath + File.separator + srcFileName);
 
-            if(size != null && size.equals("1")){
-                file  = new File(file.getParent(), file.getName().substring(2));
+            if (size != null && size.equals("1")) {
+                file = new File(file.getParent(), file.getName().substring(2));
             }
 
             log.info("file: " + file);

@@ -1,10 +1,7 @@
 package com.reborn.golf.entity;
 
 import com.reborn.golf.dto.shop.CartDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -13,6 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class Carts extends BaseEntity{
 
     @Id

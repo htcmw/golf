@@ -1,13 +1,7 @@
 package com.reborn.golf.test;
 
-import com.reborn.golf.dto.TickerDto;
-import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 @Log4j2
 @Component

@@ -36,7 +36,7 @@ public class CartController {
         return new ResponseEntity<>(cartIdx, HttpStatus.OK);
     }
 
-    @PutMapping("{idx}")
+    @PutMapping("/{idx}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Long> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long idx,@RequestParam Integer quentity){
         Integer memberIdx = authMemeberDto.getIdx();
@@ -45,15 +45,22 @@ public class CartController {
 
     }
 
-    @DeleteMapping("{idx}")
+    @DeleteMapping("/{idx}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Long> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long idx){
         Integer memberIdx = authMemeberDto.getIdx();
-        Long cartIdx = cartService.remove(memberIdx,idx);
-        return new ResponseEntity<>(cartIdx, HttpStatus.OK);
+        cartService.remove(memberIdx,idx);
+        return new ResponseEntity<>(HttpStatus.OK);
 
     }
+    @DeleteMapping("/all")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Long> removeAll(@AuthenticationPrincipal AuthMemeberDto authMemeberDto){
+        Integer memberIdx = authMemeberDto.getIdx();
+        cartService.removeAll(memberIdx);
+        return new ResponseEntity<>(HttpStatus.OK);
 
+    }
 
 
 }

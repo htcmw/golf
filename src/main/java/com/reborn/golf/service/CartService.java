@@ -7,7 +7,8 @@ public interface CartService {
     CartListDto getList(Integer memberIdx);
     Long register(Integer memberIdx, CartDto cartDto);
     Long modify(Integer memberIdx, Long cartIdx ,Integer quentity);
-    Long remove(Integer memberIdx, Long cartIdx);
+    void remove(Integer memberIdx, Long cartIdx);
+    void removeAll(Integer memberIdx);
 
 
 }

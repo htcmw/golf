@@ -18,7 +18,7 @@ public interface ProductService {
 
     // 제품 리스트 조회
     PageResultDto<Object[], ProductDto> getList(Integer categoryIdx, PageRequestDto requestDto);
-
+    List<ProductDto> getBestList(String attribute, Integer limit);
     // 제품 등록
     Long register(ProductDto productDto);
 

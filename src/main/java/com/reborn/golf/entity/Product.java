@@ -53,6 +53,10 @@ public class Product extends BaseEntity {
         this.quantity = quantity;
     }
 
+    public void changeSalesVolume(int salesVolume) {
+        this.salesVolume = salesVolume;
+    }
+
     public void changePrice(int price) {
         this.price = price;
     }

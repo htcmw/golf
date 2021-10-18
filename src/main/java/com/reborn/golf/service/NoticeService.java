@@ -18,7 +18,7 @@ public interface NoticeService {
 
     Long modify(Integer writerIdx, NoticeDto noticeDto);
 
-    Long remove(Integer memberIdx, Long noticeIdx);
+    void remove(Integer memberIdx, Long noticeIdx);
 
     default NoticeDto entityToDto(Notice notice){
         return NoticeDto.builder()

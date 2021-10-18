@@ -12,6 +12,7 @@ import com.reborn.golf.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -42,6 +44,12 @@ public class ProductServiceImpl implements ProductService {
         Function<Object[], ProductDto> fn = (arr -> entitiesToDto((Product) arr[0], List.of((ProductImage) arr[1]), (Double) arr[2], (Long) arr[3]));
 
         return new PageResultDto<>(result, fn);
+    }
+
+    @Override
+    public List<ProductDto> getBestList(String attribute, Integer limit) {
+        List<Object[]> result = productRepository.getBestProducts(PageRequest.of(0,limit,Sort.by(attribute).descending()));
+        return result.stream().map(arr -> entitiesToDto((Product) arr[0], List.of((ProductImage) arr[1]), (Double) arr[2], (Long) arr[3])).collect(Collectors.toList());
     }
 
     @Override

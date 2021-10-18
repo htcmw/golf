@@ -23,7 +23,6 @@ public class EmployeeController {
 
     //직원 입사
     @PostMapping
-//    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<String> register(@RequestBody @Valid MemberDto memberDto) {
         log.info(memberDto);
         employeeService.register(memberDto);

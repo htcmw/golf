@@ -1,4 +1,4 @@
-package com.reborn.golf.dto.kakaopay;
+package com.reborn.golf.test.kakaopay;
 
 import lombok.*;
 

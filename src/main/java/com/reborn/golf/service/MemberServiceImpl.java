@@ -1,5 +1,7 @@
 package com.reborn.golf.service;
 
+import com.reborn.golf.dto.exception.AlreadyExistEntityException;
+import com.reborn.golf.dto.exception.NotExistEntityException;
 import com.reborn.golf.dto.user.MemberDto;
 import com.reborn.golf.entity.Enum.Role;
 import com.reborn.golf.entity.Member;
@@ -23,7 +25,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public boolean register(MemberDto memberDto) {
+    public void register(MemberDto memberDto) {
         Optional<Member> result = memberRepository.getMemberByEmailAndRemovedFalse(memberDto.getEmail());
 
         //추가 1. 삭제된 정보의 경우 언제부터 다시 회원가입 가능한지 조건 필요
@@ -31,19 +33,20 @@ public class MemberServiceImpl implements MemberService {
             memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
             Member newMember = dtoToEntity(memberDto);
             newMember.addMemberAuthority(Role.ROLE_USER);
-            log.info(newMember);
             memberRepository.save(newMember);
-            return true;
+            log.info(newMember);
+        } else {
+            throw new AlreadyExistEntityException("같은 이메일이 이미 있습니다.");
         }
-        return false;
     }
 
     @Override
     public MemberDto read(Integer idx) {
 
-        Optional<Member> result = memberRepository.getMemberByIdxAndRemovedFalse(idx);
+        Member member = memberRepository.getMemberByIdxAndRemovedFalse(idx)
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 고객정보가 DB에 없습니다"));
 
-        return result.map(this::entityToDto).orElse(null);
+        return entityToDto(member);
 
     }
 
@@ -51,63 +54,45 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Integer modify(Integer idx, MemberDto memberDto) {
 
-        Optional<Member> result = memberRepository.getMemberByIdxAndRemovedFalse(idx);
+        Member member = memberRepository.getMemberByIdxAndRemovedFalse(idx)
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 고객정보가 DB에 없습니다"));
 
-        if (result.isPresent()) {
-
-            Member member = result.get();
-
-            if (member.getEmail().equals(memberDto.getEmail())) {
-                member.changeName(memberDto.getName());
-                member.changeAddress(memberDto.getAddress());
-                member.changePhone(memberDto.getPhone());
-
-                log.info(member);
-                memberRepository.save(member);
-                return member.getIdx();
-
-            }
+        if (member.getEmail().equals(memberDto.getEmail())) {
+            member.changeName(memberDto.getName());
+            member.changeAddress(memberDto.getAddress());
+            member.changePhone(memberDto.getPhone());
+            memberRepository.save(member);
+            log.info(member);
         }
-        return null;
+        return member.getIdx();
     }
 
     @Override
     @Transactional
-    public Integer remove(Integer idx) {
+    public void remove(Integer idx) {
 
-        Optional<Member> result = memberRepository.getMemberByIdxAndRemovedFalse(idx);
+        Member member = memberRepository.getMemberByIdxAndRemovedFalse(idx)
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 고객정보가 DB에 없습니다"));
 
-        if (result.isPresent()) {
-
-            Member member = result.get();
-            member.changeIsRemoved(true);
-
-            log.info(member);
-            memberRepository.save(member);
-            return member.getIdx();
-        }
-        return null;
+        member.changeIsRemoved(true);
+        memberRepository.save(member);
+        log.info(member + " : 삭제");
     }
 
     @Override
     public String searchEmail(MemberDto memberDto) {
-        Optional<Member> result = memberRepository.getMemberByEmailAndRemovedFalse(memberDto.getEmail());
-        if(result.isPresent()){
-            Member member = result.get();
-            return member.getEmail();
-        }
-        return null;
+        Member member = memberRepository.getMemberByPhoneAndRemovedFalse(memberDto.getPhone())
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 고객정보가 DB에 없습니다"));
+        return member.getEmail();
     }
 
+    //변경 필요
     @Override
     public Integer searchPassword(MemberDto memberDto) {
-        Optional<Member> result = memberRepository.getMemberByEmailAndPhoneAndRemovedFalse(memberDto.getEmail(),memberDto.getPhone());
-        if(result.isPresent()){
-            Member member = result.get();
-            member.changePhone(memberDto.getPhone());
-            return member.getIdx();
-        }
-        return null;
+        Member member = memberRepository.getMemberByEmailAndPhoneAndRemovedFalse(memberDto.getEmail(), memberDto.getPhone())
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 고객정보가 DB에 없습니다"));
+        member.changePassword(member.getPassword());
+        return member.getIdx();
     }
 
 }

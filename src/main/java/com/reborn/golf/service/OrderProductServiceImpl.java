@@ -34,6 +34,7 @@ public class OrderProductServiceImpl implements OrderProductService{
             if (optionalProduct.isPresent()) {
                 Product product = optionalProduct.get();
                 product.changeQuantity(product.getQuantity() - orderProductDto.getQuentity());
+                product.changeSalesVolume(product.getSalesVolume() + orderProductDto.getQuentity());
                 productRepository.save(product);
 
                 OrderProduct orderProduct = OrderProduct.builder()
@@ -58,6 +59,7 @@ public class OrderProductServiceImpl implements OrderProductService{
             if(optionalProduct.isPresent()){
                 Product product = optionalProduct.get();
                 product.changeQuantity(product.getQuantity() + orderProduct.getQuantity());
+                product.changeSalesVolume(product.getSalesVolume() - orderProduct.getQuantity());
                 productRepository.save(product);
             }
         }

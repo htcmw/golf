@@ -24,11 +24,8 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<String> register(@RequestBody @Valid MemberDto memberDto) {
         log.info(memberDto);
-        if (memberService.register(memberDto)) {
-            return new ResponseEntity<>("Success", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("The same email already exists.", HttpStatus.BAD_REQUEST);
-        }
+        memberService.register(memberDto);
+        return new ResponseEntity<>("회원가입을 축하드립니다", HttpStatus.OK);
     }
 
     //회원 정보 조회

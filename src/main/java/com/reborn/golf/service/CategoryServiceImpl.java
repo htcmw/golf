@@ -9,6 +9,7 @@ import com.reborn.golf.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -67,8 +68,11 @@ public class CategoryServiceImpl implements CategoryService {
     public void remove(Integer categoryIdx) {
         try{
             categoryRepository.deleteById(categoryIdx);
+            log.info("삭제 성공");
         }catch (DataIntegrityViolationException e){
-            throw new ImpossibleDeleteException(e.getMessage());
+            throw new ImpossibleDeleteException("DB 정보 삭제 실패 : " + e.getMessage());
+        }catch (EmptyResultDataAccessException e){
+            throw new EmptyResultDataAccessException("DB 정보 삭제 실패 : " + e.getMessage(), e.getExpectedSize());
         }
     }
 

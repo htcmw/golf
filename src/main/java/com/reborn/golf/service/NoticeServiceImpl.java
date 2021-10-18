@@ -1,10 +1,9 @@
 package com.reborn.golf.service;
 
-
 import com.reborn.golf.dto.customerservice.NoticeDto;
 import com.reborn.golf.dto.common.PageRequestDto;
 import com.reborn.golf.dto.common.PageResultDto;
-import com.reborn.golf.entity.Enum.Role;
+import com.reborn.golf.dto.exception.NotExistEntityException;
 import com.reborn.golf.entity.Member;
 import com.reborn.golf.entity.Notice;
 import com.reborn.golf.repository.NoticeRepository;
@@ -14,13 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 import java.util.function.Function;
 
 /*
-* NoticeController, QnaController 에서 사용
-* */
+ * NoticeController, QnaController 에서 사용
+ * */
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -39,67 +36,43 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public NoticeDto read(Long noticeIdx) {
-
-        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeIdx);
-
-        if (result.isPresent()) {
-            Notice notice = result.get();
-            notice.addViews();
-            return entityToDto(notice);
-        }
-        return null;
+        Notice notice = noticeRepository.getNoticeByIdx(noticeIdx)
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 공지사항이 DB에 없습니다"));
+        notice.addViews();
+        noticeRepository.save(notice);
+        log.info(notice + " : 조회수 증가");
+        return entityToDto(notice);
     }
 
     @Override
     public Long register(Integer writerIdx, NoticeDto noticeDto) {
         Notice notice = dtoToEntity(noticeDto, writerIdx);
         noticeRepository.save(notice);
+        log.info(notice + " : 등록");
         return notice.getIdx();
     }
 
-
-    /*
-     * Manager권한이 없는 맴버는 작성한 Notice에 대해 같은 PK만 수정할 수 있고
-     * Manager권한이 있는 맴버가 작성하면 다른 Manager가 변경할 수 있다.
-     * */
     @Override
     public Long modify(Integer writerIdx, NoticeDto noticeDto) {
 
-        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeDto.getIdx());
+        Notice notice = noticeRepository.getNoticeByIdx(noticeDto.getIdx())
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 공지사항이 DB에 없습니다"));
 
-        if (result.isPresent()) {
-            Notice notice = result.get();
-
-            if(notice.getWriter().getRoleSet().contains(Role.ROLE_MANAGER) || notice.getWriter().getIdx().equals(writerIdx)) {
-
-                notice.chageWriter(writerIdx);
-                notice.changeTitle(noticeDto.getTitle());
-                notice.changeContent(noticeDto.getContent());
-
-                log.info(notice);
-                noticeRepository.save(notice);
-            }
-            return notice.getIdx();
-        }
-        return null;
+        notice.chageWriter(writerIdx);
+        notice.changeTitle(noticeDto.getTitle());
+        notice.changeContent(noticeDto.getContent());
+        noticeRepository.save(notice);
+        log.info(notice + " : 수정");
+        return notice.getIdx();
     }
 
     @Override
-    public Long remove(Integer writerIdx, Long noticeIdx) {
-        Optional<Notice> result = noticeRepository.getNoticeByIdx(noticeIdx);
-        if (result.isPresent()) {
-            Notice notice = result.get();
+    public void remove(Integer writerIdx, Long noticeIdx) {
+        Notice notice = noticeRepository.getNoticeByIdx(noticeIdx)
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 공지사항이 DB에 없습니다"));
 
-            if(notice.getWriter().getIdx().equals(writerIdx)
-                    || notice.getWriter().getRoleSet().contains(Role.ROLE_ADMIN)) {
-
-                notice.changeRemoved(true);
-                noticeRepository.save(notice);
-            }
-            return notice.getIdx();
-        }
-        return null;
+        notice.changeRemoved(true);
+        noticeRepository.save(notice);
+        log.info(notice + " : 삭제");
     }
-
-
 }

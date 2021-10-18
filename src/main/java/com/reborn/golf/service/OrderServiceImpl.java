@@ -38,8 +38,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public PageResultDto<Orders, OrdersDto> getList(PageRequestDto pageRequestDto) {
-        Page<Orders> result = orderRepository.getOrdersByRemovedFalse(pageRequestDto.getPageable(Sort.by("idx").descending()));
+    public PageResultDto<Orders, OrdersDto> getListWithState(String state, PageRequestDto pageRequestDto) {
+        Page<Orders> result = null;
+        if(state.equals("ORDER")){
+            result = orderRepository.getOrdersByOrderStateAndRemovedFalse(OrderStatus.ORDER,pageRequestDto.getPageable(Sort.by("regDate").descending()));
+        }
+        else if(state.equals("DELIVERY")){
+            result = orderRepository.getOrdersByOrderStateAndRemovedFalse(OrderStatus.DELIVERY,pageRequestDto.getPageable(Sort.by("regDate").descending()));
+        }
+        else if(state.equals("CANCEL")){
+            result = orderRepository.getOrdersByOrderStateAndRemovedFalse(OrderStatus.CANCEL,pageRequestDto.getPageable(Sort.by("regDate").descending()));
+        }
         Function<Orders, OrdersDto> function = (this::entityToDto);
         return new PageResultDto<>(result, function);
     }

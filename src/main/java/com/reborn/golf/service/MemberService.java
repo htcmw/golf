@@ -5,13 +5,13 @@ import com.reborn.golf.dto.user.MemberDto;
 import com.reborn.golf.entity.Member;
 
 public interface MemberService {
-    boolean register(MemberDto memberDto);
+    void register(MemberDto memberDto);
 
     MemberDto read(Integer email);
 
     Integer modify(Integer idx, MemberDto memberDto);
 
-    Integer remove(Integer idx);
+    void remove(Integer idx);
 
     String searchEmail(MemberDto phone);
 
