@@ -28,7 +28,7 @@ public class ProductController {
         return new ResponseEntity<>(productDtoList, HttpStatus.OK);
     }
     // 제품 리스트 조회
-    @GetMapping("/products/best")
+    @GetMapping("/products/preference")
     public ResponseEntity<List<ProductDto>> getBestList(@RequestParam String attr, @RequestParam Integer limit) {
 
         List<ProductDto> productDtoList = productService.getBestList(attr, limit);

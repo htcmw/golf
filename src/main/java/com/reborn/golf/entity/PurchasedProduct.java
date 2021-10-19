@@ -31,6 +31,8 @@ public class PurchasedProduct extends BaseEntity {
 
     private String details;
 
+    private String memberAddress;
+
     private boolean finished;
 
     private boolean canceled;
@@ -72,6 +74,10 @@ public class PurchasedProduct extends BaseEntity {
 
     public void changeRemoved(Boolean canceled) {
         this.canceled = canceled;
+    }
+
+    public void changeAddress(String memberAddress) {
+        this.memberAddress = memberAddress;
     }
 
     public void changeFinished(Boolean finished) {

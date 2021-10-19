@@ -35,6 +35,8 @@ public class PurchasedProductDto {
 
     private String memberEmail;
 
+    private String memberAddress;
+
     private String memberName;
 
     // 이미지 생성
