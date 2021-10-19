@@ -43,6 +43,7 @@ dependencies {
     implementation group: 'com.github.iamport', name: 'iamport-rest-client-java', version: '0.2.0'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '2.5.5'
 
+    implementation 'com.klaytn.caver:core:1.6.3'
 }
 
 test {
