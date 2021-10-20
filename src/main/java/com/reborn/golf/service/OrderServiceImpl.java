@@ -140,6 +140,7 @@ public class OrderServiceImpl implements OrderService {
         double diffPrice = Math.abs(allProductPrice - (orders.getTotalPrice() + orders.getTokenAmount() * orders.getTokenPrice()));
         double comparePrice = diffPrice / allProductPrice.doubleValue() * 100;
         log.info("총 금액 = " + allProductPrice + ", 할인 금액 = " + orders.getTotalPrice() + ", 포인트 금액 = " + (orders.getTokenAmount() * orders.getTokenPrice()) + "   >>>>>  " + comparePrice + "%");
+
         if (diffPrice / allProductPrice.doubleValue() * 100 > 1.0) {
             throw new PaymentException("총 금액 != 할인 금액 + 토큰 금액 * 토큰 수량");
         }
@@ -185,8 +186,6 @@ public class OrderServiceImpl implements OrderService {
             log.debug(e.getMessage());
             throw new PaymentException("결제 실패");
         }
-
-
         return entitiesToDto(orders, orderProducts);
     }
 

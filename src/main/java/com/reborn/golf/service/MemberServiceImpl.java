@@ -2,7 +2,10 @@ package com.reborn.golf.service;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
+import com.reborn.golf.api.ContractService;
 import com.reborn.golf.dto.exception.AlreadyExistEntityException;
+import com.reborn.golf.dto.exception.NotExistsTokenInfoException;
+import com.reborn.golf.dto.exception.TokenTransactionException;
 import com.reborn.golf.dto.exception.NotExistEntityException;
 import com.reborn.golf.dto.user.MemberDto;
 import com.reborn.golf.entity.Wallet;
@@ -15,7 +18,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.web3j.protocol.exceptions.TransactionException;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,16 +31,17 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
     //비밀번호 암호화
     private final PasswordEncoder passwordEncoder;
-
+    //유저 리포지토리
     private final MemberRepository memberRepository;
-
+    //클레이튼 지갑 리포지토리
     private final WalletRepository walletRepository;
-
+    //클레이튼 서비스
+    private final ContractService contractService;
 
     @Override
     public void register(MemberDto memberDto) {
-        Optional<Member> result = memberRepository.getMemberByEmailAndRemovedFalse(memberDto.getEmail());
 
+        Optional<Member> result = memberRepository.getMemberByEmailAndRemovedFalse(memberDto.getEmail());
         //추가 1. 삭제된 정보의 경우 언제부터 다시 회원가입 가능한지 조건 필요
         if (result.isEmpty()) {
 
@@ -67,6 +74,14 @@ public class MemberServiceImpl implements MemberService {
                     .build();
             walletRepository.save(wallet);
 
+            try {
+                contractService.transfer(wallet.getAddress(), 100000L);
+            } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException | TransactionException e) {
+                log.debug("무료포인트 지급 실패 : " + e.getMessage());
+                throw new TokenTransactionException("지갑 생성후 토큰 지급 실패");
+            }
+
+
         } else {
             throw new AlreadyExistEntityException("같은 이메일이 이미 있습니다.");
         }
@@ -74,12 +89,16 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDto read(Integer idx) {
-
         Member member = memberRepository.getMemberByIdxAndRemovedFalse(idx)
                 .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 고객정보가 DB에 없습니다"));
 
-        return entityToDto(member);
-
+        String walletAddress = member.getWallet().getAddress();
+        try {
+            Long tokenAmount = Long.parseLong(contractService.balanceOf(walletAddress));
+            return entityToDto(member, walletAddress, tokenAmount);
+        } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+            throw new NotExistsTokenInfoException("토큰 수량 정보 가져오기 실패");
+        }
     }
 
     //이메일, 소셜 로그인 정보를 제외하고 모두 수정할 수 있다.

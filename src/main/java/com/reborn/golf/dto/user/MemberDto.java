@@ -32,6 +32,10 @@ public class MemberDto {
     @NotBlank
     private String address;
 
+    private String walletAddress;
+
+    private Long tokenAmount;
+
     //소셜 로그인 표시
     private boolean fromSocial;
 }

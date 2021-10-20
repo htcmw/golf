@@ -29,6 +29,20 @@ public interface MemberService {
                 .build();
     }
 
+    default MemberDto entityToDto(Member member, String walletAddress, Long tokenAmount){
+        return MemberDto.builder()
+                .idx(member.getIdx())
+                .email(member.getEmail())
+                .walletAddress(walletAddress)
+                .tokenAmount(tokenAmount)
+                .password(member.getPassword())
+                .phone(member.getPhone())
+                .name(member.getName())
+                .address(member.getAddress())
+                .fromSocial(member.isFromSocial())
+                .build();
+    }
+
     default MemberDto entityToDto(Member member){
         return MemberDto.builder()
                 .idx(member.getIdx())

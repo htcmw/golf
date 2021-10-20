@@ -43,7 +43,6 @@ public class PurchasedProduct extends BaseEntity {
     @OneToMany(mappedBy = "purchasedProduct",  orphanRemoval = true, cascade = CascadeType.ALL)
     List<PurchasedProductImage> purchasedProductImages;
 
-
     public void changeCatagory(String catagory) {
         this.catagory = catagory;
     }
