@@ -1,7 +1,6 @@
 package com.reborn.golf.security.service;
 
 import com.reborn.golf.entity.Member;
-import com.reborn.golf.repository.EmployeeRepository;
 import com.reborn.golf.repository.MemberRepository;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
-    private final EmployeeRepository employeeRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

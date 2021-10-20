@@ -42,6 +42,9 @@ public class Member extends BaseEntity{
     @Builder.Default
     private Set<Role> roleSet = new HashSet<>();
 
+    @OneToOne(mappedBy = "member")
+    private Wallet wallet;
+
     public void addMemberAuthority(Role role){
         roleSet.add(role);
     }

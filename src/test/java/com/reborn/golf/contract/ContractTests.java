@@ -1,7 +1,6 @@
 package com.reborn.golf.contract;
 
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.abi.ABI;
 import com.klaytn.caver.abi.datatypes.Type;
 import com.klaytn.caver.contract.Contract;
 import com.klaytn.caver.contract.SendOptions;
@@ -12,7 +11,9 @@ import com.klaytn.caver.transaction.AbstractTransaction;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
 import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
+import com.reborn.golf.api.ContractService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.web3j.protocol.exceptions.TransactionException;
 
@@ -145,23 +146,43 @@ public class ContractTests {
             TransactionReceiptProcessor receiptProcessor = new PollingTransactionReceiptProcessor(caver, 1000, 15);
 
             TransactionReceipt.TransactionReceiptData receiptData = receiptProcessor.waitForTransactionReceipt(txHash_executed.getResult());
+            System.out.println(receiptData);
         } catch (Exception e) {
             // 예외 처리
             System.out.println(e.getMessage());
         }
     }
 
-//    @Test
-//    public void callContractFunction() {
-//        Caver caver = new Caver("https://api.baobab.klaytn.net:8651");
-//
-//        try {
-//            Contract contract = caver.contract.create(ABIJson, "0x2151129445b848d9a53ffd49de7907786e69ddec");
-//            List<Type> result = contract.call("balanceOf", "0x34527d51a1692411dc77fc98d7801679522b31cb");
-//            System.out.println((String)result.get(0).getValue());
-//        } catch (IOException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-//            // 예외 처리
-//            System.out.println(e.getMessage());
-//        }
-//    }
+    @Test
+    public void callContractFunction() {
+        Caver caver = new Caver("https://api.baobab.klaytn.net:8651");
+        try {
+            Contract contract = caver.contract.create(ABIJson, "0x2151129445b848d9a53ffd49de7907786e69ddec");
+            List<Type> result = contract.call("balanceOf", "0x34527d51a1692411dc77fc98d7801679522b31cb");
+            System.out.println(result.get(0).getValue());
+        } catch (IOException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            // 예외 처리
+            System.out.println(e.getMessage());
+        }
+    }
+    @Autowired
+    ContractService contractService;
+    @Test
+    public void TransferTest(){
+        try {
+            contractService.transfer("0xb2f93b56286df2b5d21ea063e06a9db4d083ce9c",1000L);
+        } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException | TransactionException e) {
+            e.printStackTrace();
+        }
+
+    }
+    @Test
+    public void TransferFromTest(){
+        try {
+            contractService.transferFrom("0xb2f93b56286df2b5d21ea063e06a9db4d083ce9c",100L);
+        } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException | TransactionException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

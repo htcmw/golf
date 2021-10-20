@@ -23,7 +23,7 @@ import java.util.List;
 
 
 @SpringBootTest
-public class AccountTests {
+public class WalletTests {
 //
 //    @Autowired
 //    AccountRepository accountRepository;

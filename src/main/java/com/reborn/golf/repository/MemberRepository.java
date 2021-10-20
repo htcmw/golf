@@ -19,6 +19,12 @@ public interface MemberRepository extends JpaRepository<Member,Integer> {
     Optional<Member> getMemberByEmailAndRemovedFalse(String email);
     Optional<Member> getMemberByPhoneAndRemovedFalse(String phone);
 
+    @Query( "SELECT m, w " +
+            "FROM Member m " +
+            "       LEFT JOIN Wallet w on m = w.member " +
+            "WHERE m.idx = :memberIdx")
+    Optional<Member> getMemberWithWallet(Integer memberIdx);
+
     //삭제되지 않은 고객정보
     Optional<Member> getMemberByIdxAndRemovedFalse(Integer idx);
 

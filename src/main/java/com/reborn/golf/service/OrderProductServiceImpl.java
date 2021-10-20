@@ -1,7 +1,9 @@
 package com.reborn.golf.service;
 
+import com.reborn.golf.dto.exception.ShortageOfStockException;
 import com.reborn.golf.dto.shop.OrderProductDto;
 import com.reborn.golf.entity.OrderProduct;
+import com.reborn.golf.entity.Orders;
 import com.reborn.golf.entity.Product;
 import com.reborn.golf.repository.OrderProductRepository;
 import com.reborn.golf.repository.ProductRepository;
@@ -11,52 +13,67 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class OrderProductServiceImpl implements OrderProductService{
+public class OrderProductServiceImpl implements OrderProductService {
 
     private final ProductRepository productRepository;
     private final OrderProductRepository orderProductRepository;
 
     @Override
-    public List<OrderProduct> makeOrderProduct(List<OrderProductDto> orderProductList) {
+    public HashMap<String, Object> makeOrderProduct(List<OrderProductDto> orderProductList, Orders orders) {
 
         List<OrderProduct> orderProducts = new ArrayList<>();
-
+        int totalPrice = 0;
         log.info(orderProductList);
         for (OrderProductDto orderProductDto : orderProductList) {
 
             Optional<Product> optionalProduct = productRepository.getProductByIdx(orderProductDto.getProductIdx());
             if (optionalProduct.isPresent()) {
+
                 Product product = optionalProduct.get();
-                product.changeQuantity(product.getQuantity() - orderProductDto.getQuentity());
+                int quantity = product.getQuantity() - orderProductDto.getQuentity();
+                if (quantity < 0) {
+                    throw new ShortageOfStockException("제고물량 부족");
+                }
+                product.changeQuantity(quantity);
                 product.changeSalesVolume(product.getSalesVolume() + orderProductDto.getQuentity());
                 productRepository.save(product);
 
+
+                int price = product.getPrice() * orderProductDto.getQuentity();
                 OrderProduct orderProduct = OrderProduct.builder()
-                        .price(product.getPrice() * orderProductDto.getQuentity())
+                        .price(price)
                         .quantity(orderProductDto.getQuentity())
                         .product(product)
+                        .orders(orders)
                         .build();
-
+                totalPrice += price;
                 orderProductRepository.save(orderProduct);
                 orderProducts.add(orderProduct);
             }
         }
-        return orderProducts;
+        log.info(orderProducts);
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("orderProducts", orderProducts);
+        map.put("totalPrice", totalPrice);
+
+        return map;
     }
 
-    public void removeOrderProduct(List<OrderProduct> orderProducts){
+    public void removeOrderProduct(List<OrderProduct> orderProducts) {
 
-        for(OrderProduct orderProduct : orderProducts){
+        for (OrderProduct orderProduct : orderProducts) {
             orderProduct.changeIsRemoved(true);
 
             Optional<Product> optionalProduct = productRepository.getProductByIdx(orderProduct.getIdx());
-            if(optionalProduct.isPresent()){
+            if (optionalProduct.isPresent()) {
                 Product product = optionalProduct.get();
                 product.changeQuantity(product.getQuantity() + orderProduct.getQuantity());
                 product.changeSalesVolume(product.getSalesVolume() - orderProduct.getQuantity());

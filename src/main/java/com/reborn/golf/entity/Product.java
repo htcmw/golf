@@ -72,4 +72,9 @@ public class Product extends BaseEntity {
     public void changeCategory(Integer categoryIdx) {
         this.category = Category.builder().idx(categoryIdx).build();
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.salesVolume = (this.salesVolume == null ? 0 : this.salesVolume);
+    }
 }

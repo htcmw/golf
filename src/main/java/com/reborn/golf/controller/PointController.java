@@ -22,7 +22,7 @@ public class PointController {
     private final CoinExchange coinExchange;
     @GetMapping
     public ResponseEntity<?> getprice(){
-        return new ResponseEntity<>(coinExchange.getCoinPrice(), HttpStatus.OK);
+        return new ResponseEntity<>(coinExchange.getTokenPrice(), HttpStatus.OK);
     }
 
 }

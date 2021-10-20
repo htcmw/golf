@@ -22,7 +22,7 @@ public class IamportManager {
         this.iamportClient = new IamportClient("3870373320666877", "f605a3631b647fcd153d134aebfc442eb638d7daea68be45cda866a367c41589cf45f625d63da0b5");
     }
 
-    public boolean paymentVerification(OrdersDto ordersDto) throws IamportResponseException, IOException {
+    public boolean verificatePayment(OrdersDto ordersDto) throws IamportResponseException, IOException {
         IamportResponse<Payment> info = iamportClient.paymentByImpUid(ordersDto.getImpUid());
 
         if (ordersDto.getImpUid().equals(info.getResponse().getImpUid())
@@ -30,8 +30,8 @@ public class IamportManager {
                 && ordersDto.getOrderName().equals(info.getResponse().getName())
                 && ordersDto.getUserEmail().equals(info.getResponse().getBuyerEmail())
                 && ordersDto.getUserName().equals(info.getResponse().getBuyerName())
-//                && ordersDto.getUserPhone().equals(info.getResponse().getBuyerTel())
-                && ordersDto.getUserAddress().equals(info.getResponse().getBuyerAddr())
+                && ordersDto.getRecipientPhone().equals(info.getResponse().getBuyerTel())
+                && ordersDto.getRecipientAddress().equals(info.getResponse().getBuyerAddr())
                 && ordersDto.getTotalPrice() == info.getResponse().getAmount().intValue())
             return true;
         return false;

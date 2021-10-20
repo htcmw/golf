@@ -22,9 +22,8 @@ public class CoinExchange implements ApplicationRunner, Runnable, ApplicationLis
     private String url;
     private RestTemplate restTemplate;
 
-
     @Getter
-    private Double coinPrice;
+    private Double tokenPrice;
 
     //Application 시작시 실행
     @Override
@@ -44,8 +43,8 @@ public class CoinExchange implements ApplicationRunner, Runnable, ApplicationLis
             while (currentThread == thread && !this.isShutdown) {
                 TickerDto tickerDto = restTemplate.getForObject(new URI(url), TickerDto.class);
                 if (tickerDto != null) {
-                    coinPrice = Double.parseDouble(tickerDto.getData().getClosing_price());
-                    log.info(coinPrice);
+                    tokenPrice = Double.parseDouble(tickerDto.getData().getClosing_price());
+                    log.info(tokenPrice);
                     Thread.sleep(1000);
                 }
 

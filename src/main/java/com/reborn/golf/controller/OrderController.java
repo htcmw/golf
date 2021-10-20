@@ -22,14 +22,12 @@ import java.io.IOException;
 @Log4j2
 @RequiredArgsConstructor
 public class OrderController {
-
     private final OrderService orderService;
 
     // 유저의 주문 리스트 불러오기
     @GetMapping
     public ResponseEntity<PageResultDto<Orders, OrdersDto>> getListWithUser(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, PageRequestDto pageRequestDto) {
         Integer memberIdx = authMemeberDto.getIdx();
-
         PageResultDto<Orders, OrdersDto> orderDtoList = orderService.getListWithUser(memberIdx, pageRequestDto);
         log.info(orderDtoList);
         return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
@@ -38,23 +36,18 @@ public class OrderController {
     // 주문 하기
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<String> order(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody OrdersDto ordersDto) {
+    public ResponseEntity<OrdersDto> order(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody OrdersDto ordersDto) {
         Integer memberIdx = authMemeberDto.getIdx();
-        try {
-            String idx = orderService.order(memberIdx, ordersDto);
-            return new ResponseEntity<>(idx, HttpStatus.OK);
-        } catch (IamportResponseException | IOException e) {
-            log.debug(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        OrdersDto orderInfo = orderService.order(memberIdx, ordersDto);
+        return new ResponseEntity<>(orderInfo, HttpStatus.OK);
     }
+
     //주문 취소하기
     @DeleteMapping("/{idx}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Long> cancel(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long idx) {
         Integer memberIdx = authMemeberDto.getIdx();
         Long num = orderService.cancel(memberIdx, idx);
-        log.info(num);
         return new ResponseEntity<>(num, HttpStatus.OK);
     }
 
@@ -63,7 +56,6 @@ public class OrderController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<PageResultDto<Orders, OrdersDto>> getProcessingOrder(@RequestParam String state, PageRequestDto pageRequestDto) {
         PageResultDto<Orders, OrdersDto> orderDtoList = orderService.getListWithState(state, pageRequestDto);
-        log.info(orderDtoList);
         return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
     }
 

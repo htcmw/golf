@@ -2,11 +2,13 @@ package com.reborn.golf.service;
 
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
+import com.reborn.golf.dto.exception.AlreadyExistEntityException;
+import com.reborn.golf.dto.exception.NotExistEntityException;
 import com.reborn.golf.dto.user.MemberDto;
-import com.reborn.golf.entity.Account;
+import com.reborn.golf.entity.Wallet;
 import com.reborn.golf.entity.Enum.Role;
 import com.reborn.golf.entity.Member;
-import com.reborn.golf.repository.AccountRepository;
+import com.reborn.golf.repository.WalletRepository;
 import com.reborn.golf.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -26,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
-    private final AccountRepository accountRepository;
+    private final WalletRepository walletRepository;
 
 
     @Override
@@ -36,29 +38,35 @@ public class MemberServiceImpl implements MemberService {
         //추가 1. 삭제된 정보의 경우 언제부터 다시 회원가입 가능한지 조건 필요
         if (result.isEmpty()) {
 
-            // BlockChain key 생성 및 할당
-            Account account = new Account();
-            Caver caver = new Caver();
-
-            List<String> generatedKeys = caver.wallet.generate(1);
-
-            SingleKeyring keyring = (SingleKeyring) caver.wallet.getKeyring(generatedKeys.get(0));
-
-            String address = generatedKeys.get(0);
-            String pubKey = keyring.getPublicKey();
-            String pvKey = keyring.getKlaytnWalletKey();
-
-            account.setAddress(address);
-            account.setPubKey(pubKey);
-            account.setPvKey(pvKey);
-
-            accountRepository.save(account);
-
+            //비밀번호 해쉬값
             memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
+
             Member newMember = dtoToEntity(memberDto);
+            //User 권한 부여
             newMember.addMemberAuthority(Role.ROLE_USER);
             memberRepository.save(newMember);
             log.info(newMember);
+
+            // BlockChain key 생성 및 할당
+            Caver caver = new Caver();
+            //계정 1개 생성
+            List<String> generatedKeys = caver.wallet.generate(1);
+            //public private키 생성
+            SingleKeyring keyring = (SingleKeyring) caver.wallet.getKeyring(generatedKeys.get(0));
+            //지갑주소
+            String walletAddress = generatedKeys.get(0);
+            //공개키
+            String pubKey = keyring.getPublicKey();
+            //비밀키
+            String pvKey = keyring.getKlaytnWalletKey();
+            Wallet wallet = Wallet.builder()
+                    .address(walletAddress)
+                    .pubKey(pubKey)
+                    .pvKey(pvKey)
+                    .member(newMember)
+                    .build();
+            walletRepository.save(wallet);
+
         } else {
             throw new AlreadyExistEntityException("같은 이메일이 이미 있습니다.");
         }

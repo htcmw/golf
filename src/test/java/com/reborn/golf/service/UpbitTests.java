@@ -12,6 +12,6 @@ public class UpbitTests {
     private CoinExchange coinExchange;
     @Test
     public void getPrice(){
-        System.out.println(coinExchange.getCoinPrice());
+        System.out.println(coinExchange.getTokenPrice());
     }
 }

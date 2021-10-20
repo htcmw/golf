@@ -126,9 +126,7 @@ public class ProductUploadController {
     // 업로드 미리보기
     @GetMapping("/display")
     public ResponseEntity<byte[]> getFile(String fileName, String size) {
-
         ResponseEntity<byte[]> result = null;
-
         try {
             String srcFileName = URLDecoder.decode(fileName, "UTF-8");
 
