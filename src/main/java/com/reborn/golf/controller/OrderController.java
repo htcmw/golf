@@ -25,7 +25,7 @@ public class OrderController {
     private final OrderService orderService;
 
     // 유저의 주문 리스트 불러오기
-    @GetMapping
+    @GetMapping("/user")
     public ResponseEntity<PageResultDto<Orders, OrdersDto>> getListWithUser(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, PageRequestDto pageRequestDto) {
         Integer memberIdx = authMemeberDto.getIdx();
         PageResultDto<Orders, OrdersDto> orderDtoList = orderService.getListWithUser(memberIdx, pageRequestDto);
@@ -47,7 +47,7 @@ public class OrderController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Long> cancel(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long idx) {
         Integer memberIdx = authMemeberDto.getIdx();
-        Long num = orderService.cancel(memberIdx, idx);
+        Long num = orderService.cancelAll(memberIdx, idx);
         return new ResponseEntity<>(num, HttpStatus.OK);
     }
 

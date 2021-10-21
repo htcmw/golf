@@ -8,6 +8,7 @@ import com.reborn.golf.dto.common.PageResultDto;
 import com.reborn.golf.dto.exception.HighTokenPriceVolatilityException;
 import com.reborn.golf.dto.exception.NotExistEntityException;
 import com.reborn.golf.dto.exception.PaymentException;
+import com.reborn.golf.dto.exception.TokenTransactionException;
 import com.reborn.golf.dto.shop.OrdersDto;
 import com.reborn.golf.entity.*;
 import com.reborn.golf.entity.Enum.DeliveryStatus;
@@ -173,7 +174,7 @@ public class OrderServiceImpl implements OrderService {
 
             //구매자에게 포인트 지불
             contractService.transfer(wallet.getAddress(), pointAmountToBuyer);
-            orders.setPointAmountToBuyer(pointAmountToBuyer/1000);
+            orders.setPointAmountToBuyer(pointAmountToBuyer / 1000);
             log.info(ordersDto.getTotalPrice() * pointPerPrice + " = " + coinExchange.getTokenPrice() * (pointAmountToBuyer / 1000));
 
         } catch (IamportResponseException | TransactionException | IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
@@ -191,19 +192,32 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Long cancel(Integer memberIdx, Long orderIdx) {
+    public Long cancelAll(Integer memberIdx, Long orderIdx) {
 
-        Optional<Orders> optionalOrders = orderRepository.findById(orderIdx);
+        Orders orders = orderRepository.findById(orderIdx)
+                .orElseThrow(() -> new NotExistEntityException("해당 주문내역이 없습니다"));
 
-        if (optionalOrders.isPresent()) {
-            Orders orders = optionalOrders.get();
+        try {
+            iamportManager.cancelPayment(orders.getImpUid(), orders.getTotalPrice(), false, "결제 정보 불일치");
+
             orders.changeIsRemoved(true);
             orders.setOrderState(OrderStatus.CANCEL);
             orderProductService.removeOrderProduct(orders.getOrderProducts());
             orderRepository.save(orders);
 
-            return orders.getIdx();
+            contractService.transferFrom(orders.getMember().getWallet().getAddress(), orders.getPointAmountToBuyer() * 1000L);
+
+        } catch (IamportResponseException e) {
+            log.debug(e.getMessage());
+            throw new PaymentException("아임포트 관련 문제 : 결제 실패");
+        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException | TransactionException e) {
+            log.debug(e.getMessage());
+            throw new TokenTransactionException("토큰 트랜젝션 에러 발생");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new TokenTransactionException("결제, 토큰 트랜젝션 중 기본 예외처리에 해당하지 않음");
         }
-        return null;
+
+        return orders.getIdx();
     }
 }

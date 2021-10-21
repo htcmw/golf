@@ -23,7 +23,7 @@ public interface OrderService {
 
     OrdersDto order(Integer memberIdx, OrdersDto ordersDto);
 
-    Long cancel(Integer memberIdx, Long orderIdx);
+    Long cancelAll(Integer memberIdx, Long orderIdx);
 
     default OrdersDto entitiesToDto(Orders orders, List<OrderProduct> orderProducts){
         List<OrderProductDto> orderProductDtos = new ArrayList<>();
