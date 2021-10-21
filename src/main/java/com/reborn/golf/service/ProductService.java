@@ -44,7 +44,11 @@ public interface ProductService {
                 .modDate(product.getModDate())
                 .build();
 
-        List<ProductImageDto> productImageDtoList = productImages.stream().map(productImage -> ProductImageDto.builder().imgName(productImage.getImgName()).path(productImage.getPath()).uuid(productImage.getUuid()).build()).collect(Collectors.toList());
+        List<ProductImageDto> productImageDtoList = productImages.stream().map(productImage -> ProductImageDto.builder()
+                .imgName(productImage.getImgName())
+                .path(productImage.getPath())
+                .uuid(productImage.getUuid())
+                .build()).collect(Collectors.toList());
 
         productDto.setImageDtoList(productImageDtoList);
         productDto.setAvg(avg);

@@ -3,10 +3,7 @@ package com.reborn.golf.service;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import com.reborn.golf.api.ContractService;
-import com.reborn.golf.dto.exception.AlreadyExistEntityException;
-import com.reborn.golf.dto.exception.NotExistsTokenInfoException;
-import com.reborn.golf.dto.exception.TokenTransactionException;
-import com.reborn.golf.dto.exception.NotExistEntityException;
+import com.reborn.golf.dto.exception.*;
 import com.reborn.golf.dto.user.MemberDto;
 import com.reborn.golf.entity.Wallet;
 import com.reborn.golf.entity.Enum.Role;
@@ -94,7 +91,7 @@ public class MemberServiceImpl implements MemberService {
 
         String walletAddress = member.getWallet().getAddress();
         try {
-            Long tokenAmount = Long.parseLong(contractService.balanceOf(walletAddress));
+            Long tokenAmount = Long.parseLong(contractService.balanceOf(walletAddress)) / 1000L;
             return entityToDto(member, walletAddress, tokenAmount);
         } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
             throw new NotExistsTokenInfoException("토큰 수량 정보 가져오기 실패");
@@ -114,8 +111,9 @@ public class MemberServiceImpl implements MemberService {
             member.changePhone(memberDto.getPhone());
             memberRepository.save(member);
             log.info(member);
+            return member.getIdx();
         }
-        return member.getIdx();
+        throw new DifferentEmailException("이메일이 다릅니다");
     }
 
     @Override

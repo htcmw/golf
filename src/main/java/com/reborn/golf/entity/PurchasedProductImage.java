@@ -15,7 +15,7 @@ public class PurchasedProductImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long inum;
+    private Long idx;
 
     private String uuid;
 

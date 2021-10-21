@@ -10,14 +10,14 @@ import java.util.Optional;
 
 public interface RegisteredQnaRepository extends JpaRepository<RegisteredQna, Long> {
     @Query(value =
-            "SELECT r.idx, r.title, r.question, r.answer, r.views, r.regDate, r.modDate, w.idx, w.email, w.name " +
+            "SELECT r, w " +
                     "FROM RegisteredQna r " +
                     "LEFT JOIN r.writer w " +
                     "WHERE r.removed = false ")
     Page<Object[]> getRegisteredQnasWithMember(Pageable pageable);
 
     @Query(value =
-            "SELECT r.idx, r.title, r.question, r.answer, r.views, r.regDate, r.modDate, w.idx, w.email, w.name " +
+            "SELECT r, w " +
                     "FROM RegisteredQna r " +
                     "LEFT JOIN r.writer w " +
                     "WHERE r.removed = false " +

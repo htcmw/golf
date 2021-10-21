@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,38 +16,50 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PurchasedProductDto {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long idx;
-
-    private String catagory;
-
-    private String name;
-
+    //물품 브랜드
     private String brand;
-
+    //물품 이름
+    private String name;
+    //물품상태
     private String state;
-
-    private int price;
-
-    private int quentity;
-
+    //물품 희망 가격
+    private Integer price;
+    //수량
+    private Integer quentity;
+    //설명
     private String details;
+    //주소
+    private String address;
 
+    /*
+    * Response에서만 사용됨
+    * */
+    //물품 종류
+    private String catagory;
+    //유저정보
     private String memberEmail;
-
-    private String memberAddress;
-
     private String memberName;
+    //물품 구입 처리 단계
+    private String step;
+    //유저가 원하는 가격에 대한 비용
+    private Integer expectedPrice;
+    //유저가 원하는 가격에 대한 토큰 양
+    private Long expectedPointAmount;
+    //회사가 구입할 수 있는 가격
+    private Integer proposalPrice;
+    //회사가 구입할 수 있는 토큰 수량
+    private Long proposalTokenAmount;
 
     // 이미지 생성
     @Builder.Default
-    private List<PurchasedProductImage> imageDtoList = new ArrayList<>();
-
-    private boolean finished;
+    private List<ProductImageDto> imageDtoList = new ArrayList<>();
 
     private boolean canceled;
 
+    private LocalDateTime regDate;
+    private LocalDateTime modDate;
 
 
 }

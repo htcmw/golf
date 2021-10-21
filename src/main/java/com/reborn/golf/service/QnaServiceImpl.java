@@ -4,6 +4,7 @@ package com.reborn.golf.service;
 import com.reborn.golf.dto.customerservice.QnaDto;
 import com.reborn.golf.dto.common.PageRequestDto;
 import com.reborn.golf.dto.common.PageResultDto;
+import com.reborn.golf.dto.exception.NotExistEntityException;
 import com.reborn.golf.entity.*;
 import com.reborn.golf.entity.Enum.Role;
 import com.reborn.golf.repository.QnaRepository;
@@ -41,20 +42,17 @@ public class QnaServiceImpl implements QnaService {
     @Transactional
     public QnaDto read(Long qnaIdx) {
 
-        Optional<Qna> result = qnaRepository.getQnaByIdx(qnaIdx);
+        Qna qna = qnaRepository.getQnaByIdx(qnaIdx)
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 DB정보가 없습니다"));
 
-        if (result.isPresent()) {
-            Qna qna = result.get();
-            qna.addViews();
-            QnaDto qnaDto = entityToDto(qna);
+        qna.addViews();
+        QnaDto qnaDto = entityToDto(qna);
 
-            List<Qna> children = qnaRepository.getAnswerByIdx(qnaIdx);
-            List<QnaDto> qnaDtoList = children.stream().map(this::entityToDto).collect(Collectors.toList());
-            qnaDto.setAnswer(qnaDtoList);
+        List<Qna> children = qnaRepository.getAnswerByIdx(qnaIdx);
+        List<QnaDto> qnaDtoList = children.stream().map(this::entityToDto).collect(Collectors.toList());
+        qnaDto.setAnswer(qnaDtoList);
 
-            return qnaDto;
-        }
-        return null;
+        return qnaDto;
     }
 
     @Override
@@ -72,37 +70,30 @@ public class QnaServiceImpl implements QnaService {
      * */
     @Override
     public Long modify(Integer writerIdx, QnaDto qnaDto) {
+        Qna qna = qnaRepository.getQnaByIdx(qnaDto.getIdx())
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 DB정보가 없습니다"));
 
-        Optional<Qna> result = qnaRepository.getQnaByIdx(qnaDto.getIdx());
-
-        if (result.isPresent()) {
-            Qna qna = result.get();
-            if (qna.getWriter().getIdx().equals(writerIdx)) {
-                qna.changeTitle(qnaDto.getTitle());
-                qna.changeContent(qnaDto.getContent());
-                log.info(qna);
-                qnaRepository.save(qna);
-            }
-            return qna.getIdx();
+        if (qna.getWriter().getIdx().equals(writerIdx)) {
+            qna.changeTitle(qnaDto.getTitle());
+            qna.changeContent(qnaDto.getContent());
+            log.info(qna);
+            qnaRepository.save(qna);
         }
-        return null;
+        return qna.getIdx();
     }
 
     @Override
     public Long remove(Integer writerIdx, Long qnaIdx) {
-        Optional<Qna> result = qnaRepository.getQnaByIdx(qnaIdx);
-        if (result.isPresent()) {
-            Qna qna = result.get();
+        Qna qna = qnaRepository.getQnaByIdx(qnaIdx)
+                .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 DB정보가 없습니다"));
 
-            if (qna.getWriter().getIdx().equals(writerIdx)
-                    || qna.getWriter().getRoleSet().contains(Role.ROLE_ADMIN)) {
+        if (qna.getWriter().getIdx().equals(writerIdx)
+                || qna.getWriter().getRoleSet().contains(Role.ROLE_ADMIN)) {
 
-                qna.changeRemoved(true);
-                qnaRepository.save(qna);
-            }
-            return qna.getIdx();
+            qna.changeRemoved(true);
+            qnaRepository.save(qna);
         }
-        return null;
+        return qna.getIdx();
     }
 
 

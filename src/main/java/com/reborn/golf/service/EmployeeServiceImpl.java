@@ -1,18 +1,25 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.exception.AlreadyExistEntityException;
-import com.reborn.golf.dto.exception.DifferentEmailException;
-import com.reborn.golf.dto.exception.NotExistEntityException;
+import com.klaytn.caver.Caver;
+import com.klaytn.caver.wallet.keyring.SingleKeyring;
+import com.reborn.golf.api.ContractService;
+import com.reborn.golf.dto.exception.*;
 import com.reborn.golf.dto.user.MemberDto;
 import com.reborn.golf.entity.Enum.Role;
 import com.reborn.golf.entity.Member;
+import com.reborn.golf.entity.Wallet;
 import com.reborn.golf.repository.MemberRepository;
+import com.reborn.golf.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.web3j.protocol.exceptions.TransactionException;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -26,9 +33,12 @@ import java.util.Optional;
 public class EmployeeServiceImpl implements EmployeeService {
     //비밀번호 암호화
     private final PasswordEncoder passwordEncoder;
-
+    //유저 리포지토리
     private final MemberRepository memberRepository;
-
+    //클레이튼 지갑 리포지토리
+    private final WalletRepository walletRepository;
+    //클레이튼 서비스
+    private final ContractService contractService;
     @Override
     public void register(MemberDto memberDto) {
 
@@ -37,11 +47,42 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (result.isEmpty()) {
             memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
             Member newMember = dtoToEntity(memberDto);
+
             newMember.addMemberAuthority(Role.ROLE_MANAGER);
             newMember.addMemberAuthority(Role.ROLE_VIP);
             newMember.addMemberAuthority(Role.ROLE_USER);
             memberRepository.save(newMember);
+
             log.info(newMember);
+
+
+            // BlockChain key 생성 및 할당
+            Caver caver = new Caver();
+            //계정 1개 생성
+            List<String> generatedKeys = caver.wallet.generate(1);
+            //public private키 생성
+            SingleKeyring keyring = (SingleKeyring) caver.wallet.getKeyring(generatedKeys.get(0));
+            //지갑주소
+            String walletAddress = generatedKeys.get(0);
+            //공개키
+            String pubKey = keyring.getPublicKey();
+            //비밀키
+            String pvKey = keyring.getKlaytnWalletKey();
+            Wallet wallet = Wallet.builder()
+                    .address(walletAddress)
+                    .pubKey(pubKey)
+                    .pvKey(pvKey)
+                    .member(newMember)
+                    .build();
+            walletRepository.save(wallet);
+
+            try {
+                contractService.transfer(wallet.getAddress(), 100000L);
+            } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException | TransactionException e) {
+                log.debug("무료포인트 지급 실패 : " + e.getMessage());
+                throw new TokenTransactionException("지갑 생성후 토큰 지급 실패");
+            }
+
         } else {
             throw new AlreadyExistEntityException("같은 이메일이 이미 있습니다.");
         }
@@ -53,7 +94,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         Member member = memberRepository.getMemberByIdxAndRemovedFalse(idx)
                 .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 고객정보가 DB에 없습니다"));
 
-        return entityToDto(member);
+        String walletAddress = member.getWallet().getAddress();
+        try {
+            Long tokenAmount = Long.parseLong(contractService.balanceOf(walletAddress)) / 1000L;
+            return entityToDto(member, walletAddress, tokenAmount);
+        } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+            throw new NotExistsTokenInfoException("토큰 수량 정보 가져오기 실패");
+        }
 
     }
 

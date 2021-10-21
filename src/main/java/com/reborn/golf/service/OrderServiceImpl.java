@@ -173,7 +173,7 @@ public class OrderServiceImpl implements OrderService {
 
             //구매자에게 포인트 지불
             contractService.transfer(wallet.getAddress(), pointAmountToBuyer);
-            orders.setPointAmountToBuyer(pointAmountToBuyer);
+            orders.setPointAmountToBuyer(pointAmountToBuyer/1000);
             log.info(ordersDto.getTotalPrice() * pointPerPrice + " = " + coinExchange.getTokenPrice() * (pointAmountToBuyer / 1000));
 
         } catch (IamportResponseException | TransactionException | IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {

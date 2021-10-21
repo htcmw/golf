@@ -42,14 +42,13 @@ public interface RegisteredQnaService {
                 .build();
     }
 
-    default RegisteredQna dtoToEntity(RegisteredQnaDto registeredQnaDto) {
+    default RegisteredQna dtoToEntity(Integer memberIdx, RegisteredQnaDto registeredQnaDto) {
         return RegisteredQna.builder()
                 .idx(registeredQnaDto.getIdx())
                 .title(registeredQnaDto.getTitle())
                 .question(registeredQnaDto.getQuestion())
                 .answer(registeredQnaDto.getAnswer())
-                .writer(Member.builder().email(registeredQnaDto.getEmail()).name(registeredQnaDto.getName()).build())
-                .views(registeredQnaDto.getViews())
+                .writer(Member.builder().idx(memberIdx).build())
                 .build();
     }
 }

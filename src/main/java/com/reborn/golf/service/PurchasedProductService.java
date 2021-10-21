@@ -2,52 +2,117 @@ package com.reborn.golf.service;
 
 import com.reborn.golf.dto.common.PageRequestDto;
 import com.reborn.golf.dto.common.PageResultDto;
+import com.reborn.golf.dto.shop.ProductImageDto;
 import com.reborn.golf.dto.shop.PurchasedProductDto;
-import com.reborn.golf.entity.Member;
-import com.reborn.golf.entity.PurchasedProduct;
+import com.reborn.golf.entity.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public interface PurchasedProductService {
 
-    PageResultDto<PurchasedProduct, PurchasedProductDto> getList(Integer memberIdx, PageRequestDto requestDto);
-
-    Long register(Integer memberIdx, PurchasedProductDto purchasedProductDto);
+    PageResultDto<Object[], PurchasedProductDto> getListWithUser(Integer memberIdx, PageRequestDto requestDto);
 
     PurchasedProductDto read(Integer memberIdx, Long purchasedItemsIdx);
 
-    Long modify(Integer memberIdx, PurchasedProductDto purchasedProductDto);
+    PurchasedProductDto register(Integer memberIdx, Integer categoryIdx, PurchasedProductDto purchasedProductDto);
 
-    Long remove(Integer memberIdx, Long purchasedItemsIdx);
+    Long modify(Integer memberIdx, Integer categoryIdx, PurchasedProductDto purchasedProductDto);
 
-    default PurchasedProduct dtoToEntity(Integer memberIdx, PurchasedProductDto itemsDto){
-        return PurchasedProduct.builder()
+    Map<String, Object> modifyStep(Long purchasedProductIdx, Set<String> roleSet, Integer cost);
+
+    void remove(Integer memberIdx, Long purchasedItemsIdx);
+
+    default Map<String, Object> dtoToEntities(Member member, Category category, PurchasedProductDto itemsDto) {
+
+        Map<String, Object> entityMap = new HashMap<>();
+
+        PurchasedProduct purchasedProduct = PurchasedProduct.builder()
                 .idx(itemsDto.getIdx())
-                .catagory(itemsDto.getCatagory())
-                .name(itemsDto.getName())
+                .catagory(category)
                 .brand(itemsDto.getBrand())
+                .name(itemsDto.getName())
                 .state(itemsDto.getState())
                 .price(itemsDto.getPrice())
                 .quentity(itemsDto.getQuentity())
                 .details(itemsDto.getDetails())
-                .member(Member.builder().idx(memberIdx).build())
-                .purchasedProductImages(itemsDto.getImageDtoList())
+                .address(itemsDto.getAddress())
+                .member(member)
                 .canceled(itemsDto.isCanceled())
-                .finished(itemsDto.isFinished())
                 .build();
+
+        entityMap.put("purchasedProduct", purchasedProduct);
+
+        List<ProductImageDto> imageDtoList = itemsDto.getImageDtoList();
+        //ProductImageDto 처리
+        if (imageDtoList != null && imageDtoList.size() > 0) {
+            List<PurchasedProductImage> purchasedProductImageList = imageDtoList.stream().map(imgDto -> PurchasedProductImage.builder()
+                    .path(imgDto.getPath())
+                    .imgName(imgDto.getImgName())
+                    .uuid(imgDto.getUuid())
+                    .purchasedProduct(purchasedProduct)
+                    .build()
+            ).collect(Collectors.toList());
+
+            entityMap.put("imgList", purchasedProductImageList);
+        }
+        return entityMap;
     }
 
-    default PurchasedProductDto entityToDto(PurchasedProduct items) {
+    default PurchasedProductDto entitiesToDto(PurchasedProduct items, List<PurchasedProductImage> purchasedProductImageList, Member member) {
+
+        List<ProductImageDto> productImageDtoList = purchasedProductImageList.stream().map(productImage ->
+                ProductImageDto.builder()
+                        .imgName(productImage.getImgName())
+                        .path(productImage.getPath())
+                        .uuid(productImage.getUuid())
+                        .build()).collect(Collectors.toList());
+
         return PurchasedProductDto.builder()
                 .idx(items.getIdx())
-                .catagory(items.getCatagory())
-                .name(items.getName())
+                .catagory(items.getCatagory().getName())
+                .state(items.getState())
+                .price(items.getPrice())
+                .quentity(items.getQuentity())
+                .address(items.getAddress())
                 .brand(items.getBrand())
-                .canceled(items.isCanceled())
+                .name(items.getName())
                 .details(items.getDetails())
-                .finished(items.isFinished())
-                .imageDtoList(items.getPurchasedProductImages())
-                .memberEmail(items.getMember().getEmail())
-                .memberName(items.getMember().getName())
+                .canceled(items.isCanceled())
+                .step(items.getPurchasedProductStep().name())
+                .memberEmail(member.getEmail())
+                .memberName(member.getName())
+                .regDate(items.getRegDate())
+                .modDate(items.getModDate())
+                .imageDtoList(productImageDtoList)
                 .build();
     }
 
+    default PurchasedProductDto entitiesToDto(PurchasedProduct items, List<PurchasedProductImage> purchasedProductImageList, String categoryName) {
+
+        List<ProductImageDto> productImageDtoList = purchasedProductImageList.stream().map(productImage ->
+                ProductImageDto.builder()
+                        .imgName(productImage.getImgName())
+                        .path(productImage.getPath())
+                        .uuid(productImage.getUuid())
+                        .build()).collect(Collectors.toList());
+
+        return PurchasedProductDto.builder()
+                .idx(items.getIdx())
+                .catagory(categoryName)
+                .brand(items.getBrand())
+                .name(items.getName())
+                .state(items.getState())
+                .price(items.getPrice())
+                .quentity(items.getQuentity())
+                .address(items.getAddress())
+                .details(items.getDetails())
+                .canceled(items.isCanceled())
+                .step(items.getPurchasedProductStep().name())
+                .imageDtoList(productImageDtoList)
+                .build();
+    }
 }

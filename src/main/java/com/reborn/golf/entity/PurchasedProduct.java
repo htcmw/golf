@@ -1,5 +1,6 @@
 package com.reborn.golf.entity;
 
+import com.reborn.golf.entity.Enum.PurchasedProductStep;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,7 +18,8 @@ public class PurchasedProduct extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    private String catagory;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category catagory;
 
     private String name;
 
@@ -25,15 +27,19 @@ public class PurchasedProduct extends BaseEntity {
 
     private String state;
 
-    private int price;
+    private Integer price;
 
-    private int quentity;
+    private Integer quentity;
 
     private String details;
 
-    private String memberAddress;
-
-    private boolean finished;
+    private String address;
+    @Setter
+    private Integer possiblePrice;
+    @Setter
+    private Integer acceptedPrice;
+    @Setter
+    private Long acceptedTokenAmount;
 
     private boolean canceled;
 
@@ -41,10 +47,17 @@ public class PurchasedProduct extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "purchasedProduct",  orphanRemoval = true, cascade = CascadeType.ALL)
-    List<PurchasedProductImage> purchasedProductImages;
+    private List<PurchasedProductImage> purchasedProductImages;
 
-    public void changeCatagory(String catagory) {
-        this.catagory = catagory;
+    @Enumerated(EnumType.STRING)
+    private PurchasedProductStep purchasedProductStep;
+
+    public void setStep(PurchasedProductStep purchasedProductStep){
+        this.purchasedProductStep = purchasedProductStep;
+    }
+
+    public void changeCatagory(Integer catagoryIdx) {
+        this.catagory = Category.builder().idx(catagoryIdx).build();
     }
 
     public void changeName(String name) {
@@ -75,11 +88,12 @@ public class PurchasedProduct extends BaseEntity {
         this.canceled = canceled;
     }
 
-    public void changeAddress(String memberAddress) {
-        this.memberAddress = memberAddress;
+    public void changeAddress(String address) {
+        this.address = address;
     }
 
-    public void changeFinished(Boolean finished) {
-        this.finished = finished;
+    @PrePersist
+    public void prePersist() {
+        this.possiblePrice = (this.possiblePrice == null ? 0 : this.possiblePrice);
     }
 }
