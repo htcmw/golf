@@ -98,9 +98,9 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
     }
 
     @Override
-    public PurchasedProductDto read(Integer memberIdx, Long idx) {
+    public PurchasedProductDto read(Long idx) {
         try {
-            List<Object[]> result = purchasedProductRepository.getItembyIdxAndMemberIdxWithImage(memberIdx, idx);
+            List<Object[]> result = purchasedProductRepository.getItembyIdxWithImage(idx);
             //판매 물품 정보
             PurchasedProduct purchasedProduct = (PurchasedProduct) result.get(0)[0];
             //판매 물품 이미지
@@ -282,5 +282,60 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
         purchasedProductRepository.save(purchasedProduct);
         map.put("step", purchasedProduct.getPurchasedProductStep().name());
         return map;
+    }
+
+    @Override
+    public PageResultDto<Object[], PurchasedProductDto> getList(PageRequestDto requestDto) {
+        Page<Object[]> result = purchasedProductRepository.getPurchasedProductByIdx(requestDto.getPageable(Sort.by("regDate").descending()));
+
+//        Function<Object[], PurchasedProductDto> fn = (arr -> entitiesToDto((PurchasedProduct) arr[0], List.of((PurchasedProductImage) arr[1]), (String) arr[2]));
+        Function<Object[], PurchasedProductDto> fn = (arr -> {
+            PurchasedProduct items = (PurchasedProduct) arr[0];
+            List<PurchasedProductImage> purchasedProductImageList = List.of((PurchasedProductImage) arr[1]);
+            Member member = (Member) arr[2];
+            String categoryName = (String) arr[3];
+            //이미지 처리
+            List<ProductImageDto> productImageDtoList = purchasedProductImageList.stream().map(productImage ->
+                    ProductImageDto.builder()
+                            .imgName(productImage.getImgName())
+                            .path(productImage.getPath())
+                            .uuid(productImage.getUuid())
+                            .build()).collect(Collectors.toList());
+
+            //유저희망가격의 비용
+            Integer expectedPrice = (int) (items.getPrice() * (1 - tokenAmountRatePerCost));
+            //유저희망가격의 토큰 수량
+            Long expectedPointAmount = (long) (items.getPrice() * tokenAmountRatePerCost / coinExchange.getTokenPrice());
+            //제안 가격의 비용
+            Integer possiblePrice = (int) (items.getPossiblePrice() * (1 - tokenAmountRatePerCost));
+            //제안 가격의 토큰 수량
+            Long possiblePointAmount = (long) (items.getPossiblePrice() * tokenAmountRatePerCost / coinExchange.getTokenPrice());
+
+
+            return PurchasedProductDto.builder()
+                    .idx(items.getIdx())
+                    .catagory(categoryName)
+                    .brand(items.getBrand())
+                    .name(items.getName())
+                    .state(items.getState())
+                    .price(items.getPrice())
+                    .quentity(items.getQuentity())
+                    .address(items.getAddress())
+                    .details(items.getDetails())
+                    .memberEmail(member.getEmail())
+                    .memberName(member.getName())
+                    .expectedPrice(expectedPrice)
+                    .expectedPointAmount(expectedPointAmount)
+                    .proposalPrice(possiblePrice)
+                    .proposalTokenAmount(possiblePointAmount)
+                    .canceled(items.isCanceled())
+                    .step(items.getPurchasedProductStep().name())
+                    .imageDtoList(productImageDtoList)
+                    .regDate(items.getRegDate())
+                    .modDate(items.getModDate())
+                    .build();
+        });
+
+        return new PageResultDto<>(result, fn);
     }
 }

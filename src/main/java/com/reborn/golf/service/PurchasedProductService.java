@@ -15,8 +15,9 @@ import java.util.stream.Collectors;
 public interface PurchasedProductService {
 
     PageResultDto<Object[], PurchasedProductDto> getListWithUser(Integer memberIdx, PageRequestDto requestDto);
+    PageResultDto<Object[], PurchasedProductDto> getList(PageRequestDto requestDto);
 
-    PurchasedProductDto read(Integer memberIdx, Long purchasedItemsIdx);
+    PurchasedProductDto read(Long purchasedItemsIdx);
 
     PurchasedProductDto register(Integer memberIdx, Integer categoryIdx, PurchasedProductDto purchasedProductDto);
 

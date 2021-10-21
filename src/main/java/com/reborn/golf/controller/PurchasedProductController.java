@@ -40,11 +40,11 @@ public class PurchasedProductController {
         return new ResponseEntity<>(purchasedItemsDtoList, HttpStatus.OK);
     }
 
-    //유저의 물품 판매 정보 확인
-    @PreAuthorize("hasRole('ROLE_USER')")
+    //유저의 판매 물품 디테일
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_USER')")
     @GetMapping("/{idx}")
-    public ResponseEntity<PurchasedProductDto> read(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long idx) {
-        PurchasedProductDto purchasedProductDto = purchasedProductService.read(authMemeberDto.getIdx(), idx);
+    public ResponseEntity<PurchasedProductDto> read(@PathVariable Long idx) {
+        PurchasedProductDto purchasedProductDto = purchasedProductService.read(idx);
         return new ResponseEntity<>(purchasedProductDto, HttpStatus.OK);
     }
 
@@ -91,5 +91,12 @@ public class PurchasedProductController {
         Map<String, Object> map = purchasedProductService.modifyStep(idx, roleSet, cost);
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
-
+    //매니저가 보는 유저 판매 리스트
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @GetMapping("/users")
+    public ResponseEntity<PageResultDto<Object[], PurchasedProductDto>> getList(PageRequestDto requestDto) {
+        PageResultDto<Object[], PurchasedProductDto> purchasedItemsDtoList = purchasedProductService.getList(requestDto);
+        log.info(purchasedItemsDtoList);
+        return new ResponseEntity<>(purchasedItemsDtoList, HttpStatus.OK);
+    }
 }

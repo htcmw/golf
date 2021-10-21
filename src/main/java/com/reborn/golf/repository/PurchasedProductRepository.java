@@ -12,7 +12,9 @@ import java.util.Optional;
 public interface PurchasedProductRepository extends JpaRepository<PurchasedProduct,Long> {
 
     @Query(value =
-                    "SELECT p, pi, c.name " +
+                    "SELECT p, " +
+                            "pi, " +
+                            "c.name " +
                     "FROM PurchasedProduct p " +
                             "LEFT JOIN p.purchasedProductImages pi " +
                             "LEFT JOIN p.member m " +
@@ -21,6 +23,21 @@ public interface PurchasedProductRepository extends JpaRepository<PurchasedProdu
                             "AND p.canceled = false " +
                     "GROUP BY p ")
     Page<Object[]> getPurchasedItemsbyMemberIdx(Integer memberIdx, Pageable pageable);
+
+
+    @Query(value =
+                    "SELECT p, " +
+                            "pi, " +
+                            "m, " +
+                            "c.name " +
+                    "FROM PurchasedProduct p " +
+                            "LEFT JOIN p.purchasedProductImages pi " +
+                            "LEFT JOIN p.member m " +
+                            "LEFT JOIN p.catagory c " +
+                    "WHERE p.canceled = false " +
+                    "GROUP BY p ")
+    Page<Object[]> getPurchasedProductByIdx(Pageable pageable);
+
 
     @Query(value =
                     "SELECT p " +
@@ -34,15 +51,16 @@ public interface PurchasedProductRepository extends JpaRepository<PurchasedProdu
 
 
     @Query(value =
-            "SELECT p, pi, m " +
+                    "SELECT p, " +
+                            "pi, " +
+                            "m " +
                     "FROM PurchasedProduct p " +
                             "LEFT JOIN p.purchasedProductImages pi " +
                             "LEFT JOIN p.member m " +
-                    "WHERE m.idx = :memberIdx " +
-                            "AND p.idx = :idx " +
+                    "WHERE p.idx = :idx " +
                             "AND p.canceled = false " +
                     "GROUP BY pi")
-    List<Object[]> getItembyIdxAndMemberIdxWithImage(Integer memberIdx, Long idx);
+    List<Object[]> getItembyIdxWithImage(Long idx);
 
 
 
