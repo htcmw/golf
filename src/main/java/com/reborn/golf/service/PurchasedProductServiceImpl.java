@@ -4,6 +4,7 @@ import com.reborn.golf.api.CoinExchange;
 import com.reborn.golf.api.ContractService;
 import com.reborn.golf.dto.common.PageRequestDto;
 import com.reborn.golf.dto.common.PageResultDto;
+import com.reborn.golf.dto.exception.AlreadyFinishedException;
 import com.reborn.golf.dto.exception.NotExistEntityException;
 import com.reborn.golf.dto.exception.TokenTransactionException;
 import com.reborn.golf.dto.exception.WrongStepException;
@@ -215,6 +216,19 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
     public void remove(Integer memberIdx, Long idx) {
         PurchasedProduct purchasedProduct = purchasedProductRepository.getPurchasedItembyIdxAndMemberIdx(memberIdx, idx)
                 .orElseThrow(() -> new NotExistEntityException("IDX에 해당하는 DB정보가 없습니다"));
+
+        if (purchasedProduct.getPurchasedProductStep().ordinal() == PurchasedProductStep.FINISH.ordinal()) {
+            throw new AlreadyFinishedException("이미 모든 거래가 끝났습니다");
+        }
+
+        if (purchasedProduct.getPurchasedProductStep().ordinal() == PurchasedProductStep.ACCEPTANCE.ordinal()) {
+            try {
+                contractService.transferFrom(purchasedProduct.getMember().getWallet().getAddress(), purchasedProduct.getAcceptedTokenAmount() * 1000L);
+            } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException | TransactionException e) {
+                log.debug(e.getMessage());
+                throw new TokenTransactionException("토큰 트랜젝션 에러 발생");
+            }
+        }
 
         purchasedProduct.changeRemoved(true);
         purchasedProductRepository.save(purchasedProduct);
