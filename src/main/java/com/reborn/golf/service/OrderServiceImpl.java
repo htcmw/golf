@@ -203,6 +203,7 @@ public class OrderServiceImpl implements OrderService {
             orders.changeIsRemoved(true);
             orders.setOrderState(OrderStatus.CANCEL);
             orderProductService.removeOrderProduct(orders.getOrderProducts());
+            log.info(orders);
             orderRepository.save(orders);
 
             contractService.transferFrom(orders.getMember().getWallet().getAddress(), orders.getPointAmountToBuyer() * 1000L);

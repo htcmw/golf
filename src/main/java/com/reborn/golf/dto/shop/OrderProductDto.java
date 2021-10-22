@@ -13,7 +13,7 @@ import java.util.List;
 public class OrderProductDto {
     private Long orderProductIdx;
     private Integer price;
-    private Integer quentity;
+    private Integer quantity;
 
     private Long productIdx;
     private String title;

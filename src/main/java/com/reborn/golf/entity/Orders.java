@@ -95,7 +95,7 @@ public class Orders extends BaseEntity {
             OrderProductDto orderProductDto = OrderProductDto.builder()
                     .orderProductIdx(orderProduct.getIdx())
                     .price(orderProduct.getPrice())
-                    .quentity(orderProduct.getQuantity())
+                    .quantity(orderProduct.getQuantity())
                     .productIdx(product.getIdx())
                     .title(product.getTitle())
                     .brand(product.getBrand())
