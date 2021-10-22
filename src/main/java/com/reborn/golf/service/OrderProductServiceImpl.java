@@ -36,19 +36,19 @@ public class OrderProductServiceImpl implements OrderProductService {
             if (optionalProduct.isPresent()) {
 
                 Product product = optionalProduct.get();
-                int quantity = product.getQuantity() - orderProductDto.getQuentity();
+                int quantity = product.getQuantity() - orderProductDto.getQuantity();
                 if (quantity < 0) {
                     throw new ShortageOfStockException("제고물량 부족");
                 }
                 product.changeQuantity(quantity);
-                product.changeSalesVolume(product.getSalesVolume() + orderProductDto.getQuentity());
+                product.changeSalesVolume(product.getSalesVolume() + orderProductDto.getQuantity());
                 productRepository.save(product);
 
 
-                int price = product.getPrice() * orderProductDto.getQuentity();
+                int price = product.getPrice() * orderProductDto.getQuantity();
                 OrderProduct orderProduct = OrderProduct.builder()
                         .price(price)
-                        .quantity(orderProductDto.getQuentity())
+                        .quantity(orderProductDto.getQuantity())
                         .product(product)
                         .orders(orders)
                         .build();
