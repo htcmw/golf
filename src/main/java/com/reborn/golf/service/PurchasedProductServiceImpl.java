@@ -193,6 +193,7 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
         purchasedProduct.changePrice(purchasedProductDto.getPrice());
         purchasedProduct.changeDetails(purchasedProductDto.getDetails());
         purchasedProduct.changeAddress(purchasedProductDto.getAddress());
+        purchasedProduct.setStep(PurchasedProductStep.PROPOSAL);
         purchasedProductRepository.save(purchasedProduct);
 
         //PurchasedProduct의 변경할 이미지가 존재하면 기존 이미지 삭제후, 새로운 이미지 삽입
