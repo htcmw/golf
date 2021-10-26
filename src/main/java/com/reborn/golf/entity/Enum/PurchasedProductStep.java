@@ -9,4 +9,6 @@ public enum PurchasedProductStep {
     ACCEPTANCE,
     //거래 끝
     FINISH,
+    //거래 취소
+    CANCELED
 }

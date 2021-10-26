@@ -29,7 +29,7 @@ public class PurchasedProduct extends BaseEntity {
 
     private Integer price;
 
-    private Integer quentity;
+    private Integer quantity;
 
     private String details;
 
@@ -40,7 +40,8 @@ public class PurchasedProduct extends BaseEntity {
     private Integer acceptedPrice;
     @Setter
     private Long acceptedTokenAmount;
-
+    @Setter
+    private String acceptedTokenPrice;
     private boolean canceled;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -72,8 +73,8 @@ public class PurchasedProduct extends BaseEntity {
         this.state = state;
     }
 
-    public void changeQuentity(int quentity) {
-        this.quentity = quentity;
+    public void changeQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public void changePrice(int price) {

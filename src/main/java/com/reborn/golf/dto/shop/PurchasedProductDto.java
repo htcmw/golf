@@ -27,7 +27,7 @@ public class PurchasedProductDto {
     //물품 희망 가격
     private Integer price;
     //수량
-    private Integer quentity;
+    private Integer quantity;
     //설명
     private String details;
     //주소
@@ -51,7 +51,12 @@ public class PurchasedProductDto {
     private Integer proposalPrice;
     //회사가 구입할 수 있는 토큰 수량
     private Long proposalTokenAmount;
-
+    //회사가 구입한 가격
+    private Integer acceptedPrice;
+    //회사가 구입할 때 토큰 수량
+    private Long acceptedTokenAmount;
+    //회사가 구입할 때 토큰 시장 가격
+    private String acceptedTokenPrice;
     // 이미지 생성
     @Builder.Default
     private List<ProductImageDto> imageDtoList = new ArrayList<>();

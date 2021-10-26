@@ -64,11 +64,11 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
                             .uuid(productImage.getUuid())
                             .build()).collect(Collectors.toList());
             //유저희망가격의 비용
-            Integer expectedPrice = (int) (items.getPrice() * (1 - tokenAmountRatePerCost));
+            Integer expectedPrice = items.getPrice();
             //유저희망가격의 토큰 수량
             Long expectedPointAmount = (long) (items.getPrice() * tokenAmountRatePerCost / coinExchange.getTokenPrice());
             //제안 가격의 비용
-            Integer possiblePrice = (int) (items.getPossiblePrice() * (1 - tokenAmountRatePerCost));
+            Integer possiblePrice = items.getPossiblePrice();
             //제안 가격의 토큰 수량
             Long possiblePointAmount = (long) (items.getPossiblePrice() * tokenAmountRatePerCost / coinExchange.getTokenPrice());
 
@@ -80,13 +80,16 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
                     .name(items.getName())
                     .state(items.getState())
                     .price(items.getPrice())
-                    .quentity(items.getQuentity())
+                    .quantity(items.getQuantity())
                     .address(items.getAddress())
                     .details(items.getDetails())
                     .expectedPrice(expectedPrice)
                     .expectedPointAmount(expectedPointAmount)
                     .proposalPrice(possiblePrice)
                     .proposalTokenAmount(possiblePointAmount)
+                    .acceptedPrice(items.getAcceptedPrice())
+                    .acceptedTokenPrice(items.getAcceptedTokenPrice())
+                    .acceptedTokenAmount(items.getAcceptedTokenAmount())
                     .canceled(items.isCanceled())
                     .step(items.getPurchasedProductStep().name())
                     .imageDtoList(productImageDtoList)
@@ -115,11 +118,11 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
 
             PurchasedProductDto purchasedProductDto = entitiesToDto(purchasedProduct, productImageList, member);
             //유저희망가격의 비용
-            Integer expectedPrice = (int) (purchasedProduct.getPrice() * (1 - tokenAmountRatePerCost));
+            Integer expectedPrice = purchasedProduct.getPrice();
             //유저희망가격의 토큰 수량
             Long expectedPointAmount = (long) (purchasedProduct.getPrice() * tokenAmountRatePerCost / coinExchange.getTokenPrice());
             //제안 가격의 비용
-            Integer possiblePrice = (int) (purchasedProduct.getPossiblePrice() * (1 - tokenAmountRatePerCost));
+            Integer possiblePrice = purchasedProduct.getPossiblePrice();
             //제안 가격의 토큰 수량
             Long possiblePointAmount = (long) (purchasedProduct.getPossiblePrice() * tokenAmountRatePerCost / coinExchange.getTokenPrice());
 
@@ -156,7 +159,7 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
             purchasedProductImageRepository.save(img);
         });
         //유저희망가격의 비용
-        Integer expectedPrice = (int) (purchasedProduct.getPrice() * (1 - tokenAmountRatePerCost));
+        Integer expectedPrice = purchasedProduct.getPrice();
         //유저희망가격의 토큰 수량
         Long expectedPointAmount = (long) (purchasedProduct.getPrice() * tokenAmountRatePerCost / coinExchange.getTokenPrice());
 
@@ -185,7 +188,7 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
         purchasedProduct.changeCatagory(categoryIdx);
         purchasedProduct.changeBrand(purchasedProductDto.getBrand());
         purchasedProduct.changeName(purchasedProductDto.getName());
-        purchasedProduct.changeQuentity(purchasedProductDto.getQuentity());
+        purchasedProduct.changeQuantity(purchasedProductDto.getQuantity());
         purchasedProduct.changeState(purchasedProductDto.getState());
         purchasedProduct.changePrice(purchasedProductDto.getPrice());
         purchasedProduct.changeDetails(purchasedProductDto.getDetails());
@@ -220,6 +223,8 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
         if (purchasedProduct.getPurchasedProductStep().ordinal() == PurchasedProductStep.FINISH.ordinal()) {
             throw new AlreadyFinishedException("이미 모든 거래가 끝났습니다");
         }
+
+        purchasedProduct.setStep(PurchasedProductStep.CANCELED);
 
         if (purchasedProduct.getPurchasedProductStep().ordinal() == PurchasedProductStep.ACCEPTANCE.ordinal()) {
             try {
@@ -266,7 +271,7 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
             }
             purchasedProduct.setStep(PurchasedProductStep.ACCEPTANCE);
             //제안 가격의 비용
-            Integer possiblePrice = (int) (purchasedProduct.getPossiblePrice() * (1 - tokenAmountRatePerCost));
+            Integer possiblePrice = purchasedProduct.getPossiblePrice();
             //제안 가격의 토큰 수량
             Long possiblePointAmount = (long) (purchasedProduct.getPossiblePrice() * tokenAmountRatePerCost / coinExchange.getTokenPrice());
 
@@ -279,6 +284,7 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
 
             purchasedProduct.setAcceptedPrice(possiblePrice);
             purchasedProduct.setAcceptedTokenAmount(possiblePointAmount);
+            purchasedProduct.setAcceptedTokenPrice(possiblePrice.toString());
             map.put("proposalPrice", possiblePrice);
             map.put("proposalTokenAmount", possiblePointAmount);
 
@@ -317,11 +323,11 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
                             .build()).collect(Collectors.toList());
 
             //유저희망가격의 비용
-            Integer expectedPrice = (int) (items.getPrice() * (1 - tokenAmountRatePerCost));
+            Integer expectedPrice = items.getPrice();
             //유저희망가격의 토큰 수량
             Long expectedPointAmount = (long) (items.getPrice() * tokenAmountRatePerCost / coinExchange.getTokenPrice());
             //제안 가격의 비용
-            Integer possiblePrice = (int) (items.getPossiblePrice() * (1 - tokenAmountRatePerCost));
+            Integer possiblePrice = items.getPossiblePrice();
             //제안 가격의 토큰 수량
             Long possiblePointAmount = (long) (items.getPossiblePrice() * tokenAmountRatePerCost / coinExchange.getTokenPrice());
 
@@ -333,7 +339,7 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
                     .name(items.getName())
                     .state(items.getState())
                     .price(items.getPrice())
-                    .quentity(items.getQuentity())
+                    .quantity(items.getQuantity())
                     .address(items.getAddress())
                     .details(items.getDetails())
                     .memberEmail(member.getEmail())
@@ -342,6 +348,9 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
                     .expectedPointAmount(expectedPointAmount)
                     .proposalPrice(possiblePrice)
                     .proposalTokenAmount(possiblePointAmount)
+                    .acceptedPrice(items.getAcceptedPrice())
+                    .acceptedTokenPrice(items.getAcceptedTokenPrice())
+                    .acceptedTokenAmount(items.getAcceptedTokenAmount())
                     .canceled(items.isCanceled())
                     .step(items.getPurchasedProductStep().name())
                     .imageDtoList(productImageDtoList)
