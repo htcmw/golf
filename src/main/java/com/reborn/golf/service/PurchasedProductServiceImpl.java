@@ -340,7 +340,7 @@ public class PurchasedProductServiceImpl implements PurchasedProductService {
                     .name(items.getName())
                     .state(items.getState())
                     .price(items.getPrice())
-                    .quentity(items.getQuentity())
+                    .quantity(items.getQuantity())
                     .address(items.getAddress())
                     .details(items.getDetails())
                     .memberEmail(member.getEmail())
