@@ -49,7 +49,7 @@ public class PurchasedProductDto {
     private Long expectedPointAmount;
     //회사가 구입할 수 있는 가격
     private Integer proposalPrice;
-    //회사가 구입할때 줄 수 있는 토큰 수량
+    //회사가 구입할 수 있는 토큰 수량
     private Long proposalTokenAmount;
     //회사가 구입한 가격
     private Integer acceptedPrice;
@@ -57,7 +57,6 @@ public class PurchasedProductDto {
     private Long acceptedTokenAmount;
     //회사가 구입할 때 토큰 시장 가격
     private String acceptedTokenPrice;
-
     // 이미지 생성
     @Builder.Default
     private List<ProductImageDto> imageDtoList = new ArrayList<>();

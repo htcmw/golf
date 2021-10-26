@@ -42,7 +42,6 @@ public class PurchasedProduct extends BaseEntity {
     private Long acceptedTokenAmount;
     @Setter
     private String acceptedTokenPrice;
-
     private boolean canceled;
 
     @ManyToOne(fetch = FetchType.LAZY)

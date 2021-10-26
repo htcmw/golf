@@ -20,7 +20,6 @@ public interface PurchasedProductRepository extends JpaRepository<PurchasedProdu
                             "LEFT JOIN p.member m " +
                             "LEFT JOIN p.catagory c " +
                     "WHERE m.idx = :memberIdx " +
-                            "AND p.canceled = false " +
                     "GROUP BY p ")
     Page<Object[]> getPurchasedItemsbyMemberIdx(Integer memberIdx, Pageable pageable);
 
@@ -34,7 +33,6 @@ public interface PurchasedProductRepository extends JpaRepository<PurchasedProdu
                             "LEFT JOIN p.purchasedProductImages pi " +
                             "LEFT JOIN p.member m " +
                             "LEFT JOIN p.catagory c " +
-                    "WHERE p.canceled = false " +
                     "GROUP BY p ")
     Page<Object[]> getPurchasedProductByIdx(Pageable pageable);
 
@@ -58,7 +56,6 @@ public interface PurchasedProductRepository extends JpaRepository<PurchasedProdu
                             "LEFT JOIN p.purchasedProductImages pi " +
                             "LEFT JOIN p.member m " +
                     "WHERE p.idx = :idx " +
-                            "AND p.canceled = false " +
                     "GROUP BY pi")
     List<Object[]> getItembyIdxWithImage(Long idx);
 
