@@ -11,21 +11,21 @@
 
 구현기능 :
 
-회원 : CRUD, login, Spring Security 인증 및 인가
+          회원 : CRUD, login, Spring Security 인증 및 인가
 
-카테고리 : CRUD
+          카테고리 : CRUD
 
-상품 : CRUD
+          상품 : CRUD
 
-장바구니 : CRUD
+          장바구니 : CRUD
 
-결제 : CRD, iamport api 사용
+          결제 : CRD, iamport api 사용
 
-중고 용품 구매 : CRUD, 상태변경(협상 과정) 
+          중고 용품 구매 : CRUD, 상태변경(협상 과정) 
 
-공지사항 : CRUD
+          공지사항 : CRUD
 
-QNA : CRUD
+          QNA : CRUD
 
-코인가격 : 어플리케이션 실행시 1초마다 bithumb ticker api를 호출하는 쓰레드 생성   
-          무비블록 가격(토큰이코노미와 초기자금을 ICO로 구한다는 가정하에 무비블록의 가격이 적절하다고 생각함)
+          코인가격 : 어플리케이션 실행시 1초마다 bithumb ticker api를 호출하는 쓰레드 생성   
+                    무비블록 가격(토큰이코노미와 초기자금을 ICO로 구한다는 가정하에 무비블록의 가격이 적절하다고 생각함)
