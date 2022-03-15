@@ -1,9 +1,9 @@
 package com.reborn.golf.repository;
 
-import com.reborn.golf.dto.common.PageRequestDto;
-import com.reborn.golf.dto.shop.ProductDto;
-import com.reborn.golf.entity.Product;
-import com.reborn.golf.entity.ProductImage;
+import com.reborn.golf.common.dto.PageRequestDto;
+import com.reborn.golf.product.entity.Product;
+import com.reborn.golf.product.entity.ProductImage;
+import com.reborn.golf.product.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,9 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.function.Function;
 
 @SpringBootTest
 public class ProductRepositoryTests {

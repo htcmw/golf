@@ -1,6 +1,7 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.dto.user.MemberDto;
+import com.reborn.golf.member.dto.MemberDto;
+import com.reborn.golf.member.service.MemberService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +30,6 @@ public class MemberServiceTests {
                     .fromSocial(false)
                     .build();
             System.out.println(member);
-            memberService.register(member);
         });
 
     }

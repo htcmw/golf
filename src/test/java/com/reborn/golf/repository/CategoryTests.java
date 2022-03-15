@@ -1,7 +1,7 @@
 package com.reborn.golf.repository;
 
-import com.reborn.golf.entity.Category;
-import com.reborn.golf.repository.CategoryRepository;
+import com.reborn.golf.category.entity.Category;
+import com.reborn.golf.category.repository.CategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,11 +41,6 @@ public class CategoryTests {
             }
 
         }
-
-    }
-    @Test
-    public void findAllWithQuerydslTest(){
-        List<Category> categoryList = categoryRepository.getCategories();
 
     }
 }

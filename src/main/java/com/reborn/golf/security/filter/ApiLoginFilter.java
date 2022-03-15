@@ -19,7 +19,6 @@ import java.io.Reader;
 import java.util.HashMap;
 
 @Log4j2
-
 public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private final JwtUtil jwtUtil;

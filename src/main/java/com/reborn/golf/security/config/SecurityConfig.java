@@ -1,13 +1,11 @@
 package com.reborn.golf.security.config;
 
-import com.reborn.golf.repository.MemberRepository;
 import com.reborn.golf.security.filter.ApiCheckFilter;
 import com.reborn.golf.security.filter.ApiLoginFilter;
 import com.reborn.golf.security.handler.ApiAccessDeniedHandler;
 import com.reborn.golf.security.handler.ApiLoginFailHandler;
 import com.reborn.golf.security.util.JwtUtil;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public ApiLoginFilter apiLoginFilter() throws Exception{
-        ApiLoginFilter apiLoginFilter =  new ApiLoginFilter("/member/login",jwtUtil());
+        ApiLoginFilter apiLoginFilter =  new ApiLoginFilter("/api/members/login",jwtUtil());
         apiLoginFilter.setAuthenticationManager(authenticationManager());
         apiLoginFilter.setAuthenticationFailureHandler(new ApiLoginFailHandler());
         return apiLoginFilter;

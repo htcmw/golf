@@ -1,7 +1,7 @@
 package com.reborn.golf.security;
 
-import com.reborn.golf.entity.Member;
-import com.reborn.golf.repository.MemberRepository;
+import com.reborn.golf.member.entity.Member;
+import com.reborn.golf.member.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,6 +1,6 @@
 package com.reborn.golf.service;
 
-import com.reborn.golf.api.IamportManager;
+import com.reborn.golf.order.api.IamportManager;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
