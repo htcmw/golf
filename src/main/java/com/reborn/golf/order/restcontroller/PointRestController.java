@@ -20,5 +20,4 @@ public class PointRestController {
     public ResponseEntity<?> getprice(){
         return new ResponseEntity<>(coinExchange.getTokenPrice(), HttpStatus.OK);
     }
-
 }

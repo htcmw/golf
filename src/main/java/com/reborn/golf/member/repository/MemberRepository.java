@@ -33,4 +33,10 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     //비밀번호 찾기
     Optional<Member> getMemberByEmailAndPhoneAndRemovedFalse(String email, String phone);
 
+
+    @Query("SELECT m " +
+            "FROM Member m LEFT JOIN FETCH Wallet w on m.wallet = w " +
+            "WHERE m.idx = :idx AND m.email = :email AND m.name = :name")
+    Optional<Member> findByIdxWithWallet(@Param("idx") Integer idx, @Param("email") String email, @Param("name") String name);
+
 }

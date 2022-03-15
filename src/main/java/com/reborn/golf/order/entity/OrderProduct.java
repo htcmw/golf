@@ -30,8 +30,8 @@ public class OrderProduct {
 
     private boolean removed;
 
-    public void changeIsRemoved(boolean removed){
-        this.removed = removed;
+    public void removed(){
+        this.removed = false;
     }
 }
 

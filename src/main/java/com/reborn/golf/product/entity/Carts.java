@@ -36,7 +36,7 @@ public class Carts extends BaseEntity {
                 .cartIdx(getIdx())
                 .quantity(getQuantity())
                 .productIdx(getProduct().getIdx())
-                .imageDtoList(getProduct().getProductImages().get(0).ProductImageDto())
+                .imageDtoList(getProduct().getProductImages().get(0).toProductImageDto())
                 .title(getProduct().getTitle())
                 .totalPrice(getQuantity() * getProduct().getPrice())
                 .price(getProduct().getPrice())

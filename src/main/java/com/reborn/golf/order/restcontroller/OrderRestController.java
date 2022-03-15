@@ -20,40 +20,23 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class OrderRestController {
     private final OrderService orderService;
-
-    // 유저의 주문 리스트 불러오기
-    @GetMapping("/user")
-    public ResponseEntity<PageResultDto<Orders, OrdersDto>> getListWithUser(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, PageRequestDto pageRequestDto) {
-        Integer memberIdx = authMemeberDto.getIdx();
-        PageResultDto<Orders, OrdersDto> orderDtoList = orderService.getListWithUser(memberIdx, pageRequestDto);
-        log.info(orderDtoList);
-        return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
-    }
-
     // 주문 하기
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<OrdersDto> order(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody OrdersDto ordersDto) {
-        Integer memberIdx = authMemeberDto.getIdx();
-        OrdersDto orderInfo = orderService.order(memberIdx, ordersDto);
-        return new ResponseEntity<>(orderInfo, HttpStatus.OK);
+        return ResponseEntity.ok(orderService.runPayment(authMemeberDto.getIdx(), ordersDto));
     }
 
     //주문 취소하기
     @DeleteMapping("/{idx}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Long> cancel(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long idx) {
-        Integer memberIdx = authMemeberDto.getIdx();
-        Long num = orderService.cancelAll(memberIdx, idx);
-        return new ResponseEntity<>(num, HttpStatus.OK);
+        return ResponseEntity.ok(orderService.cancelAll(authMemeberDto.getIdx(), idx));
     }
 
-    //어떤 상태의 주문 정보리스트 불러오기
-    @GetMapping("/state")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<PageResultDto<Orders, OrdersDto>> getProcessingOrder(@RequestParam String state, PageRequestDto pageRequestDto) {
-        PageResultDto<Orders, OrdersDto> orderDtoList = orderService.getListWithState(state, pageRequestDto);
-        return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
+    // 유저의 주문 리스트 불러오기
+    @GetMapping("/user")
+    public ResponseEntity<PageResultDto<Orders, OrdersDto>> getListWithUser(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, PageRequestDto pageRequestDto) {
+        return ResponseEntity.ok(orderService.getListWithUser(authMemeberDto.getIdx(), pageRequestDto));
     }
-
 }
