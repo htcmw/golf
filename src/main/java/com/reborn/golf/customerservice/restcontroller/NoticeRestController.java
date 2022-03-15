@@ -2,10 +2,9 @@ package com.reborn.golf.customerservice.restcontroller;
 
 import com.reborn.golf.common.dto.PageRequestDto;
 import com.reborn.golf.common.dto.PageResultDto;
-import com.reborn.golf.customerservice.dto.CustomerserviceType;
 import com.reborn.golf.customerservice.dto.NoticeDto;
 import com.reborn.golf.customerservice.entity.Notice;
-import com.reborn.golf.customerservice.service.CustomerserviceService;
+import com.reborn.golf.customerservice.service.NoticeService;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -29,33 +28,32 @@ import javax.validation.constraints.Min;
 @RequiredArgsConstructor
 public class NoticeRestController {
 
-    private final CustomerserviceService customerserviceService;
-    private final CustomerserviceType csType = CustomerserviceType.NOTICE;
+    private final NoticeService noticeService;
 
     //모든 공지사항 목록을 출력
     @GetMapping
     public ResponseEntity<PageResultDto<Notice, NoticeDto>> getList(PageRequestDto pageRequestDto) throws IllegalAccessException {
-        return ResponseEntity.ok(customerserviceService.getList(pageRequestDto, csType));
+        return ResponseEntity.ok(noticeService.getList(pageRequestDto));
     }
 
     //공지사항 조회
     @GetMapping("/{idx}")
     public ResponseEntity<NoticeDto> read(@PathVariable @Min(1) Long idx) {
-        return ResponseEntity.ok((NoticeDto)customerserviceService.read(idx, csType));
+        return ResponseEntity.ok(noticeService.read(idx));
     }
 
     //공지사항 등록
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping
     public ResponseEntity<Long> register(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
-        return ResponseEntity.ok(customerserviceService.register(authMemeberDto.getIdx(), noticeDto));
+        return ResponseEntity.ok(noticeService.register(authMemeberDto.getIdx(), noticeDto));
     }
 
     //공지사항 수정
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping
     public ResponseEntity<Long> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid NoticeDto noticeDto) {
-        customerserviceService.modify(authMemeberDto.getIdx(), noticeDto);
+        noticeService.modify(authMemeberDto.getIdx(), noticeDto);
         return ResponseEntity.ok(noticeDto.getIdx());
     }
 
@@ -63,7 +61,7 @@ public class NoticeRestController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @DeleteMapping("/{idx}")
     public ResponseEntity<Long> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable @Min(1) Long idx) {
-        customerserviceService.remove(authMemeberDto.getIdx(), idx);
+        noticeService.remove(authMemeberDto.getIdx(), idx);
         return ResponseEntity.ok(idx);
     }
 }

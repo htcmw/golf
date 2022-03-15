@@ -3,10 +3,9 @@ package com.reborn.golf.customerservice.restcontroller;
 import com.reborn.golf.common.dto.PageRequestDto;
 import com.reborn.golf.common.dto.PageResultDto;
 import com.reborn.golf.customerservice.dto.AnswerDto;
-import com.reborn.golf.customerservice.dto.CustomerserviceType;
 import com.reborn.golf.customerservice.dto.QuestionDto;
 import com.reborn.golf.customerservice.entity.Question;
-import com.reborn.golf.customerservice.service.CustomerserviceService;
+import com.reborn.golf.customerservice.service.QnaService;
 import com.reborn.golf.security.dto.AuthMemeberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,26 +25,25 @@ import javax.validation.constraints.NotNull;
 @Validated
 @RequiredArgsConstructor
 public class QnaRestController {
-    private final CustomerserviceService customerserviceService;
-    private final CustomerserviceType csType = CustomerserviceType.QNA;
+    private final QnaService qnaService;
 
     //모든 질문 목록을 출력
     @GetMapping("/questions")
     public ResponseEntity<PageResultDto<Question, QuestionDto>> getList(PageRequestDto pageRequestDto) throws IllegalAccessException {
-        return ResponseEntity.ok(customerserviceService.getList(pageRequestDto, csType));
+        return ResponseEntity.ok(qnaService.getList(pageRequestDto));
     }
 
     //조회
     @GetMapping("/questions/{idx}")
     public ResponseEntity<QuestionDto> read(@PathVariable @Min(1) Long idx) {
-        return ResponseEntity.ok((QuestionDto)customerserviceService.read(idx, csType));
+        return ResponseEntity.ok(qnaService.read(idx));
     }
 
     //등록
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
     @PostMapping("/questions")
     public ResponseEntity<Long> registerQuestion(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid QuestionDto questionDto) {
-        return ResponseEntity.ok(customerserviceService.register(authMemeberDto.getIdx(), questionDto));
+        return ResponseEntity.ok(qnaService.register(authMemeberDto.getIdx(), questionDto));
     }
 
     //등록
@@ -54,28 +52,30 @@ public class QnaRestController {
     public ResponseEntity<Long> registerAnswer(@AuthenticationPrincipal AuthMemeberDto authMemeberDto,
                                                @PathVariable @NotNull @Min(1) Long questionIdx,
                                                @RequestBody @Valid AnswerDto answerDto) {
-        return ResponseEntity.ok(customerserviceService.registerAnswer(authMemeberDto.getIdx(), questionIdx, answerDto));
+        return ResponseEntity.ok(qnaService.registerAnswer(authMemeberDto.getIdx(), questionIdx, answerDto));
     }
 
     //수정
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
     @PutMapping("/questions")
     public ResponseEntity<Long> modifyQuestion(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid QuestionDto questionDto) {
-        customerserviceService.modify(authMemeberDto.getIdx(), questionDto);
+        qnaService.modify(authMemeberDto.getIdx(), questionDto);
         return ResponseEntity.ok(questionDto.getIdx());
     }
+
     //수정
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
     @PutMapping("/answers")
     public ResponseEntity<Long> modifyAnswer(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @RequestBody @Valid AnswerDto answerDto) {
-        customerserviceService.modify(authMemeberDto.getIdx(), answerDto);
+        qnaService.modify(authMemeberDto.getIdx(), answerDto);
         return ResponseEntity.ok(answerDto.getIdx());
     }
+
     //삭제
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_MANAGER')")
     @DeleteMapping(value = {"/questions/{idx}", "/answers/{idx}"})
     public ResponseEntity<Long> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable @Min(1) Long idx) {
-        customerserviceService.remove(authMemeberDto.getIdx(), idx);
+        qnaService.remove(authMemeberDto.getIdx(), idx);
         return ResponseEntity.ok(idx);
     }
 }

@@ -1,13 +1,10 @@
 package com.reborn.golf.customerservice.repository;
 
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.reborn.golf.customerservice.entity.Answer;
 import com.reborn.golf.customerservice.entity.KnownQna;
 import com.reborn.golf.customerservice.entity.Notice;
 import com.reborn.golf.customerservice.entity.Question;
-import com.reborn.golf.member.entity.QMember;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +12,7 @@ import org.springframework.data.domain.Pageable;
 import javax.persistence.EntityManager;
 
 import java.util.List;
-import java.util.Optional;
 
-import static com.reborn.golf.customerservice.entity.QAnswer.answer;
 import static com.reborn.golf.customerservice.entity.QKnownQna.knownQna;
 import static com.reborn.golf.customerservice.entity.QNotice.notice;
 import static com.reborn.golf.customerservice.entity.QQuestion.question;
