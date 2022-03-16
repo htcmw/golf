@@ -20,34 +20,34 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Log4j2
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true,  securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public JwtUtil jwtUtil(){
+    public JwtUtil jwtUtil() {
         return new JwtUtil();
     }
 
     @Bean
-    public ApiCheckFilter apiCheckFilter(){
+    public ApiCheckFilter apiCheckFilter() {
         return new ApiCheckFilter(jwtUtil());
     }
 
     @Bean
-    public ApiLoginFilter apiLoginFilter() throws Exception{
-        ApiLoginFilter apiLoginFilter =  new ApiLoginFilter("/api/members/login",jwtUtil());
+    public ApiLoginFilter apiLoginFilter() throws Exception {
+        ApiLoginFilter apiLoginFilter = new ApiLoginFilter("/api/members/login", jwtUtil());
         apiLoginFilter.setAuthenticationManager(authenticationManager());
         apiLoginFilter.setAuthenticationFailureHandler(new ApiLoginFailHandler());
         return apiLoginFilter;
     }
 
     @Bean
-    ApiAccessDeniedHandler apiAccessDeniedHandler(){
+    ApiAccessDeniedHandler apiAccessDeniedHandler() {
         return new ApiAccessDeniedHandler();
     }
 

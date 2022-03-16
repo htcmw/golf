@@ -4,7 +4,7 @@ import com.reborn.golf.category.entity.Category;
 import com.reborn.golf.common.dto.PageRequestDto;
 import com.reborn.golf.common.dto.PageResultDto;
 import com.reborn.golf.member.entity.Member;
-import com.reborn.golf.product.dto.ProductImageDto;
+import com.reborn.golf.common.dto.ImageDto;
 import com.reborn.golf.usedtrade.dto.UsedTradeDto;
 import com.reborn.golf.usedtrade.entity.UsedTrade;
 import com.reborn.golf.usedtrade.entity.UsedTradeImage;
@@ -50,7 +50,7 @@ public interface UsedTradeService {
 
         entityMap.put("purchasedProduct", usedTrade);
 
-        List<ProductImageDto> imageDtoList = itemsDto.getImageDtoList();
+        List<ImageDto> imageDtoList = itemsDto.getImageDtoList();
         //ProductImageDto 처리
         if (imageDtoList != null && imageDtoList.size() > 0) {
             List<UsedTradeImage> usedTradeImageList = imageDtoList.stream().map(imgDto -> UsedTradeImage.builder()
@@ -68,8 +68,8 @@ public interface UsedTradeService {
 
     default UsedTradeDto entitiesToDto(UsedTrade items, List<UsedTradeImage> usedTradeImageList, Member member) {
 
-        List<ProductImageDto> productImageDtoList = usedTradeImageList.stream().map(productImage ->
-                ProductImageDto.builder()
+        List<ImageDto> imageDtoList = usedTradeImageList.stream().map(productImage ->
+                ImageDto.builder()
                         .imgName(productImage.getImgName())
                         .path(productImage.getPath())
                         .uuid(productImage.getUuid())
@@ -94,14 +94,14 @@ public interface UsedTradeService {
                 .memberName(member.getName())
                 .regDate(items.getRegDate())
                 .modDate(items.getModDate())
-                .imageDtoList(productImageDtoList)
+                .imageDtoList(imageDtoList)
                 .build();
     }
 
     default UsedTradeDto entitiesToDto(UsedTrade items, List<UsedTradeImage> usedTradeImageList, String categoryName) {
 
-        List<ProductImageDto> productImageDtoList = usedTradeImageList.stream().map(productImage ->
-                ProductImageDto.builder()
+        List<ImageDto> imageDtoList = usedTradeImageList.stream().map(productImage ->
+                ImageDto.builder()
                         .imgName(productImage.getImgName())
                         .path(productImage.getPath())
                         .uuid(productImage.getUuid())
@@ -119,7 +119,7 @@ public interface UsedTradeService {
                 .details(items.getDetails())
                 .canceled(items.isCanceled())
                 .step(items.getUsedTradeStep().name())
-                .imageDtoList(productImageDtoList)
+                .imageDtoList(imageDtoList)
                 .build();
     }
 }

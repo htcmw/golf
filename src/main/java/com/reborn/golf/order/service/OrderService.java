@@ -14,7 +14,7 @@ import com.reborn.golf.order.dto.OrderProductDto;
 import com.reborn.golf.order.dto.OrdersDto;
 import com.reborn.golf.order.entity.*;
 import com.reborn.golf.order.repository.OrdersRepository;
-import com.reborn.golf.product.dto.ProductImageDto;
+import com.reborn.golf.common.dto.ImageDto;
 import com.reborn.golf.product.entity.Product;
 import com.reborn.golf.product.entity.ProductImage;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -52,9 +52,12 @@ public class OrderService {
             verificatePayment(ordersDto);
             Member member = ordersRepository.searchMemberWithWallet(memberIdx, ordersDto.getUserEmail(), ordersDto.getUserName())
                     .orElseThrow(() -> new IllegalAccessException("User information does not match"));
-            OrdersDto order = order(memberIdx, ordersDto);
-            order.setPointAmountToBuyer(transferPoint(ordersDto, member.getWallet()));
-            return order;
+
+            OrdersDto orderDto = order(memberIdx, ordersDto);
+
+            orderDto.setPointAmountToBuyer(transferPoint(orderDto, member.getWallet()));
+
+            return orderDto;
         } catch (Exception e) {
             try {
                 iamportManager.cancelPayment(ordersDto.getImpUid(), ordersDto.getTotalPrice(), false, "주문 중 에러: " + e.getMessage());
@@ -109,6 +112,7 @@ public class OrderService {
 
         //구매자에게 포인트 지불
         contractService.transfer(wallet.getAddress(), pointAmountToBuyer);
+
         log.info(orderDto.getTotalPrice() * pointPerPrice + " = " + coinExchange.getTokenPrice() * (pointAmountToBuyer / 1000));
         return pointAmountToBuyer / 1000;
     }
@@ -171,7 +175,7 @@ public class OrderService {
 
         for (OrderProduct orderProduct : orderProducts) {
             Product product = orderProduct.getProduct();
-            List<ProductImageDto> imageDtos = makeImageDtos(product.getProductImages());
+            List<ImageDto> imageDtos = makeImageDtos(product.getProductImages());
             OrderProductDto orderProductDto = makeOrderProductDto(orderProduct, product, imageDtos);
             orderProductDtos.add(orderProductDto);
         }
@@ -202,15 +206,15 @@ public class OrderService {
                 .build();
     }
 
-    private List<ProductImageDto> makeImageDtos(List<ProductImage> productImages) {
-        List<ProductImageDto> imageDtos = new ArrayList<>();
+    private List<ImageDto> makeImageDtos(List<ProductImage> productImages) {
+        List<ImageDto> imageDtos = new ArrayList<>();
         for (ProductImage productImage : productImages) {
-            imageDtos.add(productImage.toProductImageDto());
+            imageDtos.add(productImage.toImageDto());
         }
         return imageDtos;
     }
 
-    private OrderProductDto makeOrderProductDto(OrderProduct orderProduct, Product product, List<ProductImageDto> productImageDtoList) {
+    private OrderProductDto makeOrderProductDto(OrderProduct orderProduct, Product product, List<ImageDto> imageDtoList) {
         return OrderProductDto.builder()
                 .orderProductIdx(orderProduct.getIdx())
                 .price(orderProduct.getPrice())
@@ -220,7 +224,7 @@ public class OrderService {
                 .title(product.getTitle())
                 .brand(product.getBrand())
                 .content(product.getContent())
-                .imageDtoList(productImageDtoList)
+                .imageDtoList(imageDtoList)
                 .build();
     }
 

@@ -41,26 +41,20 @@ public class CartRestController {
     @PutMapping("/{idx}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Long> modify(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long idx,@RequestParam Integer quentity){
-        Integer memberIdx = authMemeberDto.getIdx();
-        Long cartIdx = cartService.modify(memberIdx, idx, quentity);
-
-        return new ResponseEntity<>(cartIdx, HttpStatus.OK);
+        cartService.modify(authMemeberDto.getIdx(), idx, quentity);
+        return new ResponseEntity<>(idx, HttpStatus.OK);
     }
 
     @DeleteMapping("/{idx}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Long> remove(@AuthenticationPrincipal AuthMemeberDto authMemeberDto, @PathVariable Long idx){
-        Integer memberIdx = authMemeberDto.getIdx();
-        cartService.remove(memberIdx,idx);
-
+        cartService.remove(authMemeberDto.getIdx(),idx);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("/all")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Long> removeAll(@AuthenticationPrincipal AuthMemeberDto authMemeberDto){
-        Integer memberIdx = authMemeberDto.getIdx();
-        cartService.removeAll(memberIdx);
-
+        cartService.removeAll(authMemeberDto.getIdx());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -1,6 +1,6 @@
 package com.reborn.golf.order.dto;
 
-import com.reborn.golf.product.dto.ProductImageDto;
+import com.reborn.golf.common.dto.ImageDto;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -24,6 +24,6 @@ public class OrderProductDto {
     private Boolean isRemoved;
 
     @Builder.Default
-    private List<ProductImageDto> imageDtoList = new ArrayList<>();
+    private List<ImageDto> imageDtoList = new ArrayList<>();
 
 }

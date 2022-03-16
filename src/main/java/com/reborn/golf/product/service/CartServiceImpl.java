@@ -27,7 +27,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartListDto getList(Integer memberIdx) {
-        log.info(memberIdx);
         List<Carts> carts = cartRepository.getCartsByMemberIdx(memberIdx);
 
         List<CartDto> cartDtos = new ArrayList<>();
@@ -44,37 +43,33 @@ public class CartServiceImpl implements CartService {
                 .build();
     }
 
-        public Long register(Integer memberIdx, CartDto cartDto) {
-            Carts carts = Carts.builder()
-                    .member(Member.builder().idx(memberIdx).build())
-                    .product(Product.builder().idx(cartDto.getProductIdx()).build())
-                    .quantity(cartDto.getQuantity())
-                    .build();
+    public Long register(Integer memberIdx, CartDto cartDto) {
+        Carts carts = Carts.builder()
+                .member(Member.builder().idx(memberIdx).build())
+                .product(Product.builder().idx(cartDto.getProductIdx()).build())
+                .quantity(cartDto.getQuantity())
+                .build();
 
-            cartRepository.save(carts);
-
-            return carts.getIdx();
-        }
-
-        @Override
-        public Long modify(Integer memberIdx, Long cartIdx, Integer quentity) {
-            Carts carts = cartRepository.getCartsByIdxAndMemberIdx(cartIdx, memberIdx)
-                    .orElseThrow(() -> new NotExistEntityException("해당하는 장바구니 정보가 없습니다"));
-
-        carts.changeQuentity(quentity);
         cartRepository.save(carts);
-        
+
         return carts.getIdx();
     }
 
     @Override
+    @Transactional
+    public void modify(Integer memberIdx, Long cartIdx, Integer quentity) {
+        Carts carts = cartRepository.getCartsByIdxAndMemberIdx(cartIdx, memberIdx)
+                .orElseThrow(() -> new NotExistEntityException("해당하는 장바구니 정보가 없습니다"));
+        carts.changeQuentity(quentity);
+    }
+
+    @Override
     public void remove(Integer memberIdx, Long cartIdx) {
-        try{
+        try {
             cartRepository.deleteById(cartIdx);
-            log.info("삭제 성공");
-        }catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new ImpossibleDeleteException("DB 정보 삭제 실패 : " + e.getMessage());
-        }catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new EmptyResultDataAccessException("DB 정보 삭제 실패 : " + e.getMessage(), e.getExpectedSize());
         }
 
@@ -83,13 +78,12 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public void removeAll(Integer memberIdx) {
-        try{
+        try {
             List<Carts> carts = cartRepository.getCartsByMemberIdx(memberIdx);
             cartRepository.deleteCartsByMemberIdx(carts);
-            log.info("삭제 성공");
-        }catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new ImpossibleDeleteException("DB 정보 삭제 실패 : " + e.getMessage());
-        }catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new EmptyResultDataAccessException("DB 정보 삭제 실패 : " + e.getMessage(), e.getExpectedSize());
         }
     }

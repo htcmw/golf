@@ -3,7 +3,7 @@ package com.reborn.golf.order.entity;
 import com.reborn.golf.common.entity.BaseEntity;
 import com.reborn.golf.member.entity.Member;
 import com.reborn.golf.order.dto.OrderProductDto;
-import com.reborn.golf.product.dto.ProductImageDto;
+import com.reborn.golf.common.dto.ImageDto;
 import com.reborn.golf.product.entity.Product;
 import lombok.*;
 
@@ -78,8 +78,8 @@ public class Orders extends BaseEntity {
 
             Product product = orderProduct.getProduct();
 
-            List<ProductImageDto> productImageDtoList = product.getProductImages().stream().map(productImage ->
-                    ProductImageDto.builder()
+            List<ImageDto> imageDtoList = product.getProductImages().stream().map(productImage ->
+                    ImageDto.builder()
                             .imgName(productImage.getImgName())
                             .path(productImage.getPath())
                             .uuid(productImage.getUuid())
@@ -94,7 +94,7 @@ public class Orders extends BaseEntity {
                     .title(product.getTitle())
                     .brand(product.getBrand())
                     .content(product.getContent())
-                    .imageDtoList(productImageDtoList)
+                    .imageDtoList(imageDtoList)
                     .isRemoved(orderProduct.isRemoved())
                     .build();
             orderProductDtos.add(orderProductDto);

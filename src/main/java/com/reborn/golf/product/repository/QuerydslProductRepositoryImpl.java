@@ -1,69 +1,64 @@
 package com.reborn.golf.product.repository;
 
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.reborn.golf.product.entity.Product;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-@Log4j2
+import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.reborn.golf.category.entity.QCategory.category;
+import static com.reborn.golf.product.entity.QProduct.*;
+import static com.reborn.golf.product.entity.QProductImage.*;
+import static com.reborn.golf.review.entity.QProductReply.*;
+
 public class QuerydslProductRepositoryImpl extends QuerydslRepositorySupport implements QuerydslProductRepository {
-    public QuerydslProductRepositoryImpl() {
+    private final JPAQueryFactory queryFactory;
+
+    public QuerydslProductRepositoryImpl(EntityManager em) {
         super(Product.class);
+        queryFactory = new JPAQueryFactory(em);
     }
+
 
     @Override
     public Page<Object[]> getProductList(String categoryCode, Pageable pageable) {
-//        QCategory category = QCategory.category;
-//        QCategory category1 = new QCategory("category1");
-//        QProduct product = QProduct.product;
-//        QProductImage productImage = QProductImage.productImage;
-//        QProductReply productReply = QProductReply.productReply;
-//
-//        JPQLQuery<Product> jpqlQuery = from(product);
-//        jpqlQuery.leftJoin(category).on(product.category.eq(category1));
-//        jpqlQuery.leftJoin(productImage).on(productImage.product.eq(product));
-//        jpqlQuery.leftJoin(productReply).on(productReply.product.eq(product));
-//
-//        JPQLQuery<Tuple> tuple = jpqlQuery.select(product, productImage, productReply.grade.avg().coalesce(0.0), productReply.countDistinct());
-//
-//        BooleanBuilder booleanBuilder = new BooleanBuilder();
-//
-//        //categoryCode가 "01"이면 BEST 카테고리이므로 categoryCode를 검사하지 않는다
-//        if(!(categoryCode.equals("01")))
-//            booleanBuilder.and(product.category.code.startsWith(categoryCode));
-//
-//        booleanBuilder.and(product.removed.isFalse());
-//        booleanBuilder.and(productImage.removed.isFalse());
-//
-//        tuple.where(booleanBuilder);
-//
-//        Sort sort = pageable.getSort();
-//
-//        sort.stream().forEach(order -> {
-//            Order direction = order.isAscending() ? Order.ASC : Order.DESC;
-//            String prop = order.getProperty();
-//
-//            PathBuilder orderByExpression = new PathBuilder(Product.class, "product");
-//            tuple.orderBy(new OrderSpecifier(direction, orderByExpression.get(prop)));
-//        });
-//
-//        tuple.groupBy(product);
-//        tuple.offset(pageable.getOffset());
-//        tuple.limit(pageable.getPageSize());
-//
-//        List<Tuple> result = tuple.fetch();
-//
-//        log.info(result);
-//
-//        Long count = tuple.fetchCount();
-//
-//        log.info("Count : " + count);
-//
-//        return new PageImpl<>(result.stream().map(Tuple::toArray).collect(Collectors.toList()), pageable, count);
-//        return new PageImpl<>(result.stream().map(Tuple::toArray).collect(Collectors.toList()), pageable, count);
-        return null;
+
+        JPAQuery<Tuple> tuple = queryFactory
+                .select(product, productImage, productReply.grade.avg().coalesce(0.0), productReply.countDistinct())
+                .from(product)
+                .leftJoin(product.category, category)
+                .leftJoin(product, productImage.product)
+                .leftJoin(product, productReply.product)
+                .where(product.removed.isFalse(), productImage.removed.isFalse(), categoryCodeEq(categoryCode))
+                .groupBy(product)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+        //sortby
+        Sort sort = pageable.getSort();
+        sort.stream().forEach(order -> {
+            Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+            String prop = order.getProperty();
+            PathBuilder orderByExpression = new PathBuilder(Product.class, "product");
+            tuple.orderBy(new OrderSpecifier(direction, orderByExpression.get(prop)));
+        });
+
+        List<Object[]> collect = tuple.fetch().stream().map(Tuple::toArray).collect(Collectors.toList());
+        return new PageImpl<>(collect, pageable, tuple.fetchCount());
     }
 
-
+    private BooleanExpression categoryCodeEq(String categoryCode) {
+        return categoryCode.equals("01") ? null : product.category.code.startsWith(categoryCode);
+    }
 }

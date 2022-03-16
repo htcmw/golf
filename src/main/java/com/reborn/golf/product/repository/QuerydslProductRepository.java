@@ -5,5 +5,4 @@ import org.springframework.data.domain.Pageable;
 
 public interface QuerydslProductRepository {
     Page<Object[]> getProductList(String categoryCode, Pageable pageable);
-
-    }
+}

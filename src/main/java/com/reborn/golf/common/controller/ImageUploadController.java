@@ -1,6 +1,6 @@
-package com.reborn.golf.product.restcontroller;
+package com.reborn.golf.common.controller;
 
-import com.reborn.golf.product.dto.ProductImageDto;
+import com.reborn.golf.common.dto.ImageDto;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +27,7 @@ import java.util.UUID;
 @RestController
 @Log4j2
 @RequestMapping("/api/img")
-public class ProductUploadRestController {
+public class ImageUploadController {
 
     @Value("${spring.servlet.multipart.location}")
     private String uploadPath;
@@ -63,9 +63,9 @@ public class ProductUploadRestController {
     }
     //이미지 업로드
     @PostMapping
-    public ResponseEntity<List<ProductImageDto>> uploadFile(MultipartFile[] uploadFiles) {
+    public ResponseEntity<List<ImageDto>> uploadFile(MultipartFile[] uploadFiles) {
 
-        List<ProductImageDto> resultDTOList = new ArrayList<>();
+        List<ImageDto> resultDTOList = new ArrayList<>();
 
         log.info(uploadFiles);
 
@@ -102,7 +102,7 @@ public class ProductUploadRestController {
                 File thumbnailFile = new File(thumbnailSaveName);
                 //섬네일 생성
                 Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 100, 100);
-                resultDTOList.add(new ProductImageDto(fileName, uuid, folderPath));
+                resultDTOList.add(new ImageDto(fileName, uuid, folderPath));
 
             } catch (IOException e) {
                 e.printStackTrace();

@@ -1,6 +1,7 @@
 package com.reborn.golf.product.dto;
 
 
+import com.reborn.golf.common.dto.ImageDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,22 +15,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CartDto {
     private Long cartIdx;
-
     private Integer totalPrice;
-
     private Integer quantity;
-
     private Long productIdx;
-
-    //price per 1 product
-    private Integer price;
-
+    private Integer price;  //price per 1 product
     private String title;
-
-    private ProductImageDto imageDtoList;
-
+    private ImageDto imageDto;
     private LocalDateTime regDate;
-
     private LocalDateTime modDate;
 
 }

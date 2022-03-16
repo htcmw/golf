@@ -1,7 +1,8 @@
-package com.reborn.golf.product.entity;
+package com.reborn.golf.review.entity;
 
 import com.reborn.golf.common.entity.BaseEntity;
 import com.reborn.golf.member.entity.Member;
+import com.reborn.golf.product.entity.Product;
 import lombok.*;
 
 import javax.persistence.*;

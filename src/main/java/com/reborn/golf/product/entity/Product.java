@@ -68,8 +68,8 @@ public class Product extends BaseEntity {
         this.content = content;
     }
 
-    public void changeRemoved(Boolean removed) {
-        this.removed = removed;
+    public void remove() {
+        this.removed = false;
     }
 
     public void changeCategory(Integer categoryIdx) {

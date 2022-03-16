@@ -3,6 +3,7 @@ package com.reborn.golf.product.service;
 import com.reborn.golf.category.repository.CategoryRepository;
 import com.reborn.golf.common.dto.PageRequestDto;
 import com.reborn.golf.common.dto.PageResultDto;
+import com.reborn.golf.common.entity.Image;
 import com.reborn.golf.common.exception.NotExistEntityException;
 import com.reborn.golf.product.dto.ProductDto;
 import com.reborn.golf.product.entity.Product;
@@ -32,10 +33,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageResultDto<Object[], ProductDto> getList(String categoryCode, String attribute, PageRequestDto requestDto) {
         if (attribute == null) attribute = "salesVolume";
+
         Page<Object[]> result = productRepository.getProductList(categoryCode, requestDto.getPageable(Sort.by(attribute).descending()));
+
         Function<Object[], ProductDto> fn = (arr -> entitiesToDto((Product) arr[0], List.of((ProductImage) arr[1]), (Double) arr[2], (Long) arr[3]));
+
         PageResultDto<Object[], ProductDto> pageResultDto = new PageResultDto<>(result, fn);
-        System.out.println(pageResultDto);
+
         return pageResultDto;
     }
 
@@ -58,7 +62,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Long register(ProductDto productDto) {
-
         Map<String, Object> entityMap = dtoToEntity(productDto);
 
         Product product = (Product) entityMap.get("product");
@@ -70,12 +73,12 @@ public class ProductServiceImpl implements ProductService {
         productImageList.forEach(productImage -> {
             productImageRepository.save(productImage);
         });
-
         return product.getIdx();
     }
 
 
     @Override
+    @Transactional
     public void modify(Long productIdx, ProductDto productDto) {
         Product product = productRepository.getProductByIdx(productIdx)
                 .orElseThrow(() -> new NotExistEntityException("해당 idx를 갖는 제품이 DB에 없습니다"));
@@ -91,9 +94,7 @@ public class ProductServiceImpl implements ProductService {
             productRepository.save(product);
 
             //기존 이미지 삭제
-            productImageRepository.findAllByProductIdx(productIdx).forEach(productImage -> {
-                productImage.changeRemoved(true);
-            });
+            productImageRepository.findAllByProductIdx(productIdx).forEach(Image::remove);
             //수정 이미지 삽입
             productDto.getImageDtoList().forEach(productImageDto -> {
                 ProductImage productImage = ProductImage.builder()
@@ -112,13 +113,8 @@ public class ProductServiceImpl implements ProductService {
     public void remove(Long productIdx) {
         Product product = productRepository.getProductByIdx(productIdx)
                 .orElseThrow(() -> new NotExistEntityException("해당 idx를 갖는 제품이 DB에 없습니다"));
-
-        //제품이미지 삭제
-        product.getProductImages().forEach(productImage -> {
-            productImage.changeRemoved(true);
-        });
-        //제품 삭제
-        product.changeRemoved(true);
+        product.getProductImages().forEach(Image::remove);
+        product.remove();
         productRepository.save(product);
     }
 

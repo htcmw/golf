@@ -6,9 +6,7 @@ import com.reborn.golf.product.dto.CartListDto;
 public interface CartService {
     CartListDto getList(Integer memberIdx);
     Long register(Integer memberIdx, CartDto cartDto);
-    Long modify(Integer memberIdx, Long cartIdx ,Integer quentity);
+    void modify(Integer memberIdx, Long cartIdx ,Integer quentity);
     void remove(Integer memberIdx, Long cartIdx);
     void removeAll(Integer memberIdx);
-
-
 }

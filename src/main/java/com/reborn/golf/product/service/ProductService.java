@@ -4,7 +4,7 @@ import com.reborn.golf.category.entity.Category;
 import com.reborn.golf.common.dto.PageRequestDto;
 import com.reborn.golf.common.dto.PageResultDto;
 import com.reborn.golf.product.dto.ProductDto;
-import com.reborn.golf.product.dto.ProductImageDto;
+import com.reborn.golf.common.dto.ImageDto;
 import com.reborn.golf.product.entity.Product;
 import com.reborn.golf.product.entity.ProductImage;
 
@@ -28,7 +28,7 @@ public interface ProductService {
 
     default ProductDto entitiesToDto(Product product, List<ProductImage> productImages, Double avg, Long reviewCnt) {
 
-        List<ProductImageDto> productImageDtoList = productImages.stream().map(productImage -> ProductImageDto.builder()
+        List<ImageDto> imageDtoList = productImages.stream().map(productImage -> ImageDto.builder()
                 .imgName(productImage.getImgName())
                 .path(productImage.getPath())
                 .uuid(productImage.getUuid())
@@ -45,7 +45,7 @@ public interface ProductService {
                 .content(product.getContent())
                 .avg(avg)
                 .reviewCnt(reviewCnt)
-                .imageDtoList(productImageDtoList)
+                .imageDtoList(imageDtoList)
                 .regDate(product.getRegDate())
                 .modDate(product.getModDate())
                 .build();
@@ -70,7 +70,7 @@ public interface ProductService {
 
         entityMap.put("product", product);
 
-        List<ProductImageDto> imageDtoList = productDto.getImageDtoList();
+        List<ImageDto> imageDtoList = productDto.getImageDtoList();
         //ProductImageDto 처리
         if (imageDtoList != null && imageDtoList.size() > 0) {
             List<ProductImage> productImageList = imageDtoList.stream().map(productImageDto -> {

@@ -13,7 +13,7 @@ import com.reborn.golf.common.exception.WrongStepException;
 import com.reborn.golf.member.entity.Member;
 import com.reborn.golf.member.entity.Role;
 import com.reborn.golf.member.repository.MemberRepository;
-import com.reborn.golf.product.dto.ProductImageDto;
+import com.reborn.golf.common.dto.ImageDto;
 import com.reborn.golf.usedtrade.dto.UsedTradeDto;
 import com.reborn.golf.usedtrade.entity.UsedTrade;
 import com.reborn.golf.usedtrade.entity.UsedTradeImage;
@@ -58,8 +58,8 @@ public class UsedTradeServiceImpl implements UsedTradeService {
             List<UsedTradeImage> usedTradeImageList = List.of((UsedTradeImage) arr[1]);
             String categoryName = (String) arr[2];
             //이미지 처리
-            List<ProductImageDto> productImageDtoList = usedTradeImageList.stream().map(productImage ->
-                    ProductImageDto.builder()
+            List<ImageDto> imageDtoList = usedTradeImageList.stream().map(productImage ->
+                    ImageDto.builder()
                             .imgName(productImage.getImgName())
                             .path(productImage.getPath())
                             .uuid(productImage.getUuid())
@@ -93,7 +93,7 @@ public class UsedTradeServiceImpl implements UsedTradeService {
                     .acceptedTokenAmount(items.getAcceptedTokenAmount())
                     .canceled(items.isCanceled())
                     .step(items.getUsedTradeStep().name())
-                    .imageDtoList(productImageDtoList)
+                    .imageDtoList(imageDtoList)
                     .regDate(items.getRegDate())
                     .modDate(items.getModDate())
                     .build();
@@ -197,7 +197,7 @@ public class UsedTradeServiceImpl implements UsedTradeService {
         usedTrade.setStep(UsedTradeStep.PROPOSAL);
 
         //PurchasedProduct의 변경할 이미지가 존재하면 기존 이미지 삭제후, 새로운 이미지 삽입
-        List<ProductImageDto> imageDtoList = usedTradeDto.getImageDtoList();
+        List<ImageDto> imageDtoList = usedTradeDto.getImageDtoList();
         if (imageDtoList != null && imageDtoList.size() > 0) {
             imageRepository.deleteAllByUsedTradeIdx(usedTrade.getIdx());
 
@@ -317,8 +317,8 @@ public class UsedTradeServiceImpl implements UsedTradeService {
             Member member = (Member) arr[2];
             String categoryName = (String) arr[3];
             //이미지 처리
-            List<ProductImageDto> productImageDtoList = usedTradeImageList.stream().map(productImage ->
-                    ProductImageDto.builder()
+            List<ImageDto> imageDtoList = usedTradeImageList.stream().map(productImage ->
+                    ImageDto.builder()
                             .imgName(productImage.getImgName())
                             .path(productImage.getPath())
                             .uuid(productImage.getUuid())
@@ -352,7 +352,7 @@ public class UsedTradeServiceImpl implements UsedTradeService {
                     .proposalTokenAmount(possiblePointAmount)
                     .canceled(items.isCanceled())
                     .step(items.getUsedTradeStep().name())
-                    .imageDtoList(productImageDtoList)
+                    .imageDtoList(imageDtoList)
                     .regDate(items.getRegDate())
                     .modDate(items.getModDate())
                     .build();

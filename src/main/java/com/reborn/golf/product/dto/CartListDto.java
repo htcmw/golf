@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartListDto {
-
     private Integer totalPrice;
     List<CartDto> cartDtos;
 }
