@@ -1,6 +1,5 @@
 package com.reborn.golf.product.service;
 
-import com.reborn.golf.category.repository.CategoryRepository;
 import com.reborn.golf.common.dto.PageRequestDto;
 import com.reborn.golf.common.dto.PageResultDto;
 import com.reborn.golf.common.entity.Image;
@@ -26,9 +25,8 @@ import java.util.function.Function;
 @Log4j2
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository; //final
-    private final ProductImageRepository productImageRepository; //final
+    private final ProductRepository productRepository;
+    private final ProductImageRepository productImageRepository;
 
     @Override
     public PageResultDto<Object[], ProductDto> getList(String categoryCode, String attribute, PageRequestDto requestDto) {
@@ -38,9 +36,7 @@ public class ProductServiceImpl implements ProductService {
 
         Function<Object[], ProductDto> fn = (arr -> entitiesToDto((Product) arr[0], List.of((ProductImage) arr[1]), (Double) arr[2], (Long) arr[3]));
 
-        PageResultDto<Object[], ProductDto> pageResultDto = new PageResultDto<>(result, fn);
-
-        return pageResultDto;
+        return new PageResultDto<>(result, fn);
     }
 
     @Override

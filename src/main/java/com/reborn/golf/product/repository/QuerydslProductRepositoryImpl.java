@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import static com.reborn.golf.category.entity.QCategory.category;
 import static com.reborn.golf.product.entity.QProduct.*;
-import static com.reborn.golf.product.entity.QProductImage.*;
+import static com.reborn.golf.product.entity.QProductImage.productImage;
 import static com.reborn.golf.review.entity.QProductReply.*;
 
 public class QuerydslProductRepositoryImpl extends QuerydslRepositorySupport implements QuerydslProductRepository {
@@ -34,17 +34,23 @@ public class QuerydslProductRepositoryImpl extends QuerydslRepositorySupport imp
 
     @Override
     public Page<Object[]> getProductList(String categoryCode, Pageable pageable) {
+        long count = queryFactory
+                .select(product.count())
+                .from(product)
+                .where(product.removed.isFalse(), categoryCodeEq(categoryCode))
+                .fetchCount();
 
         JPAQuery<Tuple> tuple = queryFactory
                 .select(product, productImage, productReply.grade.avg().coalesce(0.0), productReply.countDistinct())
                 .from(product)
                 .leftJoin(product.category, category)
-                .leftJoin(product, productImage.product)
-                .leftJoin(product, productReply.product)
+                .leftJoin(productImage).on(productImage.product.eq(product))
+                .leftJoin(productReply).on(productReply.product.eq(product))
                 .where(product.removed.isFalse(), productImage.removed.isFalse(), categoryCodeEq(categoryCode))
                 .groupBy(product)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
+
         //sortby
         Sort sort = pageable.getSort();
         sort.stream().forEach(order -> {
@@ -55,7 +61,7 @@ public class QuerydslProductRepositoryImpl extends QuerydslRepositorySupport imp
         });
 
         List<Object[]> collect = tuple.fetch().stream().map(Tuple::toArray).collect(Collectors.toList());
-        return new PageImpl<>(collect, pageable, tuple.fetchCount());
+        return new PageImpl<>(collect, pageable, count);
     }
 
     private BooleanExpression categoryCodeEq(String categoryCode) {

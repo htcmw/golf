@@ -77,6 +77,8 @@ public class KnownQnaService {
                 .question(knownQna.getContent())
                 .answer(knownQna.getSubContent())
                 .email(knownQna.getWriter().getEmail())
+                .regDate(knownQna.getRegDate())
+                .modDate(knownQna.getModDate())
                 .name(knownQna.getWriter().getName())
                 .views(knownQna.getViews())
                 .build();

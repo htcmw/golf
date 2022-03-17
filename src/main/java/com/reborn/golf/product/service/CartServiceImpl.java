@@ -51,7 +51,6 @@ public class CartServiceImpl implements CartService {
                 .build();
 
         cartRepository.save(carts);
-
         return carts.getIdx();
     }
 
@@ -67,12 +66,9 @@ public class CartServiceImpl implements CartService {
     public void remove(Integer memberIdx, Long cartIdx) {
         try {
             cartRepository.deleteById(cartIdx);
-        } catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException | EmptyResultDataAccessException e) {
             throw new ImpossibleDeleteException("DB 정보 삭제 실패 : " + e.getMessage());
-        } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("DB 정보 삭제 실패 : " + e.getMessage(), e.getExpectedSize());
         }
-
     }
 
     @Override
@@ -81,10 +77,8 @@ public class CartServiceImpl implements CartService {
         try {
             List<Carts> carts = cartRepository.getCartsByMemberIdx(memberIdx);
             cartRepository.deleteCartsByMemberIdx(carts);
-        } catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException | EmptyResultDataAccessException e) {
             throw new ImpossibleDeleteException("DB 정보 삭제 실패 : " + e.getMessage());
-        } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("DB 정보 삭제 실패 : " + e.getMessage(), e.getExpectedSize());
         }
     }
 }
