@@ -19,9 +19,9 @@
 
           장바구니 : CRUD
 
-          결제 : CRD, iamport api 사용
+          결제 : CRD, iamport api, web3j 사용
 
-          중고 용품 매입 : 상태변경(협상 과정), CRUD  
+          중고 용품 매입 : 상태변경(협상 과정) web3j 사용, CRUD  
 
           공지사항 : CRUD
 
