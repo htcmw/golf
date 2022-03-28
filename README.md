@@ -9,7 +9,7 @@
 제품을 판매하는 유저와 협의를 통해 적정가격에 매입합니다.
 공지사항과 QnA를 통해 고객과 소통의 창구를 제공합니다.
 
-기술 스택 : Java 11, Spring Boot 2.5.4, Spring Security 5.5.2, Spring Data Jpa 2.5.4, MariaDB 10.5.10, docker
+기술 스택 : Java 11, Spring Boot 2.5.4, Spring Security 5.5.2, Spring Data Jpa 2.5.4, MariaDB 10.5.10
 
 사용 오픈 API : bithumb ticker api, iamport api, klaytn
 
